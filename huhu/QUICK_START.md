@@ -37,10 +37,53 @@ wandb login
 
 ### 4. 下载数据集
 
+#### 方法1：使用下载脚本（推荐，更快）
+
+```bash
+# 使用优化后的下载脚本（自动使用huggingface-cli，比git lfs快）
+bash download_dataset.sh
+```
+
+脚本会自动：
+- 激活simlingo conda环境
+- 使用huggingface-cli下载（比git lfs更快）
+- 自动解压所有文件
+- 数据集保存到：`/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo_extracted`
+
+#### 方法2：手动下载（如果脚本失败）
+
+```bash
+# 激活环境
+conda activate simlingo
+
+# 安装huggingface-cli（如果未安装）
+pip install -U "huggingface_hub[cli]"
+
+# 创建数据集目录
+mkdir -p /shared/rc/llm-gen-agent/mhu/simlingo_dataset/database
+cd /shared/rc/llm-gen-agent/mhu/simlingo_dataset/database
+
+# 使用huggingface-cli下载（推荐，更快）
+huggingface-cli download RenzKa/simlingo \
+    --repo-type dataset \
+    --local-dir simlingo \
+    --local-dir-use-symlinks False
+
+# 解压数据
+mkdir -p simlingo_extracted
+cd simlingo
+for file in *.tar.gz; do
+    echo "解压 $file ..."
+    tar -xzf "$file" -C ../simlingo_extracted/
+done
+```
+
+#### 方法3：使用git lfs（备用，较慢）
+
 ```bash
 # 创建数据集目录
-mkdir -p database
-cd database
+mkdir -p /shared/rc/llm-gen-agent/mhu/simlingo_dataset/database
+cd /shared/rc/llm-gen-agent/mhu/simlingo_dataset/database
 
 # 克隆数据集
 git clone https://huggingface.co/datasets/RenzKa/simlingo
@@ -50,14 +93,13 @@ cd simlingo
 git lfs pull
 
 # 解压数据
-cd ../..
-mkdir -p database/simlingo_extracted
-cd database/simlingo
+cd ..
+mkdir -p simlingo_extracted
+cd simlingo
 for file in *.tar.gz; do
     echo "解压 $file ..."
     tar -xzf "$file" -C ../simlingo_extracted/
 done
-cd ../..
 ```
 
 ### 5. 配置训练路径
@@ -67,9 +109,11 @@ cd ../..
 ```yaml
 data_module:
   base_dataset:
-    data_path: database/simlingo_extracted  # 修改为你的路径
-    bucket_path: database/bucketsv2_simlingo  # 修改为你的bucket路径
+    data_path: /shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo_extracted  # 修改为你的路径
+    bucket_path: /shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/bucketsv2_simlingo  # 修改为你的bucket路径
 ```
+
+**注意**：如果bucket文件在数据集中，路径可能需要调整。
 
 ### 6. 开始训练
 
