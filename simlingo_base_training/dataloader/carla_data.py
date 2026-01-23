@@ -37,6 +37,13 @@ class CARLA_Data(BaseDataset):  # pylint: disable=locally-disabled, invalid-name
         ######################################################
         ######## load current and future measurements ########
         ######################################################
+        # mh 20260120 
+        # 从 measurements/ 加载 JSON.gz 文件，包含：
+        # 车辆速度
+        # 目标点 (target_point, target_point_next)
+        # 命令 (command, next_command)
+        # 其他传感器数据
+
         loaded_measurements, current_measurement, measurement_file_current = self.load_current_and_future_measurements(
             measurements,
             sample_start
@@ -61,6 +68,7 @@ class CARLA_Data(BaseDataset):  # pylint: disable=locally-disabled, invalid-name
 
         ######################################################
         ################## load waypoints ####################
+        ## mh 20260120 加载waypoints 从测量数据提取，作为训练标签（Ground Truth）
         ######################################################
         data = self.load_waypoints(data, loaded_measurements, aug_translation, aug_rotation)
        
@@ -79,7 +87,7 @@ class CARLA_Data(BaseDataset):  # pylint: disable=locally-disabled, invalid-name
         ######## load current and past images ########
         ######################################################
         data = self.load_images(data, images, augment_sample=augment_sample)
-
+        # print(f"########## self.route_as is: {self.route_as} ##########")   #### mh 20260120 target_point
         if self.route_as == 'coords':
             map_route = route[:20]
             data['map_route'] = map_route
@@ -89,7 +97,12 @@ class CARLA_Data(BaseDataset):  # pylint: disable=locally-disabled, invalid-name
             data['map_route'] = tp
         else:
             raise ValueError(f"Unknown route_as: {self.route_as}")
-
+            #### ########## self.route_as is: target_point ##########
+########## data['map_route'] is: [[ 3.66759424e+01 -2.24885232e-03][ 5.72388075e+01 -3.69690201e-03]]
+###data keys are: dict_keys(['measurement_path', 'augment_sample', 'aug_rotation', 'aug_translation', 'waypoints', 'waypoints_org', 'waypoints_1d', 'ego_waypoints', 'ego_waypoints_org', 'speed', 'route', 'route_adjusted_org', 'route_adjusted', 'target_point', 'next_target_point', 'rgb', 'rgb_org_size', 'map_route']) ##########
+        # print(f"########## data['map_route'] is: {data['map_route']} ##########")
+        # print(f"########## data keys are: {data.keys()} ##########")
+        # print(f"*****waypoints is: {data['waypoints']} ##########")
         return data
 
 

@@ -3,6 +3,7 @@ from torch import nn
 from typing import List, Optional
 from transformers import AutoModel
 
+#### 自定义的一个base on intervl2的class，  - <TARGET_POINT> → wp_encoder(coords) - <IMG_CONTEXT> → vision features
 class LingoInternVLModel(nn.Module):
     def __init__(self, variant, *args, **kwargs):
         super().__init__()
@@ -89,11 +90,12 @@ class LingoInternVLModel(nn.Module):
                     start = first_occurrence[pos[1]]
                     end = start + coords_length_org[i]
                     inputs_embeds[pos[0], start:end] = wp_embeds[i]
-
+                # print("====wp_embeds====: ", wp_embeds)   ##### mh 20260121  encode target_points, 当route_as=target_point_command会有，当route_as=command不会有
+            
             # 2. Merge text and images
             if pixel_values is not None and input_ids.shape[1] != 1 and pixel_values.size(0) > 0:
                 all_pixel_values = [pixel_values]
-                    
+                # print(f"all_pixel_values:")  ##### mh 20260121  encode images
                 all_image_features = []
                 all_feature_lens = []
                 _, N_embed, C_embed = inputs_embeds.shape

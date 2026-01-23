@@ -169,9 +169,14 @@ def get_custom_chat_template(conversations: List[Dict], tokenizer, encoder_varia
     user_start_token_str = template_conv.roles[0]
     assistant_start_token_str = template_conv.roles[1]
 
+#### conv_dict 训练时使用，包含完整对话，用于计算 loss，包含user和assistant的对话 
+## Example: '<|im_start|>user\n<img>...<IMG_CONTEXT>...</img>\nCurrent speed: 4.6 m/s. Command: It is obligatory to take a left turn at the forthcoming intersection. Predict the waypoints.<|im_end|><|im_start|>assistant\nWaypoints:<|im_end|>'
     conv_dict = get_chat_tokens(tokenizer, prompts_conv, user_start_token_str, assistant_start_token_str)
+#### question_dict 只包含问题，模型来生成答案, assistant没有img_end token
+### Example: <|im_start|>user\n<img>...<IMG_CONTEXT>...</img>\nCurrent speed: 2.5 m/s. Command: go left at the next intersection in 15 meter then follow the road. Predict the waypoints.<|im_end|><|im_start|>assistant\n'],
     question_dict = get_chat_tokens(tokenizer, prompts_question, user_start_token_str, assistant_start_token_str)
-
+    # print("====conv_dict====: ", conv_dict)   ##### mh 20260121  print conv_dict, template conversation to "<img>" + "<IMG_CONTEXT>" * 256 + "</img>"
+    # print("====question_dict====: ", question_dict)   ##### mh 20260121  print question_dict
     return conv_dict, question_dict
 
 

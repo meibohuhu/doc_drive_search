@@ -76,7 +76,7 @@ class DrivingModel(pl.LightningModule):
         self.all_predictions = {}
         self.all_losses = {}
 
-        driving = DrivingAdaptor(
+        driving = DrivingAdaptor(   #### mh 20260121 adapter to predict waypoints (speed_wps and optionally route), uses learnable query embeddings
             self.language_model.hidden_size, 
             speed_wps_mode=speed_wps_mode,
             predict_route_as_wps=predict_route_as_wps
@@ -134,7 +134,7 @@ class DrivingModel(pl.LightningModule):
 
         # single forward pass same as during training so we can use the same function
         inputs = self.adaptors(driving_input)
-        features = self.forward_model(driving_input, inputs["inputs"])
+        features = self.forward_model(driving_input, inputs["inputs"])   #### inputs["inputs"] 是learnable query embeddings
         predictions = self.adaptors.driving.get_predictions(features)
 
         for k, v in predictions.items():
@@ -153,7 +153,7 @@ class DrivingModel(pl.LightningModule):
         """
         Forward model conditioned on the given driving input.
         """
-
+        #### mh 20260121 获取vision embeddings和speed embeddings, route embeddings拼接在了一起
         vision_embeds, vision_attention_mask = self.get_fixed_input_embeds(driving_input)
 
         input_embeds = torch.cat((vision_embeds, adaptor_embeds), dim=1)
@@ -161,6 +161,21 @@ class DrivingModel(pl.LightningModule):
         input_embeds = input_embeds.to(
             dtype=self.language_model.model.dtype
         )
+
+        # mh 20260121  Print input before LLM (every 1000 steps to avoid too much output)
+        current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
+        if current_step % 100 == 0:
+            print(f"\n{'='*60}")
+            print(f"[Input Before LLM] - Global Step {current_step}")
+            print(f"{'='*60}")
+            print(f"  Vision embeddings shape: {vision_embeds.shape}")
+            print(f"  Adaptor embeddings shape: {adaptor_embeds.shape}")
+            print(f"  Concatenated input embeddings shape: {input_embeds.shape}")
+            print(f"  Input dtype: {input_embeds.dtype}")
+            print(f"  Vision embeddings range: [{vision_embeds.min().item():.4f}, {vision_embeds.max().item():.4f}]")
+            print(f"  Adaptor embeddings range: [{adaptor_embeds.min().item():.4f}, {adaptor_embeds.max().item():.4f}]")
+            print(f"  Input embeddings range: [{input_embeds.min().item():.4f}, {input_embeds.max().item():.4f}]")
+            print(f"  Input embeddings mean: {input_embeds.mean().item():.4f}, std: {input_embeds.std().item():.4f}")
 
         outputs = self.language_model.forward(
             input_embeds,
@@ -211,6 +226,45 @@ class DrivingModel(pl.LightningModule):
 
         loss_dict_only_losses = {k:v for k, v in loss_dict.items() if k.endswith("loss")}
         pred_labels = {k:v for k, v in loss_dict.items() if not k.endswith("loss")}
+        
+        # mh 20260121  Print predictions and losses (every 10 steps to avoid too much output)
+        current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
+        if current_step % 1000 == 0:
+            print(f"\n{'='*60}")
+            print(f"Global Step {current_step}")
+            print(f"{'='*60}")
+            
+            # Print losses
+            print("\n[Losses]")
+            for loss_key, (loss_val, loss_count) in loss_dict_only_losses.items():
+                loss_val_cpu = loss_val.detach().cpu()
+                print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape})")
+            
+            # Print predictions and labels
+            print("\n[Predictions & Labels]")
+            for key in pred_labels.keys():
+                if 'prediction' in key:
+                    pred = pred_labels[key].detach().cpu()
+                    label_key = key.replace('_prediction', '_label')
+                    if label_key in pred_labels:
+                        label = pred_labels[label_key].detach().cpu()
+                        print(f"\n  {key}:")
+                        print(f"    Shape: {pred.shape}")
+                        print(f"    First sample prediction (first 3 waypoints):")
+                        if len(pred.shape) == 3:  # [B, N, 2] or [B, N, 1]
+                            print(f"      {pred[0, :3].numpy()}")
+                        elif len(pred.shape) == 2:  # [B, N]
+                            print(f"      {pred[0, :3].numpy()}")
+                        print(f"    First sample label (first 3 waypoints):")
+                        if len(label.shape) == 3:
+                            print(f"      {label[0, :3].numpy()}")
+                        elif len(label.shape) == 2:
+                            print(f"      {label[0, :3].numpy()}")
+                        # Calculate per-waypoint error
+                        if pred.shape == label.shape:
+                            error = (pred - label).abs().mean(dim=-1)  # [B, N]
+                            print(f"    Mean per-waypoint error: {error[0].numpy()}")
+        
         if per_sample:
             return loss_dict_only_losses, pred_labels
 

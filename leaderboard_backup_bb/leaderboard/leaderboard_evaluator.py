@@ -16,6 +16,7 @@ import traceback
 import argparse
 from argparse import RawTextHelpFormatter
 from distutils.version import LooseVersion
+from datetime import datetime
 import importlib
 import os
 import pkg_resources
@@ -34,6 +35,31 @@ from leaderboard.autoagents.agent_wrapper import AgentError, validate_sensor_con
 from leaderboard.utils.statistics_manager import StatisticsManager, FAILURE_MESSAGES
 from leaderboard.utils.route_indexer import RouteIndexer
 
+def get_weather_id(weather_conditions):
+    """
+    Get weather ID from weather conditions
+    """
+    from xml.etree import ElementTree as ET
+    WORK_DIR = os.environ.get("WORK_DIR", "")
+    if WORK_DIR != "":
+        WORK_DIR += "/"
+    try:
+        tree = ET.parse(WORK_DIR + 'leaderboard/data/weather.xml')
+        root = tree.getroot()
+        def conditions_match(weather, conditions):
+            for (key, value) in weather:
+                if key == 'route_percentage' : continue
+                if str(getattr(conditions, key))!= value:
+                    return False
+            return True
+        for case in root.findall('case'):
+            weather = case[0].items()
+            if conditions_match(weather, weather_conditions):
+                return case.items()[0][1]
+        return None
+    except Exception:
+        return None
+
 
 sensors_to_icons = {
     'sensor.camera.rgb':        'carla_camera',
@@ -44,6 +70,31 @@ sensors_to_icons = {
     'sensor.opendrive_map':     'carla_opendrive_map',
     'sensor.speedometer':       'carla_speedometer'
 }
+
+def get_weather_id(weather_conditions):
+    """
+    Get weather ID from weather conditions
+    """
+    from xml.etree import ElementTree as ET
+    WORK_DIR = os.environ.get("WORK_DIR", "")
+    if WORK_DIR != "":
+        WORK_DIR += "/"
+    try:
+        tree = ET.parse(WORK_DIR + 'leaderboard/data/weather.xml')
+        root = tree.getroot()
+        def conditions_match(weather, conditions):
+            for (key, value) in weather:
+                if key == 'route_percentage' : continue
+                if str(getattr(conditions, key))!= value:
+                    return False
+            return True
+        for case in root.findall('case'):
+            weather = case[0].items()
+            if conditions_match(weather, weather_conditions):
+                return case.items()[0][1]
+        return None
+    except Exception:
+        return None
 
 class LeaderboardEvaluator(object):
     """
@@ -107,7 +158,9 @@ class LeaderboardEvaluator(object):
         Either the agent initialization watchdog is triggered, or the runtime one at scenario manager
         """
         if self._agent_watchdog and not self._agent_watchdog.get_status():
-            raise RuntimeError("Timeout: Agent took longer than {}s to setup".format(self.client_timeout))
+            # Use args.timeout if available, otherwise use client_timeout
+            timeout_value = getattr(self, '_agent_setup_timeout', self.client_timeout)
+            raise RuntimeError("Timeout: Agent took longer than {}s to setup (model loading may take time)".format(timeout_value))
         elif self.manager:
             self.manager.signal_handler(signum, frame)
 
@@ -256,7 +309,13 @@ class LeaderboardEvaluator(object):
 
         # Prepare the statistics of the route
         route_name = f"{config.name}_rep{config.repetition_index}"
-        self.statistics_manager.create_route_data(route_name, config.index)
+        scenario_name = config.scenario_configs[0].name
+        town_name = str(config.town)
+        weather_id = get_weather_id(config.weather[0][1])
+        currentDateAndTime = datetime.now()
+        currentTime = currentDateAndTime.strftime("%m_%d_%H_%M_%S")
+        save_name = f"{route_name}_{town_name}_{scenario_name}_{weather_id}_{currentTime}"
+        self.statistics_manager.create_route_data(route_name, scenario_name, weather_id, save_name, town_name, config.index)
 
         print("\033[1m> Loading the world\033[0m")
 
@@ -277,9 +336,12 @@ class LeaderboardEvaluator(object):
             return True
 
         print("\033[1m> Setting up the agent\033[0m")
+        print(f"Agent setup timeout: {args.timeout}s (model loading may take several minutes)", flush=True)
 
         # Set up the user's agent, and the timer to avoid freezing the simulation
         try:
+            # Store timeout for error messages
+            self._agent_setup_timeout = args.timeout
             self._agent_watchdog = Watchdog(args.timeout)
             self._agent_watchdog.start()
             agent_class_name = getattr(self.module_agent, 'get_entry_point')()
@@ -454,7 +516,7 @@ def main():
 
     parser.add_argument("--track", type=str, default='SENSORS',
                         help="Participation track: SENSORS, MAP")
-    parser.add_argument('--resume', type=bool, default=False,
+    parser.add_argument('--resume', type=lambda x: (str(x).lower() == 'true'), default=False,
                         help='Resume execution from last checkpoint?')
     parser.add_argument("--checkpoint", type=str, default='./simulation_results.json',
                         help="Path to checkpoint used for saving statistics and resuming")

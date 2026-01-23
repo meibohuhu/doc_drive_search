@@ -90,7 +90,7 @@ class LeaderboardEvaluator(object):
     """
 
     # Tunable parameters
-    client_timeout = 300.0  # in seconds
+    client_timeout = 600.0  # in seconds (increased for model loading)
     frame_rate = 20.0      # in Hz
 
     def __init__(self, args, statistics_manager):
@@ -145,7 +145,9 @@ class LeaderboardEvaluator(object):
         Either the agent initialization watchdog is triggered, or the runtime one at scenario manager
         """
         if self._agent_watchdog and not self._agent_watchdog.get_status():
-            raise RuntimeError("Timeout: Agent took longer than {}s to setup".format(self.client_timeout))
+            # Use args.timeout if available, otherwise use client_timeout
+            timeout_value = getattr(self, '_agent_setup_timeout', self.client_timeout)
+            raise RuntimeError("Timeout: Agent took longer than {}s to setup (model loading may take time)".format(timeout_value))
         elif self.manager:
             self.manager.signal_handler(signum, frame)
 
@@ -207,10 +209,24 @@ class LeaderboardEvaluator(object):
         self.carla_path = os.environ["CARLA_ROOT"]
         args.port = find_free_port(args.port)
         cmd1 = f"{os.path.join(self.carla_path, 'CarlaUE4.sh')} -RenderOffScreen -nosound -carla-rpc-port={args.port} -graphicsadapter={args.gpu_rank}"
-        self.server = subprocess.Popen(cmd1, shell=True, preexec_fn=os.setsid)
-        print(cmd1, self.server.returncode, flush=True)
+        print(f"Starting CARLA server: {cmd1}", flush=True)
+        self.server = subprocess.Popen(cmd1, shell=True, preexec_fn=os.setsid, 
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(f"CARLA server PID: {self.server.pid}, returncode: {self.server.returncode}", flush=True)
         atexit.register(os.killpg, self.server.pid, signal.SIGKILL)
-        time.sleep(60)
+        
+        # Extended sleep time for slower machines and to ensure CARLA is fully initialized
+        # Check if CARLA process is still alive during wait
+        for i in range(90):
+            time.sleep(1)
+            if self.server.poll() is not None:
+                # CARLA process exited
+                stdout, stderr = self.server.communicate()
+                print(f"⚠️  CARLA server exited unexpectedly! Return code: {self.server.returncode}", flush=True)
+                if stderr:
+                    print(f"CARLA stderr: {stderr.decode('utf-8', errors='ignore')[-500:]}", flush=True)
+                raise RuntimeError(f"CARLA server crashed during startup. This may be due to Vulkan driver issues. "
+                                 f"Check the 'lavapipe' warning - it indicates Vulkan problems.")
             
         attempts = 0
         num_max_restarts = 20
@@ -350,9 +366,12 @@ class LeaderboardEvaluator(object):
             return True
 
         print("\033[1m> Setting up the agent\033[0m", flush=True)
+        print(f"Agent setup timeout: {args.timeout}s (model loading may take several minutes)", flush=True)
 
         # Set up the user's agent, and the timer to avoid freezing the simulation
         try:
+            # Store timeout for error messages
+            self._agent_setup_timeout = args.timeout
             self._agent_watchdog = Watchdog(args.timeout)
             self._agent_watchdog.start()
             agent_class_name = getattr(self.module_agent, 'get_entry_point')()

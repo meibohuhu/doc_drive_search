@@ -171,18 +171,18 @@ def kill_dead_jobs(jobs):
 configs = [
     {
     "agent": "simlingo",
-    "checkpoint": "/PATH/TO/REPO/outputs/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt",
+    "checkpoint": "/local1/mhu/doc_drive_search/pretrained/simlingo/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt",
     "benchmark": "bench2drive",
-    "route_path": "/PATH/TO/REPO/leaderboard/data/bench2drive_split",
-    "seeds": [1,2,3], # TODO: change depending on how many eval seeds you wanna run (paper uses one eval seed on three train seeds)
+    "route_path": "/local1/mhu/doc_drive_search/Bench2Drive/leaderboard/data/bench2drive_split",  # TODO: Download Bench2Drive routes if not exists
+    "seeds": [1], # TODO: change depending on how many eval seeds you wanna run (paper uses one eval seed on three train seeds)
     "tries": 2,
-    "out_root": "/PATH/TO/REPO/eval_results/Bench2Drive",
-    "carla_root": "~/software/carla0915",
-    "repo_root": "/PATH/TO/REPO",
-    "agent_file": "/PATH/TO/REPO/team_code/agent_simlingo.py",
+    "out_root": "/local1/mhu/doc_drive_search/eval_results/Bench2Drive",
+    "carla_root": "/local1/mhu/software/carla0915",
+    "repo_root": "/local1/mhu/doc_drive_search",
+    "agent_file": "/local1/mhu/doc_drive_search/team_code/agent_simlingo.py",
     "team_code": "team_code",
     "agent_config": "not_used",
-    "username": "YOUR_USERNAME"
+    "username": "ztao"  # TODO: Change to your SLURM username
     }
     ] # TODO: change to your paths and model, you can add multiple configs here, whch get evaluated after each other
 

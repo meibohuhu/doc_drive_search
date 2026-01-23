@@ -30,35 +30,62 @@ def setup_logging(cfg, save_folder=None):
     with open(os.path.join(save_folder, "args.txt"), "w") as f:
         json.dump(args.__dict__, f, indent=2)
 
-    # Log git
-    sha = (
-        subprocess.check_output(
-            ["git", "-C", f"{working_dir}", "rev-parse", "HEAD"]
-        )
-        .decode("ascii")
-        .strip()
-    )
-    commit = (
-        subprocess.check_output(["git", "-C", f"{working_dir}", "log", "-1"])
-        .decode("ascii")
-        .strip()
-    )
-    branch = (
-        subprocess.check_output(["git", "-C", f"{working_dir}", "branch"])
-        .decode("ascii")
-        .strip()
-    )
-    repo = Repo(working_dir)
+    # Log git - try to find git repo in parent directories
+    git_dir = working_dir
+    found_git = False
+    while git_dir != os.path.dirname(git_dir):  # Stop at root
+        if os.path.exists(os.path.join(git_dir, '.git')):
+            found_git = True
+            break
+        git_dir = os.path.dirname(git_dir)
+    
+    if found_git:
+        try:
+            sha = (
+                subprocess.check_output(
+                    ["git", "-C", f"{git_dir}", "rev-parse", "HEAD"]
+                )
+                .decode("ascii")
+                .strip()
+            )
+            commit = (
+                subprocess.check_output(["git", "-C", f"{git_dir}", "log", "-1"])
+                .decode("ascii")
+                .strip()
+            )
+            branch = (
+                subprocess.check_output(["git", "-C", f"{git_dir}", "branch"])
+                .decode("ascii")
+                .strip()
+            )
+            repo = Repo(git_dir)
 
-    with open(os.path.join(save_folder, "git_info.txt"), "w") as f:
-        # write current date and time
-        f.write(
-            f"Run started at: {str(datetime.now().strftime('%d/%m/%Y %H:%M:%S'))}\n"
-        )
-        f.write(f"Git state: {sha}\n")
-        f.write(f"Git commit: {commit}\n")
-        f.write(f"Git branch: {branch}\n\n")
-        f.write(f"{repo.git.diff('HEAD')}")
+            with open(os.path.join(save_folder, "git_info.txt"), "w") as f:
+                # write current date and time
+                f.write(
+                    f"Run started at: {str(datetime.now().strftime('%d/%m/%Y %H:%M:%S'))}\n"
+                )
+                f.write(f"Git repo: {git_dir}\n")
+                f.write(f"Git state: {sha}\n")
+                f.write(f"Git commit: {commit}\n")
+                f.write(f"Git branch: {branch}\n\n")
+                f.write(f"{repo.git.diff('HEAD')}")
+        except Exception as e:
+            # If git operations fail, just log the error
+            with open(os.path.join(save_folder, "git_info.txt"), "w") as f:
+                f.write(
+                    f"Run started at: {str(datetime.now().strftime('%d/%m/%Y %H:%M:%S'))}\n"
+                )
+                f.write(f"Git repo not found or error: {str(e)}\n")
+                f.write(f"Working directory: {working_dir}\n")
+    else:
+        # No git repo found, just log basic info
+        with open(os.path.join(save_folder, "git_info.txt"), "w") as f:
+            f.write(
+                f"Run started at: {str(datetime.now().strftime('%d/%m/%Y %H:%M:%S'))}\n"
+            )
+            f.write(f"No git repository found\n")
+            f.write(f"Working directory: {working_dir}\n")
 
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",

@@ -36,6 +36,28 @@ class NormZeroOne(nn.Module):
         """Normalise tensor to [0, 1] using values from min_max"""
         return (x - self.min_max[0]) / (self.min_max[1] - self.min_max[0])
 
+#### 
+# import torch.nn as nn
+# import torch.nn.functional as F
+
+
+# class LitModel(pl.LightningModule):
+#     def __init__(self):
+#         super().__init__()
+#         self.l1 = nn.Linear(28 * 28, 10)
+
+#     def forward(self, x):
+#         return torch.relu(self.l1(x.view(x.size(0), -1)))
+
+#     def training_step(self, batch, batch_idx):
+#         x, y = batch
+#         y_hat = self(x)
+#         loss = F.cross_entropy(y_hat, y)
+#         return loss
+
+#     def configure_optimizers(self):
+#         return torch.optim.Adam(self.parameters(), lr=0.02)
+###### end of LitModel #######
 
 class DrivingModel(pl.LightningModule):
     def __init__(
@@ -123,12 +145,13 @@ class DrivingModel(pl.LightningModule):
                     placeholder_values = driving_input.prompt_inference.placeholder_values,
                     wp_encoder = self.wp_encoder,
                 )
-            
+            #### mh 20260121 input_embeds_all：包含所有输入信息的 embeddings（文本 + target_point + images）
+            #### attention_masks：标记哪些位置是有效 token，用于 attention 计算和 padding 处理
             input_embeds_all = adaptor_dict["language_inputs"]
             attention_masks = adaptor_dict['language_inputs_mask']
 
 
-        if self.predict_language:
+        if self.predict_language:  #### mh 20260121 生成QA/commentary回答，并且预测waypoints
             # per batch item because of padding
             for b_idx, (input_embed, attention_mask) in enumerate(zip(input_embeds_all, attention_masks)):
                 input_embed = input_embed.unsqueeze(0)
@@ -140,6 +163,7 @@ class DrivingModel(pl.LightningModule):
                 else:
                     eos = self.tokenizer.eos_token_id
 
+######## 这里是先生成QA/commentary回答，然后预测waypoints ???????? mh 20260121
                 # BUG: input_embeds, cot
                 sampled_tokens, input_embeds = self.language_model.greedy_sample(
                     input_embed,
@@ -159,7 +183,7 @@ class DrivingModel(pl.LightningModule):
 
                 driving_features = features[:, -len_driving:]
                 driving_logits = logits[:, -len_driving:]
-                predictions = self.adaptors.driving.get_predictions(driving_features, driving_logits)
+                predictions = self.adaptors.driving.get_predictions(driving_features, driving_logits) #### 预测waypointss
                     
                 for k, v in predictions.items():
                     if v is not None:
@@ -197,10 +221,11 @@ class DrivingModel(pl.LightningModule):
         Forward model conditioned on the given driving input.
         """
         
-        adaptor_dict = self.vision_model.image_encoder.replace_placeholder_tokens(
+        adaptor_dict = self.vision_model.image_encoder.replace_placeholder_tokens(   #### mh 20260121 替换placeholder tokens
             adaptor_dict = adaptor_dict,
             pixel_values = driving_input.camera_images,
-            placeholder_values = driving_input.prompt.placeholder_values,
+            placeholder_values = driving_input.prompt.placeholder_values,  ### mh 20260121 从data_new打印出来的Example:  placeholder_values={'<TARGET_POINT>': array([[ 13.07494233,  -9.13420495],
+    #    [ 13.05200807, -49.13419766]])}
             wp_encoder = self.wp_encoder,
         )
 
@@ -213,6 +238,28 @@ class DrivingModel(pl.LightningModule):
             dtype=self.language_model.model.dtype
         )
         attention_mask = adaptor_mask
+
+        # Print input before LLM (every 100 steps to avoid too much output)
+        current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
+        if current_step % 100 == 0:
+            print(f"\n{'='*60}")
+            print(f"[Input Before LLM] - Global Step {current_step}")
+            print(f"{'='*60}")
+            print(f"  Adaptor embeddings shape: {adaptor_embeds.shape}")
+            print(f"  Input embeddings shape: {input_embeds.shape}")
+            print(f"  Attention mask shape: {attention_mask.shape}")
+            print(f"  Input dtype: {input_embeds.dtype}")
+            print(f"  Adaptor embeddings range: [{adaptor_embeds.min().item():.4f}, {adaptor_embeds.max().item():.4f}]")
+            print(f"  Input embeddings range: [{input_embeds.min().item():.4f}, {input_embeds.max().item():.4f}]")
+            print(f"  Input embeddings mean: {input_embeds.mean().item():.4f}, std: {input_embeds.std().item():.4f}")
+            if 'language_inputs' in adaptor_dict:
+                language_inputs = adaptor_dict['language_inputs']
+                if isinstance(language_inputs, list):
+                    print(f"  Language inputs (list of {len(language_inputs)} tensors)")
+                    for i, lang_inp in enumerate(language_inputs[:3]):  # Print first 3
+                        print(f"    Language input {i} shape: {lang_inp.shape}")
+                else:
+                    print(f"  Language inputs shape: {language_inputs.shape}")
 
         outputs = self.language_model.model(
             attention_mask=attention_mask,
@@ -255,11 +302,59 @@ class DrivingModel(pl.LightningModule):
         loss_logs = {k:v for k, v in loss_dict.items() if k.endswith("log")}
         
         pred_labels = {k:v for k, v in loss_dict.items() if not k.endswith("loss") and not k.endswith("log")}
+        
+        # Print predictions and losses (every 1000 steps to avoid too much output)
+        current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
+        if current_step % 10 == 0:
+            print(f"\n{'='*60}")
+            print(f"Global Step {current_step}")
+            print(f"{'='*60}")
+            
+            # Print losses
+            print("\n[Losses]")
+            for loss_key, loss_val in loss_dict_only_losses.items():
+                if isinstance(loss_val, tuple):
+                    loss_val_cpu = loss_val[0].detach().cpu()
+                    loss_count = loss_val[1].detach().cpu() if len(loss_val) > 1 else None
+                    if loss_count is not None:
+                        print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape}, count: {loss_count.sum().item()})")
+                    else:
+                        print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape})")
+                else:
+                    loss_val_cpu = loss_val.detach().cpu()
+                    print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape})")
+            
+            # # Print predictions and labels
+            # print("\n[Predictions & Labels]")
+            # for key in pred_labels.keys():
+            #     if 'prediction' in key:
+            #         pred = pred_labels[key].detach().cpu()
+            #         label_key = key.replace('_prediction', '_label')
+            #         if label_key in pred_labels:
+            #             label = pred_labels[label_key].detach().cpu()
+            #             print(f"\n  {key}:")
+            #             print(f"    Shape: {pred.shape}")
+            #             print(f"    First sample prediction (first 3 waypoints):")
+            #             if len(pred.shape) == 3:  # [B, N, 2] or [B, N, 1]
+            #                 print(f"      {pred[0, :3].numpy()}")
+            #             elif len(pred.shape) == 2:  # [B, N]
+            #                 print(f"      {pred[0, :3].numpy()}")
+            #             print(f"    First sample label (first 3 waypoints):")
+            #             if len(label.shape) == 3:
+            #                 print(f"      {label[0, :3].numpy()}")
+            #             elif len(label.shape) == 2:
+            #                 print(f"      {label[0, :3].numpy()}")
+            #             # Calculate per-waypoint error
+            #             if pred.shape == label.shape:
+            #                 error = (pred - label).abs().mean(dim=-1)  # [B, N]
+            #                 print(f"    Mean per-waypoint error: {error[0].numpy()}")
+        
         if per_sample:
             return loss_dict_only_losses, pred_labels
 
         return summarise_losses(loss_dict_only_losses), loss_logs
 
+##### mh 20260123 本身是基于lightning的训练流程
     def training_step(self, batch: DrivingExample, _batch_idx: int = 0):
         output, loss_logs = self.forward_loss(batch)
         logs = output #.update(loss_logs)

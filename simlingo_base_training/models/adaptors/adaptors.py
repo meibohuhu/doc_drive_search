@@ -138,11 +138,11 @@ class DrivingAdaptor(nn.Module):
         except AttributeError:
             driving_input = driving_example
         
-        b = driving_input.camera_images.shape[0]
+        b = driving_input.camera_images.shape[0]    ### 只用来获取 batch size
         inputs = None
 
         for input_type in self.order:
-            query_embed = self.queries[input_type]
+            query_embed = self.queries[input_type]     ### 获取 learnable query embeddings
             if inputs is None:
                 inputs = query_embed.expand(b, -1, -1)
             else:

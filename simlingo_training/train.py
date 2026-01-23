@@ -123,7 +123,8 @@ def main(cfg: TrainConfig):
         # ThroughputMonitor(batch_size_fn=lambda batch: batch.driving_input.camera_images.size(0)), 
         VisualiseCallback(interval=1000, val_interval=1000)
     ]
-    if not cfg.debug: 
+    # Only add LearningRateMonitor if there's a logger and not in debug mode
+    if not cfg.debug and len(loggers) > 0: 
         callbacks.append(lr_monitor)
     
     print(f"Number of GPUS: {cfg.gpus}")

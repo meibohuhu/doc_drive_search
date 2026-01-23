@@ -65,20 +65,33 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         fail_reasons = {}
 
         repo_path = get_original_cwd()
+        # If get_original_cwd() returns simlingo_training directory, go up one level to project root
+        if os.path.basename(repo_path) == 'simlingo_training':
+            repo_path = os.path.dirname(repo_path)
+        # Also check if we're in simlingo_base_training
+        elif os.path.basename(repo_path) == 'simlingo_base_training':
+            repo_path = os.path.dirname(repo_path)
         
         # load templates
         template_file = f"{repo_path}/data/augmented_templates/commentary_augmented.json"
+        if not os.path.exists(template_file):
+            raise FileNotFoundError(f"Template file not found: {template_file}")
         with open(template_file, 'r') as f:
             self.templates_commentary = ujson.load(f)
     
         # load templates
         if dreamer:
+            print(f"Loading dreamer templates from {repo_path}/data/augmented_templates/dreamer.json")
             template_file = f"{repo_path}/data/augmented_templates/dreamer.json"
+            if not os.path.exists(template_file):
+                raise FileNotFoundError(f"Template file not found: {template_file}")
             with open(template_file, 'r') as f:
                 self.templates_neg = ujson.load(f)
         
         if self.use_lmdrive_commands:
             command_templates_file = f"{repo_path}/data/augmented_templates/lmdrive.json"
+            if not os.path.exists(command_templates_file):
+                raise FileNotFoundError(f"Template file not found: {command_templates_file}")
             with open(command_templates_file, 'r') as f:
                 self.command_templates = ujson.load(f)
 
@@ -481,6 +494,8 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
 
         return data
 
+
+###### 根据route_as的不同，生成不同的语言描述， 1: target_point（target_point_language） 2: command 3: target_point_command 
     def get_navigational_conditioning(self, data, current_measurement, target_point, next_target_point):
         placeholder_values = {}
         target_options = []
@@ -539,8 +554,9 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         
         return target_options, placeholder_values
 
+#### 把一条不等距的轨迹 points → 变成等间距采样的 route， 不理解
     def equal_spacing_route(self, points):
-        route = np.concatenate((np.zeros_like(points[:1]),  points)) # Add 0 to front
+        route = np.concatenate((np.zeros_like(points[:1]),  points)) # Add 0 to front  人为地在轨迹前面加一个起点 (0,0)
         shift = np.roll(route, 1, axis=0) # Shift by 1
         shift[0] = shift[1] # Set wraparound value to 0
 
@@ -549,7 +565,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         dists += np.arange(0, len(dists))*1e-4 # Prevents dists not being strictly increasing
 
         x = np.arange(0, 20, 1)
-        interp_points = np.array([np.interp(x, dists, route[:, 0]), np.interp(x, dists, route[:, 1])]).T
+        interp_points = np.array([np.interp(x, dists, route[:, 0]), np.interp(x, dists, route[:, 1])]).T    #### 插值
 
         return interp_points
     

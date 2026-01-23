@@ -64,12 +64,12 @@ def main(cfg: TrainConfig):
 
     # if folder for this experiment does not exist set resume to true
     # to create necessary folders to resume wandb logging later
-    if not os.path.exists(resume_path):
+    if resume_path is None or not os.path.exists(resume_path):
         resume_wandb = True
-    elif os.path.exists(resume_path) and cfg.resume:
+    elif resume_path is not None and os.path.exists(resume_path) and cfg.resume:
         resume_wandb = True
 
-    if os.path.exists(resume_path) and cfg.resume:
+    if resume_path is not None and os.path.exists(resume_path) and cfg.resume:
         resume_path = resume_path
     else:
         resume_path = None
@@ -116,7 +116,8 @@ def main(cfg: TrainConfig):
         # ThroughputMonitor(batch_size_fn=lambda batch: batch.driving_input.camera_images.size(0)), 
         VisualiseCallback(interval=1000)
     ]
-    if not cfg.debug: 
+    # 只在有 logger 且不是 debug 模式时才添加 lr_monitor    #### mh 20260120
+    if not cfg.debug and len(loggers) > 0: 
         callbacks.append(lr_monitor)
     
     print(f"Number of GPUS: {cfg.gpus}")

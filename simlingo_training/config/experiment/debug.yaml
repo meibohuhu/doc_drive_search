@@ -22,8 +22,8 @@ data_module:
   num_workers: 0
   # dreamer_dataset: null
   base_dataset:
-    data_path: database/simlingo
-    bucket_path: database/bucketsv2_simlingo
+    data_path: data/simlingo_dataset/database/simlingo_extracted
+    bucket_path: data/simlingo_dataset/database/bucketsv2_simlingo
     pred_len: 11
     cut_bottom_quarter: True
     use_commentary: True
@@ -45,3 +45,8 @@ val_every_n_epochs: 1
 gpus: 1
 seed: 42
 name: debug
+enable_wandb: true  # 启用 wandb
+
+hydra:
+  run:
+    dir: outputs/${wandb_name}_${name}

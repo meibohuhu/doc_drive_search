@@ -116,7 +116,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                     else:
                         run_id_dict[run_id_absolut].append(run_id_name)
 
-
+        #### mh 20260120  读取simlingo数据集route的目录
         route_dirs = glob.glob(f"{repo_path}/" + self.data_path + '/data/simlingo/*/*/*/Town*')
         print(f'Found {len(route_dirs)} routes in {repo_path + self.data_path}')
         
@@ -147,6 +147,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         total_routes += len(route_dirs)
         print(f'Use {len(route_dirs)} routes.')
         
+        ##### 20260120 mh 遍历route_dirs中的每个route_dir
         for sub_root in tqdm(route_dirs, file=sys.stdout):
 
             route_dir = sub_root # + '/' + route

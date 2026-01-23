@@ -1,3 +1,4 @@
+import os
 import torch
 from torch import Tensor, nn
 from torch.nn import functional as F
@@ -50,7 +51,11 @@ class Llama(nn.Module):
 
         # Initializing a model from the llama-7b style configuration
         self.model = LlamaModel(configuration)
-        self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf") # Add huggingface token
+        # Temporary fix: Use TinyLlama tokenizer (no permission required)
+        # If you have Llama access, you can change back to:
+        # hf_token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
+        # self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=hf_token)
+        self.tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
         self.model.embed_tokens = None 
         # self.model.base_model.embed_tokens = None
         if self.tokenizer.pad_token is None:

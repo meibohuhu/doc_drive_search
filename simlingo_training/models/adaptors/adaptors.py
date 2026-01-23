@@ -221,7 +221,7 @@ class DrivingAdaptor(nn.Module):
         return loss_dict
 
 
-class LanguageAdaptor(nn.Module):
+class LanguageAdaptor(nn.Module):   ##### base training没有language adaptor
     def __init__(self, language_model):
         super().__init__()
         self.embed_tokens = language_model.model.embed_tokens
@@ -293,7 +293,7 @@ class AdaptorList(nn.Module):
     def adaptors(self):
         dct: Dict[str, Adaptor] = {}
         if self.language is not None:
-            dct["language"] = self.language
+            dct["language"] = self.language   ### mh 20260121 base training没有language adaptor
         if self.driving is not None:
             dct["driving"] = self.driving
         return dct

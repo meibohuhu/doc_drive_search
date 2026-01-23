@@ -82,6 +82,7 @@ class Data_Driving(BaseDataset):  # pylint: disable=locally-disabled, invalid-na
         ######################################################
         commentary_exists = False
         commentary = ''
+        # print(f"use_commentary??: {self.use_commentary}")
         if self.use_commentary:
             commentary_file_path = measurement_file_current.replace('measurements', 'commentary').replace('data/', 'commentary/') # TODO: move to config
             # do not use evaluation routes!!!
@@ -232,7 +233,17 @@ class Data_Driving(BaseDataset):  # pylint: disable=locally-disabled, invalid-na
         ######## load navigational_conditioning ########
         ######################################################
         target_options, placeholder_values = self.get_navigational_conditioning( data, current_measurement, target_point, next_target_point)
-            
+        #### 如果route_as为target_point_command，则target_options为：target_options = [
+            #     "Target waypoint: <TARGET_POINT><TARGET_POINT>.",  # ← 有占位符
+            #     "Command: follow the road.",                        # ← 没有占位符
+            #     "Command: Keep going straight...",                  # ← 没有占位符
+            # ] 然后prompt就会从这三个中选择一个放到prompt里面
+        #### 如果route_as为command，则target_options = [
+        # 'Command: go left at the next intersection in 18 meter then follow the road.', 
+        # 'Command: Left in 18 meters..'
+            # ] 然后prompt就会从这两个中选择一个放到prompt里面
+        # print(f"target_options: {target_options}")
+
         answer = ''
 
         prompt_random = random.random()
@@ -255,7 +266,7 @@ class Data_Driving(BaseDataset):  # pylint: disable=locally-disabled, invalid-na
             answer = f"A: {qa_answer}"
             self.num_sampled_per_type['qa'] += 1
             
-        else:
+        else:   ####### 竟然random.choice(target_options)！！！！！从target_options中选择一个放到prompt里面
             prompt = f"Current speed: {speed_rounded} m/s. {random.choice(target_options)} Predict the waypoints."
             answer = f"Waypoints:"
             self.num_sampled_per_type['driving'] += 1
@@ -276,7 +287,7 @@ class Data_Driving(BaseDataset):  # pylint: disable=locally-disabled, invalid-na
         ######################################################
         data = self.load_images(data, images, augment_sample=augment_sample)
         
-
+######## mh 20260123 instructional fine-tuning conversation format ########
         conversation_answer = [
             {
             "role": "assistant",
@@ -317,7 +328,11 @@ class Data_Driving(BaseDataset):  # pylint: disable=locally-disabled, invalid-na
             measurement_path = data['measurement_path'],
             dataset = 'driving',
         )
-        
+        # print("conversation_all: ", conversation_all) 
+        ## Example1: conversation_all:  [{'role': 'user', 'content': [{'type': 'text', 'text': "Current speed: 0.0 m/s. Command: Keep going straight until you reach the next junction for 7 meters, you're on the right track!. Predict the waypoints."}, {'type': 'image'}]}, {'role': 'assistant', 'content': [{'type': 'text', 'text': 'Waypoints:'}]}]
+        ## Example2: conversation_all:  [{'role': 'user', 'content': [{'type': 'text', 'text': 'Current speed: 3.4 m/s. Target waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.'}, {'type': 'image'}]}, {'role': 'assistant', 'content': [{'type': 'text', 'text': 'Waypoints:'}]}]
+        # print(f"data_new: {data_new}")   ##### mh 20260121  print data_new  
+
         if VIZ_DATA:
             # front image with path and waypoints and commentary
             self.visualise_cameras(data_new, commentary, data['route_adjusted'], data['waypoints'], options=None, prompt=prompt, answer=answer, name="img")

@@ -24,7 +24,7 @@ class ParamGroup(NamedTuple):
     lr: float
     weight_decay: float
 
-class DrivingInput(NamedTuple):
+class DrivingInput(NamedTuple):   #### mh 20260120 没有使用prompt，只有输入图像、车辆速度、目标点、地图路线
     camera_images: torch.Tensor  # [B, T, N, C, H, W] uint8 [0, 255]
     image_sizes: torch.Tensor
     camera_intrinsics: torch.Tensor  # [B, N, 3, 3] float32

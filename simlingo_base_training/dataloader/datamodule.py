@@ -1,4 +1,5 @@
 import itertools
+import os
 from typing import List
 
 import hydra
@@ -62,7 +63,11 @@ class DataModule(LightningDataModule):
                     self.llm_tokenizer.pad_token = "[PAD]"
 
             else:
-                self.llm_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token = "ADD_YOUR_TOKEN")
+                # Temporary fix: Use TinyLlama tokenizer (no permission required)
+                # If you have Llama access, you can change back to:
+                # hf_token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
+                # self.llm_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=hf_token)
+                self.llm_tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
                 self.llm_tokenizer.add_eos_token = True
                 self.llm_tokenizer.add_bos_token = True
                 if self.llm_tokenizer.pad_token is None:
@@ -168,7 +173,7 @@ class DataModule(LightningDataModule):
 
         image_sizes = None
 
-        if self.encoder == 'llavanext':
+        if self.encoder == 'llavanext':    #### mh 20260120 从rgb folder读取图片
             images_batch_list = torch.tensor(np.asarray([data[i]["rgb"] for i in range(len(data))]))
             # move T and N to batch dimension
             images_batch_list = images_batch_list.view(B*T*N, C, H, W)
@@ -190,6 +195,7 @@ class DataModule(LightningDataModule):
             images_pixel = torch.tensor(np.asarray([data[i]["rgb"] for i in range(len(data))])).half()
 
         return DrivingExample(
+            ### mh 20260120 building input and ground truth label
             driving_input=DrivingInput(
                 camera_images=images_pixel,  # [B, T, N, C, H, W] uint8 [0, 255]
                 image_sizes=image_sizes,

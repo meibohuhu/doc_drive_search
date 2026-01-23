@@ -62,6 +62,7 @@ DEBUG = False # saves images during evaluation
 HD_VIZ = False
 USE_UKF = True
 
+### Agent = SimLingo 模型 + 控制逻辑，具体是 LingoAgent
 class LingoAgent(autonomous_agent.AutonomousAgent):
     """
         Main class that runs the agents with the run_step function
@@ -209,12 +210,17 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.state_log = deque(maxlen=max((self.lidar_seq_len * self.data_save_freq), 2))
 
         # Path to where visualizations and other debug output gets stored
-        self.save_path = os.environ.get('SAVE_PATH') + self.save_path_root
+        save_path_env = os.environ.get('SAVE_PATH', '')
+        if save_path_env:
+            # Ensure proper path joining
+            self.save_path = os.path.join(save_path_env, self.save_path_root) if save_path_env else self.save_path_root
+        else:
+            self.save_path = self.save_path_root
         # self.checkpoint_path = os.environ.get('CHECKPOINT_ENDPOINT').
 
         # Logger that generates logs used for infraction replay in the results_parser.
-        if self.save_path is not None and route_index is not None:
-            self.save_path = pathlib.Path(self.save_path) / route_index
+        if self.save_path and route_index is not None:
+            self.save_path = str(pathlib.Path(self.save_path) / route_index)
             pathlib.Path(self.save_path).mkdir(parents=True, exist_ok=True)
 
             self.lon_logger = ScenarioLogger(
@@ -226,7 +232,10 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                     roi=self.logger_region_of_interest,
             )
         
-        self.debug_save_path = self.save_path + '/debug_viz' + f'/{self.session}/iter_{self.iter}/{route_type}/{route_number}_{time.strftime("%Y_%m_%d_%H_%M_%S")}'
+        # Ensure save_path is a string for path concatenation
+        if not self.save_path:
+            self.save_path = './output'
+        self.debug_save_path = str(self.save_path) + '/debug_viz' + f'/{self.session}/iter_{self.iter}/{route_type}/{route_number}_{time.strftime("%Y_%m_%d_%H_%M_%S")}'
         Path(self.debug_save_path).mkdir(parents=True, exist_ok=True)
         self.save_path_metric = self.debug_save_path + '/metric'
         Path(self.save_path_metric).mkdir(parents=True, exist_ok=True)
@@ -864,7 +873,8 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 
         del self.model
         del self.config
-        if self.cfg.data_module.encoder == 'llavanext':
+        # Check if encoder key exists before accessing it
+        if hasattr(self.cfg.data_module, 'encoder') and self.cfg.data_module.encoder == 'llavanext':
             del self.processor
 
 
