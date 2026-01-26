@@ -1,0 +1,428 @@
+JOB ID 21031221
+Route: /home/mh2803/projects/simlingo/Bench2Drive/leaderboard/data/bench2drive_69.xml
+Route ID: 69
+Seed: 1
+Checkpoint: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt
+CARLA Port: 20002
+Traffic Manager Port: 30002
+libjpeg-turbo not available via spack
+Using conda libjpeg from /home/mh2803/miniconda3/envs/simlingo/lib
+Starting evaluation...
+Starting CARLA server: /home/mh2803/software/carla0915/CarlaUE4.sh -RenderOffScreen -nosound -carla-rpc-port=20002 -graphicsadapter=0
+CARLA server PID: 2155951, returncode: None
+load_world success , attempts=0
+traffic_manager init success, try_time=0
+ScenarioManager created successfully
+
+[1m========= Preparing RouteScenario_3380 (repetition 0) =========[0m
+[1m> Loading the world[0m
+[1m> Setting up the agent[0m
+Agent setup timeout: 600.0s (model loading may take several minutes)
+path to conf file: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt+RouteScenario_3380_rep0_Town13_YieldToEmergencyVehicle_1_21_01_26_15_55_23
+Config path: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt
+Save path root: RouteScenario_3380_rep0_Town13_YieldToEmergencyVehicle_1_21_01_26_15_55_23
+Loading config from: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/.hydra/config.yaml
+FlashAttention2 is not installed.
+[91mUsing OpenGVLab/InternVL2-1B as the image encoder.[0m
+Using PEFT model
+trainable params: 17,596,416 || all params: 647,260,288 || trainable%: 2.7186
+[1m> Running the route[0m
+=== [Agent] -- Wallclock = 2026-01-26 15:57:33.505 -- System time = 0.000 -- Game time = 0.050 -- Ratio = 0.000x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:34.044 -- System time = 0.539 -- Game time = 0.100 -- Ratio = 0.185x
+[DIAGNOSTIC] Model device: cuda:0
+[DIAGNOSTIC] CUDA available: True
+[DIAGNOSTIC] Current device: 0
+=== [Agent] -- Wallclock = 2026-01-26 15:57:38.244 -- System time = 4.739 -- Game time = 0.150 -- Ratio = 0.032x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:38.774 -- System time = 5.269 -- Game time = 0.200 -- Ratio = 0.038x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:39.270 -- System time = 5.765 -- Game time = 0.250 -- Ratio = 0.043x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:39.783 -- System time = 6.278 -- Game time = 0.300 -- Ratio = 0.048x
+
+[Step 5] Input: speed=0.0m/s, target_point=[51.86057    -0.77555156], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 5] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.00115203857421875, -5.316734313964844e-05], [1.0, 0.00970458984375], [2.0, 0.01251220703125], [3.0, 0.0162353515625], [4.0, 0.04052734375], [5.0, 0.1201171875]]
+[Step 5] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[0.00421142578125, 0.010009765625], [0.0810546875, 0.012939453125], [0.31640625, 0.01214599609375]]
+[Step 5] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:57:40.267 -- System time = 6.762 -- Game time = 0.350 -- Ratio = 0.052x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:40.758 -- System time = 7.253 -- Game time = 0.400 -- Ratio = 0.055x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:41.242 -- System time = 7.737 -- Game time = 0.450 -- Ratio = 0.058x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:41.626 -- System time = 8.121 -- Game time = 0.500 -- Ratio = 0.062x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:42.098 -- System time = 8.593 -- Game time = 0.550 -- Ratio = 0.064x
+
+[Step 10] Input: speed=-0.0m/s, target_point=[52.07976    -0.66135293], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 10] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.0020599365234375, -0.00176239013671875], [0.99609375, 0.00726318359375], [2.0, -0.0025634765625], [3.0, -0.01165771484375], [4.0, -0.01361083984375], [5.0, 0.030517578125]]
+[Step 10] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[0.00506591796875, 0.01531982421875], [0.08203125, 0.021484375], [0.2578125, 0.0157470703125]]
+[Step 10] Output: language='Waypoints:...'
+[TIMING] Step 10: total=0.66s, tick=0.15s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:57:42.793 -- System time = 9.288 -- Game time = 0.600 -- Ratio = 0.065x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:43.272 -- System time = 9.767 -- Game time = 0.650 -- Ratio = 0.067x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:43.811 -- System time = 10.305 -- Game time = 0.700 -- Ratio = 0.068x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:44.309 -- System time = 10.804 -- Game time = 0.750 -- Ratio = 0.069x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:44.810 -- System time = 11.305 -- Game time = 0.800 -- Ratio = 0.071x
+
+[Step 15] Input: speed=1.1m/s, target_point=[52.18692   -0.6181831], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 15] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.003936767578125, 0.00077056884765625], [0.99609375, 0.0120849609375], [2.0, 0.00518798828125], [3.0, 0.00677490234375], [4.0, -0.00408935546875], [5.0, -0.014404296875]]
+[Step 15] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[0.365234375, 0.034912109375], [1.125, 0.031494140625], [2.3125, 0.001220703125]]
+[Step 15] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:57:45.305 -- System time = 11.800 -- Game time = 0.850 -- Ratio = 0.072x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:45.825 -- System time = 12.320 -- Game time = 0.900 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:46.324 -- System time = 12.819 -- Game time = 0.950 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:46.840 -- System time = 13.335 -- Game time = 1.000 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:47.254 -- System time = 13.749 -- Game time = 1.050 -- Ratio = 0.076x
+
+[Step 20] Input: speed=2.3m/s, target_point=[52.041042   -0.87501764], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 20] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.0003185272216796875, 0.001373291015625], [0.99609375, 0.0107421875], [2.0, -0.00189208984375], [3.0, -0.0002593994140625], [4.0, -0.01177978515625], [5.0, -0.019775390625]]
+[Step 20] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[0.80078125, 0.031982421875], [1.921875, 0.01904296875], [3.4375, -0.011962890625]]
+[Step 20] Output: language='Waypoints:...'
+[TIMING] Step 20: total=0.56s, tick=0.15s, model=0.29s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:57:47.856 -- System time = 14.351 -- Game time = 1.100 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:48.361 -- System time = 14.856 -- Game time = 1.150 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:48.775 -- System time = 15.270 -- Game time = 1.200 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:49.200 -- System time = 15.694 -- Game time = 1.250 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:49.682 -- System time = 16.177 -- Game time = 1.300 -- Ratio = 0.080x
+
+[Step 25] Input: speed=4.1m/s, target_point=[51.86356    -0.83523864], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 25] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.004791259765625, 0.00156402587890625], [0.99609375, 0.004241943359375], [2.0, -0.011962890625], [3.0, -0.0128173828125], [4.0, -0.01434326171875], [5.0, -0.0159912109375]]
+[Step 25] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[1.140625, -0.01348876953125], [2.640625, -0.0263671875], [4.6875, -0.02587890625]]
+[Step 25] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:57:50.173 -- System time = 16.668 -- Game time = 1.350 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:50.659 -- System time = 17.154 -- Game time = 1.400 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:51.154 -- System time = 17.649 -- Game time = 1.450 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:51.641 -- System time = 18.136 -- Game time = 1.500 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:52.143 -- System time = 18.638 -- Game time = 1.550 -- Ratio = 0.083x
+
+[Step 30] Input: speed=5.6m/s, target_point=[51.51669    -0.80222684], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 30] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.00185394287109375, 0.000873565673828125], [1.0, 0.0137939453125], [2.0, 0.015380859375], [3.0, 0.0218505859375], [4.0, 0.0196533203125], [5.0, 0.01373291015625]]
+[Step 30] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[1.53125, -0.0224609375], [3.5625, -0.0302734375], [6.09375, -0.01513671875]]
+[Step 30] Output: language='Waypoints:...'
+[TIMING] Step 30: total=0.56s, tick=0.15s, model=0.29s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:57:52.743 -- System time = 19.238 -- Game time = 1.600 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:53.173 -- System time = 19.668 -- Game time = 1.650 -- Ratio = 0.084x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:53.670 -- System time = 20.165 -- Game time = 1.700 -- Ratio = 0.084x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:54.175 -- System time = 20.670 -- Game time = 1.750 -- Ratio = 0.085x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:54.662 -- System time = 21.157 -- Game time = 1.800 -- Ratio = 0.085x
+
+[Step 35] Input: speed=6.8m/s, target_point=[51.083225  -1.0816487], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 35] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.00347900390625, 0.0064697265625], [0.984375, 0.068359375], [1.984375, 0.1015625], [2.96875, 0.12109375], [3.96875, 0.10498046875], [4.96875, 0.068359375]]
+[Step 35] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[1.859375, 0.1279296875], [3.8125, 0.0859375], [6.0, 0.02783203125]]
+[Step 35] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:57:55.156 -- System time = 21.651 -- Game time = 1.850 -- Ratio = 0.085x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:55.669 -- System time = 22.164 -- Game time = 1.900 -- Ratio = 0.086x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:56.187 -- System time = 22.682 -- Game time = 1.950 -- Ratio = 0.086x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:56.683 -- System time = 23.178 -- Game time = 2.000 -- Ratio = 0.086x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:57.194 -- System time = 23.689 -- Game time = 2.050 -- Ratio = 0.087x
+
+[Step 40] Input: speed=8.6m/s, target_point=[50.520317  -1.0640275], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 40] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.0037841796875, -0.001922607421875], [0.99609375, -0.01318359375], [1.9921875, -0.031982421875], [2.984375, -0.038330078125], [3.984375, -0.05810546875], [5.0, -0.08642578125]]
+[Step 40] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.21875, -0.08837890625], [4.3125, -0.1220703125], [6.3125, -0.1435546875]]
+[Step 40] Output: language='Waypoints:...'
+[TIMING] Step 40: total=0.57s, tick=0.15s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:57:57.805 -- System time = 24.300 -- Game time = 2.100 -- Ratio = 0.086x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:58.324 -- System time = 24.819 -- Game time = 2.150 -- Ratio = 0.087x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:58.806 -- System time = 25.301 -- Game time = 2.200 -- Ratio = 0.087x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:59.303 -- System time = 25.798 -- Game time = 2.250 -- Ratio = 0.087x
+=== [Agent] -- Wallclock = 2026-01-26 15:57:59.776 -- System time = 26.270 -- Game time = 2.300 -- Ratio = 0.088x
+
+[Step 45] Input: speed=9.0m/s, target_point=[47.72021   -1.6623417], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 45] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0027618408203125, 0.0029296875], [1.0, 0.0027618408203125], [2.0, 0.01153564453125], [3.0, 0.0008544921875], [4.0, -0.0203857421875], [5.0, -0.05322265625]]
+[Step 45] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.171875, 0.0419921875], [4.21875, 0.005859375], [6.1875, -0.0625]]
+[Step 45] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:00.283 -- System time = 26.777 -- Game time = 2.350 -- Ratio = 0.088x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:00.779 -- System time = 27.274 -- Game time = 2.400 -- Ratio = 0.088x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:01.365 -- System time = 27.860 -- Game time = 2.450 -- Ratio = 0.088x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:01.878 -- System time = 28.373 -- Game time = 2.500 -- Ratio = 0.088x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:02.401 -- System time = 28.896 -- Game time = 2.550 -- Ratio = 0.088x
+
+[Step 50] Input: speed=7.9m/s, target_point=[45.213047   -0.64395493], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 50] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0028076171875, 0.00177764892578125], [0.99609375, -0.0201416015625], [1.9921875, -0.0135498046875], [3.0, -0.01397705078125], [4.0, -0.0167236328125], [5.0, -0.027587890625]]
+[Step 50] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.15625, -0.0172119140625], [4.625, -0.0289306640625], [7.46875, -0.06884765625]]
+[Step 50] Output: language='Waypoints:...'
+[TIMING] Step 50: total=0.60s, tick=0.18s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:03.048 -- System time = 29.543 -- Game time = 2.600 -- Ratio = 0.088x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:03.561 -- System time = 30.056 -- Game time = 2.650 -- Ratio = 0.088x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:03.982 -- System time = 30.477 -- Game time = 2.700 -- Ratio = 0.089x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:04.496 -- System time = 30.991 -- Game time = 2.750 -- Ratio = 0.089x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:04.983 -- System time = 31.478 -- Game time = 2.800 -- Ratio = 0.089x
+
+[Step 55] Input: speed=8.3m/s, target_point=[42.863182   0.0821764], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 55] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.0005645751953125, 0.0045166015625], [0.99609375, -0.0128173828125], [1.984375, -0.005523681640625], [2.984375, 0.003082275390625], [3.984375, 0.006072998046875], [5.0, 0.003326416015625]]
+[Step 55] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.3125, 0.00408935546875], [4.90625, 0.00115966796875], [7.8125, -0.036376953125]]
+[Step 55] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:15.092 -- System time = 41.587 -- Game time = 2.850 -- Ratio = 0.069x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:15.619 -- System time = 42.114 -- Game time = 2.900 -- Ratio = 0.069x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:16.112 -- System time = 42.607 -- Game time = 2.950 -- Ratio = 0.069x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:16.608 -- System time = 43.102 -- Game time = 3.000 -- Ratio = 0.070x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:17.105 -- System time = 43.600 -- Game time = 3.050 -- Ratio = 0.070x
+
+[Step 60] Input: speed=9.8m/s, target_point=[40.29114   -0.2834859], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 60] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.0013580322265625, -0.0004482269287109375], [0.99609375, -0.041748046875], [1.9921875, -0.05224609375], [2.984375, -0.0693359375], [3.984375, -0.07275390625], [5.0, -0.07861328125]]
+[Step 60] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.65625, -0.0634765625], [5.5, -0.0654296875], [8.875, -0.10791015625]]
+[Step 60] Output: language='Waypoints:...'
+[TIMING] Step 60: total=0.58s, tick=0.14s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:17.732 -- System time = 44.227 -- Game time = 3.100 -- Ratio = 0.070x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:18.223 -- System time = 44.717 -- Game time = 3.150 -- Ratio = 0.070x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:18.658 -- System time = 45.153 -- Game time = 3.200 -- Ratio = 0.071x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:19.169 -- System time = 45.664 -- Game time = 3.250 -- Ratio = 0.071x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:19.675 -- System time = 46.170 -- Game time = 3.300 -- Ratio = 0.071x
+
+[Step 65] Input: speed=11.2m/s, target_point=[37.366528   -0.29974633], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 65] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.0025177001953125, -0.0014495849609375], [1.0078125, -0.00714111328125], [2.0, 0.00933837890625], [3.0, 0.025634765625], [4.0, 0.017822265625], [5.0, 0.00396728515625]]
+[Step 65] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.203125, 0.07666015625], [4.75, 0.02978515625], [7.53125, -0.025390625]]
+[Step 65] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:20.186 -- System time = 46.681 -- Game time = 3.350 -- Ratio = 0.072x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:20.709 -- System time = 47.204 -- Game time = 3.400 -- Ratio = 0.072x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:21.207 -- System time = 47.702 -- Game time = 3.450 -- Ratio = 0.072x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:21.733 -- System time = 48.228 -- Game time = 3.500 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:22.227 -- System time = 48.722 -- Game time = 3.550 -- Ratio = 0.073x
+
+[Step 70] Input: speed=12.0m/s, target_point=[34.198612   -0.77200836], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 70] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.0113525390625, -0.00072479248046875], [0.98828125, -0.037353515625], [1.984375, -0.039306640625], [2.984375, -0.04345703125], [3.984375, -0.056640625], [5.0, -0.0751953125]]
+[Step 70] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[3.078125, -0.03369140625], [6.46875, -0.08251953125], [10.125, -0.1787109375]]
+[Step 70] Output: language='Waypoints:...'
+[TIMING] Step 70: total=0.59s, tick=0.15s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:22.870 -- System time = 49.365 -- Game time = 3.600 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:23.368 -- System time = 49.863 -- Game time = 3.650 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:23.888 -- System time = 50.383 -- Game time = 3.700 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:24.388 -- System time = 50.883 -- Game time = 3.750 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:24.903 -- System time = 51.398 -- Game time = 3.800 -- Ratio = 0.074x
+
+[Step 75] Input: speed=13.0m/s, target_point=[30.913212    0.05744088], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 75] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.000179290771484375, 0.00179290771484375], [1.0078125, -0.007598876953125], [2.0, -0.000885009765625], [3.0, 0.01025390625], [4.0, 0.0111083984375], [5.0, 0.00701904296875]]
+[Step 75] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[3.234375, 0.01239013671875], [6.8125, 0.01043701171875], [10.75, -0.00323486328125]]
+[Step 75] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:25.399 -- System time = 51.894 -- Game time = 3.850 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:25.907 -- System time = 52.402 -- Game time = 3.900 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:26.405 -- System time = 52.900 -- Game time = 3.950 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:26.893 -- System time = 53.388 -- Game time = 4.000 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:27.400 -- System time = 53.895 -- Game time = 4.050 -- Ratio = 0.075x
+
+[Step 80] Input: speed=13.6m/s, target_point=[27.381157   0.2420828], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 80] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.001434326171875, 0.005401611328125], [1.0, -0.004058837890625], [2.0, 0.0093994140625], [3.0, 0.0128173828125], [4.0, 0.010009765625], [5.0, 0.002532958984375]]
+[Step 80] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[3.5, 0.028564453125], [7.25, 0.015380859375], [11.375, 0.006591796875]]
+[Step 80] Output: language='Waypoints:...'
+[TIMING] Step 80: total=0.63s, tick=0.17s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:28.084 -- System time = 54.579 -- Game time = 4.100 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:28.586 -- System time = 55.081 -- Game time = 4.150 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:29.084 -- System time = 55.579 -- Game time = 4.200 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:29.606 -- System time = 56.101 -- Game time = 4.250 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:30.101 -- System time = 56.596 -- Game time = 4.300 -- Ratio = 0.076x
+
+[Step 85] Input: speed=15.0m/s, target_point=[23.59794     0.26282945], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 85] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.004150390625, 0.00396728515625], [1.0078125, 0.004730224609375], [2.0, 0.0164794921875], [3.0, 0.021728515625], [4.0, 0.0181884765625], [5.0, 0.01312255859375]]
+[Step 85] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[3.828125, 0.028076171875], [7.875, 0.015869140625], [12.1875, 0.080078125]]
+[Step 85] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:30.602 -- System time = 57.097 -- Game time = 4.350 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:31.118 -- System time = 57.613 -- Game time = 4.400 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:31.628 -- System time = 58.123 -- Game time = 4.450 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:32.127 -- System time = 58.622 -- Game time = 4.500 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:32.554 -- System time = 59.049 -- Game time = 4.550 -- Ratio = 0.077x
+
+[Step 90] Input: speed=16.0m/s, target_point=[19.616646  0.114843], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 90] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.00537109375, 0.005615234375], [1.015625, 0.008056640625], [2.015625, 0.0147705078125], [3.03125, 0.01953125], [4.03125, 0.0137939453125], [5.03125, 0.00872802734375]]
+[Step 90] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.21875, 0.05859375], [8.5, 0.0908203125], [13.0625, 0.1435546875]]
+[Step 90] Output: language='Waypoints:...'
+[TIMING] Step 90: total=0.63s, tick=0.17s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:33.233 -- System time = 59.728 -- Game time = 4.600 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:33.666 -- System time = 60.161 -- Game time = 4.650 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:34.186 -- System time = 60.681 -- Game time = 4.700 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:34.611 -- System time = 61.106 -- Game time = 4.750 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:35.127 -- System time = 61.622 -- Game time = 4.800 -- Ratio = 0.078x
+
+[Step 95] Input: speed=17.1m/s, target_point=[15.343066    0.06677207], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 95] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.00640869140625, 0.00543212890625], [1.0078125, 0.00439453125], [2.0, 0.01519775390625], [3.0, 0.01708984375], [4.0, 0.0126953125], [5.0, 0.0093994140625]]
+[Step 95] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.46875, 0.021484375], [9.0, 0.00732421875], [13.75, 0.00927734375]]
+[Step 95] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:35.625 -- System time = 62.120 -- Game time = 4.850 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:36.115 -- System time = 62.610 -- Game time = 4.900 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:36.614 -- System time = 63.109 -- Game time = 4.950 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:37.145 -- System time = 63.640 -- Game time = 5.000 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:37.639 -- System time = 64.134 -- Game time = 5.050 -- Ratio = 0.079x
+
+[Step 100] Input: speed=17.9m/s, target_point=[10.814208   -0.06793193], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 100] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0030517578125, 0.0020751953125], [1.0, -0.01416015625], [2.0, -0.0224609375], [3.0, -0.028564453125], [4.0, -0.031005859375], [5.0, -0.03271484375]]
+[Step 100] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.5625, -0.048828125], [9.1875, -0.140625], [14.0, -0.2216796875]]
+[Step 100] Output: language='Waypoints:...'
+[TIMING] Step 100: total=0.59s, tick=0.15s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:38.282 -- System time = 64.777 -- Game time = 5.100 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:38.783 -- System time = 65.278 -- Game time = 5.150 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:39.222 -- System time = 65.717 -- Game time = 5.200 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:39.716 -- System time = 66.211 -- Game time = 5.250 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:40.233 -- System time = 66.728 -- Game time = 5.300 -- Ratio = 0.079x
+
+[Step 105] Input: speed=18.7m/s, target_point=[56.394257  -0.9456431], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 105] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.00164794921875, 0.00022220611572265625], [1.0078125, -0.01275634765625], [2.0, -0.0164794921875], [3.0, -0.0125732421875], [4.0, -0.01806640625], [5.0, -0.0224609375]]
+[Step 105] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.75, -0.03564453125], [9.625, -0.0478515625], [14.625, -0.0400390625]]
+[Step 105] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:40.741 -- System time = 67.236 -- Game time = 5.350 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:41.258 -- System time = 67.753 -- Game time = 5.400 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:41.755 -- System time = 68.250 -- Game time = 5.450 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:42.288 -- System time = 68.783 -- Game time = 5.500 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:42.782 -- System time = 69.277 -- Game time = 5.550 -- Ratio = 0.080x
+
+[Step 110] Input: speed=19.5m/s, target_point=[51.5297     -0.85431004], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 110] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0064697265625, 0.00128936767578125], [1.0078125, -0.0067138671875], [2.0, -0.002532958984375], [3.0, 0.0047607421875], [4.0, -0.001129150390625], [5.0, -0.00135040283203125]]
+[Step 110] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.9375, -0.00634765625], [9.9375, -0.02490234375], [15.0, -0.0595703125]]
+[Step 110] Output: language='Waypoints:...'
+[TIMING] Step 110: total=0.58s, tick=0.15s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:43.413 -- System time = 69.908 -- Game time = 5.600 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:43.909 -- System time = 70.404 -- Game time = 5.650 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:44.366 -- System time = 70.861 -- Game time = 5.700 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:44.873 -- System time = 71.368 -- Game time = 5.750 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:45.373 -- System time = 71.868 -- Game time = 5.800 -- Ratio = 0.081x
+
+[Step 115] Input: speed=20.1m/s, target_point=[46.477535  -0.8189278], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 115] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0087890625, 0.0029144287109375], [1.0078125, -0.0037078857421875], [2.0, -0.0029296875], [3.0, 0.003936767578125], [4.0, -0.006317138671875], [5.0, -0.0030670166015625]]
+[Step 115] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[5.0625, -0.02685546875], [10.125, -0.142578125], [15.125, -0.28515625]]
+[Step 115] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:45.889 -- System time = 72.384 -- Game time = 5.850 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:46.399 -- System time = 72.894 -- Game time = 5.900 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:46.910 -- System time = 73.405 -- Game time = 5.950 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:47.426 -- System time = 73.921 -- Game time = 6.000 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:47.923 -- System time = 74.418 -- Game time = 6.050 -- Ratio = 0.081x
+
+[Step 120] Input: speed=20.5m/s, target_point=[41.338696   -0.43019086], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 120] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.00982666015625, 0.00191497802734375], [1.015625, -0.0233154296875], [2.015625, -0.0179443359375], [3.0, -0.0093994140625], [4.0, -0.015625], [5.0, -0.0164794921875]]
+[Step 120] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[5.15625, -0.0234375], [10.25, -0.099609375], [15.25, -0.27734375]]
+[Step 120] Output: language='Waypoints:...'
+[TIMING] Step 120: total=0.61s, tick=0.17s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:48.578 -- System time = 75.073 -- Game time = 6.100 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:49.078 -- System time = 75.573 -- Game time = 6.150 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:49.586 -- System time = 76.081 -- Game time = 6.200 -- Ratio = 0.081x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:50.086 -- System time = 76.581 -- Game time = 6.250 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:50.600 -- System time = 77.095 -- Game time = 6.300 -- Ratio = 0.082x
+
+[Step 125] Input: speed=20.6m/s, target_point=[ 3.6113773e+01 -2.4292296e-02], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 125] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.005828857421875, 0.002838134765625], [1.015625, -0.0125732421875], [2.015625, -0.0130615234375], [3.0, -0.00311279296875], [4.0, -0.008544921875], [5.0, -0.01007080078125]]
+[Step 125] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[5.09375, 0.006103515625], [10.25, -0.068359375], [15.1875, -0.271484375]]
+[Step 125] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:51.099 -- System time = 77.594 -- Game time = 6.350 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:51.618 -- System time = 78.113 -- Game time = 6.400 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:52.120 -- System time = 78.615 -- Game time = 6.450 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:52.626 -- System time = 79.121 -- Game time = 6.500 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:53.113 -- System time = 79.608 -- Game time = 6.550 -- Ratio = 0.082x
+
+[Step 130] Input: speed=20.4m/s, target_point=[30.940756   -0.32718018], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 130] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.00830078125, 0.000400543212890625], [1.0078125, -0.02294921875], [2.0, -0.0081787109375], [3.015625, 0.0179443359375], [4.0, 0.00372314453125], [5.0, 0.004638671875]]
+[Step 130] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.9375, 0.004150390625], [10.0, -0.2578125], [14.875, -0.76171875]]
+[Step 130] Output: language='Waypoints:...'
+[TIMING] Step 130: total=0.64s, tick=0.19s, model=0.29s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:53.794 -- System time = 80.288 -- Game time = 6.600 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:54.304 -- System time = 80.799 -- Game time = 6.650 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:54.807 -- System time = 81.302 -- Game time = 6.700 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:55.324 -- System time = 81.819 -- Game time = 6.750 -- Ratio = 0.082x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:55.811 -- System time = 82.306 -- Game time = 6.800 -- Ratio = 0.083x
+
+[Step 135] Input: speed=20.2m/s, target_point=[25.77689   -0.4181567], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 135] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.005279541015625, 0.0022125244140625], [1.0078125, -0.013916015625], [2.0, 0.0084228515625], [3.0, 0.0240478515625], [4.0, -0.001220703125], [5.0, -0.019775390625]]
+[Step 135] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.9375, -0.06640625], [10.0, -0.33984375], [14.8125, -0.8046875]]
+[Step 135] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:58:56.324 -- System time = 82.819 -- Game time = 6.850 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:56.820 -- System time = 83.315 -- Game time = 6.900 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:57.355 -- System time = 83.849 -- Game time = 6.950 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:57.857 -- System time = 84.352 -- Game time = 7.000 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:58.380 -- System time = 84.875 -- Game time = 7.050 -- Ratio = 0.083x
+
+[Step 140] Input: speed=19.0m/s, target_point=[20.859009   -0.11243834], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 140] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0035858154296875, 0.003631591796875], [1.0, -0.007049560546875], [1.984375, 0.0087890625], [2.984375, 0.01171875], [3.984375, -0.00244140625], [5.0, -0.0181884765625]]
+[Step 140] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.6875, -0.013916015625], [9.625, -0.0810546875], [14.5, -0.28515625]]
+[Step 140] Output: language='Waypoints:...'
+[TIMING] Step 140: total=0.63s, tick=0.17s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:58:59.061 -- System time = 85.556 -- Game time = 7.100 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:58:59.593 -- System time = 86.088 -- Game time = 7.150 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:59:00.094 -- System time = 86.589 -- Game time = 7.200 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:59:00.608 -- System time = 87.103 -- Game time = 7.250 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:59:01.104 -- System time = 87.598 -- Game time = 7.300 -- Ratio = 0.083x
+
+[Step 145] Input: speed=18.6m/s, target_point=[16.165356   -0.08003899], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 145] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0037384033203125, 0.00408935546875], [1.0, -0.001068115234375], [2.0, 0.003753662109375], [3.0, 0.00592041015625], [4.0, 0.0006103515625], [5.0, -0.0166015625]]
+[Step 145] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.6875, 0.007080078125], [9.5, -0.076171875], [14.3125, -0.25390625]]
+[Step 145] Output: language='Waypoints:...'
+=== [Agent] -- Wallclock = 2026-01-26 15:59:01.618 -- System time = 88.113 -- Game time = 7.350 -- Ratio = 0.083x
+=== [Agent] -- Wallclock = 2026-01-26 15:59:02.117 -- System time = 88.612 -- Game time = 7.400 -- Ratio = 0.084x
+=== [Agent] -- Wallclock = 2026-01-26 15:59:02.624 -- System time = 89.119 -- Game time = 7.450 -- Ratio = 0.084x
+=== [Agent] -- Wallclock = 2026-01-26 15:59:03.101 -- System time = 89.596 -- Game time = 7.500 -- Ratio = 0.084x
+=== [Agent] -- Wallclock = 2026-01-26 15:59:03.614 -- System time = 90.109 -- Game time = 7.550 -- Ratio = 0.084x
+
+[Step 150] Input: speed=19.0m/s, target_point=[11.411665  -0.0231583], prompt='...arget waypoint: <TARGET_POINT><TARGET_POINT>. Predict the waypoints.<|im_end|><|im_start|>assistant
+'
+[Step 150] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.004730224609375, 0.003936767578125], [1.0078125, -0.0120849609375], [2.0, -0.005462646484375], [3.0, -0.000762939453125], [4.0, -0.0093994140625], [5.0, -0.003143310546875]]
+[Step 150] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[4.71875, 0.03955078125], [9.5, 0.01708984375], [14.3125, -0.12158203125]]
+[Step 150] Output: language='Waypoints:...'
+[TIMING] Step 150: total=0.66s, tick=0.17s, model=0.29s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 15:59:04.326 -- System time = 90.821 -- Game time = 7.600 -- Ratio = 0.084x
+=== [Agent] -- Wallclock = 2026-01-26 15:59:04.832 -- System time = 91.327 -- Game time = 7.650 -- Ratio = 0.084x
+[1m> Stopping the route[0m
+
+[1m========= Results of RouteScenario_3380 (repetition 0) ------ [91mFAILURE[0m [1m=========[0m
+
+╒═══════════════════════╤═════════════════════╕
+│ Start Time            │ 2026-01-26 15:57:33 │
+├───────────────────────┼─────────────────────┤
+│ End Time              │ 2026-01-26 15:59:06 │
+├───────────────────────┼─────────────────────┤
+│ System Time           │ 93.14s              │
+├───────────────────────┼─────────────────────┤
+│ Game Time             │ 7.65s               │
+├───────────────────────┼─────────────────────┤
+│ Ratio (Game / System) │ 0.082               │
+╘═══════════════════════╧═════════════════════╛
+
+╒═════════════════════════════╤═════════╤══════════╕
+│ Criterion                   │ Result  │ Value    │
+├─────────────────────────────┼─────────┼──────────┤
+│ RouteCompletionTest         │ [92mSUCCESS[0m │ 100 %    │
+├─────────────────────────────┼─────────┼──────────┤
+│ OutsideRouteLanesTest       │ [92mSUCCESS[0m │ 0 %      │
+├─────────────────────────────┼─────────┼──────────┤
+│ CollisionTest               │ [92mSUCCESS[0m │ 0 times  │
+├─────────────────────────────┼─────────┼──────────┤
+│ RunningRedLightTest         │ [92mSUCCESS[0m │ 0 times  │
+├─────────────────────────────┼─────────┼──────────┤
+│ RunningStopTest             │ [92mSUCCESS[0m │ 0 times  │
+├─────────────────────────────┼─────────┼──────────┤
+│ MinSpeedTest                │ [91mFAILURE[0m │ 206.55 % │
+├─────────────────────────────┼─────────┼──────────┤
+│ InRouteTest                 │ [92mSUCCESS[0m │          │
+├─────────────────────────────┼─────────┼──────────┤
+│ AgentBlockedTest            │ [92mSUCCESS[0m │          │
+├─────────────────────────────┼─────────┼──────────┤
+│ YieldToEmergencyVehicleTest │ [91mFAILURE[0m │ 0 times  │
+├─────────────────────────────┼─────────┼──────────┤
+│ Timeout                     │ [92mSUCCESS[0m │          │
+╘═════════════════════════════╧═════════╧══════════╛
+
+[1m> Registering the route statistics[0m
+False
+cost time=223.44096183776855
+[1m> Registering the global statistics[0m
+
+✅ Evaluation completed!
+Results saved to: /home/mh2803/projects/simlingo/eval_results_rc/Bench2Drive/simlingo/bench2drive/1/res/69_res.json
+Visualizations saved to: /home/mh2803/projects/simlingo/eval_results_rc/Bench2Drive/simlingo/bench2drive/1/viz/69

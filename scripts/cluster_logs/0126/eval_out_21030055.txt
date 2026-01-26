@@ -1,0 +1,258 @@
+JOB ID 21030055
+Route: /home/mh2803/projects/simlingo/Bench2Drive/leaderboard/data/bench2drive_1.xml
+Route ID: 1
+Seed: 1
+Checkpoint: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt
+CARLA Port: 20000
+Traffic Manager Port: 30000
+libjpeg-turbo not available via spack
+Using conda libjpeg from /home/mh2803/miniconda3/envs/simlingo/lib
+Starting evaluation...
+Starting CARLA server: /home/mh2803/software/carla0915/CarlaUE4.sh -RenderOffScreen -nosound -carla-rpc-port=20000 -graphicsadapter=0
+CARLA server PID: 3188313, returncode: None
+load_world success , attempts=0
+traffic_manager init success, try_time=0
+ScenarioManager created successfully
+
+[1m========= Preparing RouteScenario_2403 (repetition 0) =========[0m
+[1m> Loading the world[0m
+[1m> Setting up the agent[0m
+Agent setup timeout: 600.0s (model loading may take several minutes)
+path to conf file: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt+RouteScenario_2403_rep0_Town12_VanillaNonSignalizedTurn_1_5_01_26_00_38_44
+Config path: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt
+Save path root: RouteScenario_2403_rep0_Town12_VanillaNonSignalizedTurn_1_5_01_26_00_38_44
+Loading config from: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/.hydra/config.yaml
+FlashAttention2 is not installed.
+[91mUsing OpenGVLab/InternVL2-1B as the image encoder.[0m
+Using PEFT model
+trainable params: 17,596,416 || all params: 647,260,288 || trainable%: 2.7186
+[1m> Running the route[0m
+=== [Agent] -- Wallclock = 2026-01-26 00:40:52.515 -- System time = 0.000 -- Game time = 0.050 -- Ratio = 0.000x
+=== [Agent] -- Wallclock = 2026-01-26 00:40:55.147 -- System time = 2.632 -- Game time = 0.100 -- Ratio = 0.038x
+[DIAGNOSTIC] Model device: cuda:0
+[DIAGNOSTIC] CUDA available: True
+[DIAGNOSTIC] Current device: 0
+=== [Agent] -- Wallclock = 2026-01-26 00:40:59.813 -- System time = 7.298 -- Game time = 0.150 -- Ratio = 0.021x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:00.615 -- System time = 8.100 -- Game time = 0.200 -- Ratio = 0.025x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:01.149 -- System time = 8.634 -- Game time = 0.250 -- Ratio = 0.029x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:01.657 -- System time = 9.142 -- Game time = 0.300 -- Ratio = 0.033x
+[TIMING] Step 5: total=0.46s, tick=0.15s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:02.202 -- System time = 9.686 -- Game time = 0.350 -- Ratio = 0.036x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:02.693 -- System time = 10.178 -- Game time = 0.400 -- Ratio = 0.039x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:03.574 -- System time = 11.059 -- Game time = 0.450 -- Ratio = 0.041x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:04.146 -- System time = 11.631 -- Game time = 0.500 -- Ratio = 0.043x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:04.681 -- System time = 12.166 -- Game time = 0.550 -- Ratio = 0.045x
+[TIMING] Step 10: total=0.46s, tick=0.16s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:05.270 -- System time = 12.755 -- Game time = 0.600 -- Ratio = 0.047x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:05.779 -- System time = 13.264 -- Game time = 0.650 -- Ratio = 0.049x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:06.308 -- System time = 13.793 -- Game time = 0.700 -- Ratio = 0.051x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:06.822 -- System time = 14.307 -- Game time = 0.750 -- Ratio = 0.052x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:07.356 -- System time = 14.841 -- Game time = 0.800 -- Ratio = 0.054x
+[TIMING] Step 15: total=0.48s, tick=0.16s, model=0.32s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:07.907 -- System time = 15.392 -- Game time = 0.850 -- Ratio = 0.055x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:08.468 -- System time = 15.953 -- Game time = 0.900 -- Ratio = 0.056x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:09.073 -- System time = 16.558 -- Game time = 0.950 -- Ratio = 0.057x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:09.583 -- System time = 17.068 -- Game time = 1.000 -- Ratio = 0.059x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:10.076 -- System time = 17.561 -- Game time = 1.050 -- Ratio = 0.060x
+[TIMING] Step 20: total=0.49s, tick=0.17s, model=0.32s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:10.657 -- System time = 18.142 -- Game time = 1.100 -- Ratio = 0.061x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:11.238 -- System time = 18.722 -- Game time = 1.150 -- Ratio = 0.061x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:11.764 -- System time = 19.249 -- Game time = 1.200 -- Ratio = 0.062x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:12.296 -- System time = 19.781 -- Game time = 1.250 -- Ratio = 0.063x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:12.796 -- System time = 20.281 -- Game time = 1.300 -- Ratio = 0.064x
+[TIMING] Step 25: total=0.41s, tick=0.10s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:13.585 -- System time = 21.070 -- Game time = 1.350 -- Ratio = 0.064x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:14.080 -- System time = 21.565 -- Game time = 1.400 -- Ratio = 0.065x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:14.594 -- System time = 22.079 -- Game time = 1.450 -- Ratio = 0.066x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:15.287 -- System time = 22.772 -- Game time = 1.500 -- Ratio = 0.066x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:15.808 -- System time = 23.292 -- Game time = 1.550 -- Ratio = 0.067x
+[TIMING] Step 30: total=0.49s, tick=0.16s, model=0.32s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:16.485 -- System time = 23.970 -- Game time = 1.600 -- Ratio = 0.067x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:16.991 -- System time = 24.476 -- Game time = 1.650 -- Ratio = 0.067x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:17.555 -- System time = 25.040 -- Game time = 1.700 -- Ratio = 0.068x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:18.085 -- System time = 25.570 -- Game time = 1.750 -- Ratio = 0.068x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:18.611 -- System time = 26.095 -- Game time = 1.800 -- Ratio = 0.069x
+[TIMING] Step 35: total=0.46s, tick=0.15s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:19.346 -- System time = 26.831 -- Game time = 1.850 -- Ratio = 0.069x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:19.978 -- System time = 27.463 -- Game time = 1.900 -- Ratio = 0.069x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:20.529 -- System time = 28.014 -- Game time = 1.950 -- Ratio = 0.070x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:21.070 -- System time = 28.555 -- Game time = 2.000 -- Ratio = 0.070x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:21.618 -- System time = 29.103 -- Game time = 2.050 -- Ratio = 0.070x
+[TIMING] Step 40: total=0.49s, tick=0.17s, model=0.32s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:22.365 -- System time = 29.850 -- Game time = 2.100 -- Ratio = 0.070x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:23.060 -- System time = 30.545 -- Game time = 2.150 -- Ratio = 0.070x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:23.665 -- System time = 31.150 -- Game time = 2.200 -- Ratio = 0.071x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:24.232 -- System time = 31.717 -- Game time = 2.250 -- Ratio = 0.071x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:24.819 -- System time = 32.304 -- Game time = 2.300 -- Ratio = 0.071x
+[TIMING] Step 45: total=0.48s, tick=0.16s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:25.401 -- System time = 32.886 -- Game time = 2.350 -- Ratio = 0.071x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:25.945 -- System time = 33.430 -- Game time = 2.400 -- Ratio = 0.072x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:26.481 -- System time = 33.965 -- Game time = 2.450 -- Ratio = 0.072x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:26.959 -- System time = 34.444 -- Game time = 2.500 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:27.414 -- System time = 34.899 -- Game time = 2.550 -- Ratio = 0.073x
+[TIMING] Step 50: total=0.39s, tick=0.08s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:28.253 -- System time = 35.737 -- Game time = 2.600 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:28.697 -- System time = 36.181 -- Game time = 2.650 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:29.343 -- System time = 36.828 -- Game time = 2.700 -- Ratio = 0.073x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:29.876 -- System time = 37.361 -- Game time = 2.750 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:30.378 -- System time = 37.863 -- Game time = 2.800 -- Ratio = 0.074x
+[TIMING] Step 55: total=0.48s, tick=0.16s, model=0.32s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:30.949 -- System time = 38.433 -- Game time = 2.850 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:31.467 -- System time = 38.951 -- Game time = 2.900 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:31.986 -- System time = 39.470 -- Game time = 2.950 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:32.517 -- System time = 40.002 -- Game time = 3.000 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:33.068 -- System time = 40.553 -- Game time = 3.050 -- Ratio = 0.075x
+[TIMING] Step 60: total=0.47s, tick=0.16s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:33.740 -- System time = 41.225 -- Game time = 3.100 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:34.266 -- System time = 41.751 -- Game time = 3.150 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:34.809 -- System time = 42.294 -- Game time = 3.200 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:35.419 -- System time = 42.904 -- Game time = 3.250 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:35.980 -- System time = 43.464 -- Game time = 3.300 -- Ratio = 0.076x
+[TIMING] Step 65: total=0.46s, tick=0.15s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:36.523 -- System time = 44.008 -- Game time = 3.350 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:37.039 -- System time = 44.524 -- Game time = 3.400 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:37.612 -- System time = 45.096 -- Game time = 3.450 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:38.153 -- System time = 45.638 -- Game time = 3.500 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:38.586 -- System time = 46.070 -- Game time = 3.550 -- Ratio = 0.077x
+[TIMING] Step 70: total=0.46s, tick=0.15s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:39.216 -- System time = 46.701 -- Game time = 3.600 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:39.720 -- System time = 47.205 -- Game time = 3.650 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:40.283 -- System time = 47.768 -- Game time = 3.700 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:40.824 -- System time = 48.309 -- Game time = 3.750 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:41.483 -- System time = 48.968 -- Game time = 3.800 -- Ratio = 0.078x
+[TIMING] Step 75: total=0.52s, tick=0.18s, model=0.34s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:42.336 -- System time = 49.821 -- Game time = 3.850 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:42.838 -- System time = 50.322 -- Game time = 3.900 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:43.380 -- System time = 50.865 -- Game time = 3.950 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:43.897 -- System time = 51.381 -- Game time = 4.000 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:44.450 -- System time = 51.935 -- Game time = 4.050 -- Ratio = 0.078x
+[TIMING] Step 80: total=0.48s, tick=0.16s, model=0.32s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:45.156 -- System time = 52.641 -- Game time = 4.100 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:45.671 -- System time = 53.156 -- Game time = 4.150 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:46.340 -- System time = 53.825 -- Game time = 4.200 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:46.875 -- System time = 54.360 -- Game time = 4.250 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:47.449 -- System time = 54.934 -- Game time = 4.300 -- Ratio = 0.078x
+[TIMING] Step 85: total=0.46s, tick=0.15s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:47.984 -- System time = 55.469 -- Game time = 4.350 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:48.522 -- System time = 56.007 -- Game time = 4.400 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:49.243 -- System time = 56.728 -- Game time = 4.450 -- Ratio = 0.078x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:49.789 -- System time = 57.274 -- Game time = 4.500 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:50.329 -- System time = 57.814 -- Game time = 4.550 -- Ratio = 0.079x
+[TIMING] Step 90: total=0.48s, tick=0.17s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:50.945 -- System time = 58.430 -- Game time = 4.600 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:51.458 -- System time = 58.943 -- Game time = 4.650 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:51.935 -- System time = 59.419 -- Game time = 4.700 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:52.509 -- System time = 59.994 -- Game time = 4.750 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:53.154 -- System time = 60.639 -- Game time = 4.800 -- Ratio = 0.079x
+[TIMING] Step 95: total=0.50s, tick=0.16s, model=0.34s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:53.818 -- System time = 61.302 -- Game time = 4.850 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:54.356 -- System time = 61.841 -- Game time = 4.900 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:54.967 -- System time = 62.452 -- Game time = 4.950 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:55.517 -- System time = 63.002 -- Game time = 5.000 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:56.146 -- System time = 63.631 -- Game time = 5.050 -- Ratio = 0.079x
+[TIMING] Step 100: total=0.47s, tick=0.16s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:56.727 -- System time = 64.212 -- Game time = 5.100 -- Ratio = 0.079x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:57.239 -- System time = 64.724 -- Game time = 5.150 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:57.790 -- System time = 65.274 -- Game time = 5.200 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:58.401 -- System time = 65.886 -- Game time = 5.250 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:58.954 -- System time = 66.439 -- Game time = 5.300 -- Ratio = 0.080x
+[TIMING] Step 105: total=0.47s, tick=0.16s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:41:59.502 -- System time = 66.987 -- Game time = 5.350 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:41:59.995 -- System time = 67.480 -- Game time = 5.400 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:00.519 -- System time = 68.004 -- Game time = 5.450 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:01.032 -- System time = 68.517 -- Game time = 5.500 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:01.537 -- System time = 69.022 -- Game time = 5.550 -- Ratio = 0.080x
+[TIMING] Step 110: total=0.48s, tick=0.16s, model=0.32s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:42:02.211 -- System time = 69.696 -- Game time = 5.600 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:02.706 -- System time = 70.190 -- Game time = 5.650 -- Ratio = 0.080x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:08.497 -- System time = 75.981 -- Game time = 5.700 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:09.277 -- System time = 76.762 -- Game time = 5.750 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:10.030 -- System time = 77.515 -- Game time = 5.800 -- Ratio = 0.075x
+[TIMING] Step 115: total=0.48s, tick=0.17s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:42:11.022 -- System time = 78.507 -- Game time = 5.850 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:11.569 -- System time = 79.054 -- Game time = 5.900 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:12.102 -- System time = 79.587 -- Game time = 5.950 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:12.680 -- System time = 80.165 -- Game time = 6.000 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:13.287 -- System time = 80.772 -- Game time = 6.050 -- Ratio = 0.075x
+[TIMING] Step 120: total=0.46s, tick=0.15s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:42:13.837 -- System time = 81.322 -- Game time = 6.100 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:14.333 -- System time = 81.817 -- Game time = 6.150 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:14.851 -- System time = 82.336 -- Game time = 6.200 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:15.383 -- System time = 82.868 -- Game time = 6.250 -- Ratio = 0.075x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:15.894 -- System time = 83.379 -- Game time = 6.300 -- Ratio = 0.076x
+[TIMING] Step 125: total=0.47s, tick=0.16s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:42:16.423 -- System time = 83.907 -- Game time = 6.350 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:16.917 -- System time = 84.402 -- Game time = 6.400 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:17.416 -- System time = 84.901 -- Game time = 6.450 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:17.918 -- System time = 85.403 -- Game time = 6.500 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:18.424 -- System time = 85.909 -- Game time = 6.550 -- Ratio = 0.076x
+[TIMING] Step 130: total=0.46s, tick=0.16s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:42:19.019 -- System time = 86.504 -- Game time = 6.600 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:19.463 -- System time = 86.948 -- Game time = 6.650 -- Ratio = 0.076x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:19.979 -- System time = 87.464 -- Game time = 6.700 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:20.392 -- System time = 87.876 -- Game time = 6.750 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:20.918 -- System time = 88.403 -- Game time = 6.800 -- Ratio = 0.077x
+[TIMING] Step 135: total=0.47s, tick=0.16s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:42:21.676 -- System time = 89.161 -- Game time = 6.850 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:22.206 -- System time = 89.691 -- Game time = 6.900 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:22.739 -- System time = 90.224 -- Game time = 6.950 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:23.255 -- System time = 90.740 -- Game time = 7.000 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:24.064 -- System time = 91.548 -- Game time = 7.050 -- Ratio = 0.077x
+[TIMING] Step 140: total=0.44s, tick=0.12s, model=0.31s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:42:24.583 -- System time = 92.068 -- Game time = 7.100 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:25.094 -- System time = 92.579 -- Game time = 7.150 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:25.650 -- System time = 93.135 -- Game time = 7.200 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:26.141 -- System time = 93.626 -- Game time = 7.250 -- Ratio = 0.077x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:26.647 -- System time = 94.132 -- Game time = 7.300 -- Ratio = 0.078x
+[TIMING] Step 145: total=0.45s, tick=0.15s, model=0.30s, control=0.00s
+=== [Agent] -- Wallclock = 2026-01-26 00:42:32.355 -- System time = 99.840 -- Game time = 7.350 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:32.868 -- System time = 100.353 -- Game time = 7.400 -- Ratio = 0.074x
+=== [Agent] -- Wallclock = 2026-01-26 00:42:33.398 -- System time = 100.883 -- Game time = 7.450 -- Ratio = 0.074x
+[1m> Stopping the route[0m
+
+[1m========= Results of RouteScenario_2403 (repetition 0) ------ [91mFAILURE[0m [1m=========[0m
+
+╒═══════════════════════╤═════════════════════╕
+│ Start Time            │ 2026-01-26 00:40:52 │
+├───────────────────────┼─────────────────────┤
+│ End Time              │ 2026-01-26 00:42:34 │
+├───────────────────────┼─────────────────────┤
+│ System Time           │ 102.13s             │
+├───────────────────────┼─────────────────────┤
+│ Game Time             │ 7.45s               │
+├───────────────────────┼─────────────────────┤
+│ Ratio (Game / System) │ 0.073               │
+╘═══════════════════════╧═════════════════════╛
+
+╒═══════════════════════╤═════════╤══════════╕
+│ Criterion             │ Result  │ Value    │
+├───────────────────────┼─────────┼──────────┤
+│ RouteCompletionTest   │ [92mSUCCESS[0m │ 100 %    │
+├───────────────────────┼─────────┼──────────┤
+│ OutsideRouteLanesTest │ [92mSUCCESS[0m │ 0 %      │
+├───────────────────────┼─────────┼──────────┤
+│ CollisionTest         │ [92mSUCCESS[0m │ 0 times  │
+├───────────────────────┼─────────┼──────────┤
+│ RunningRedLightTest   │ [92mSUCCESS[0m │ 0 times  │
+├───────────────────────┼─────────┼──────────┤
+│ RunningStopTest       │ [92mSUCCESS[0m │ 0 times  │
+├───────────────────────┼─────────┼──────────┤
+│ MinSpeedTest          │ [91mFAILURE[0m │ 210.78 % │
+├───────────────────────┼─────────┼──────────┤
+│ InRouteTest           │ [92mSUCCESS[0m │          │
+├───────────────────────┼─────────┼──────────┤
+│ AgentBlockedTest      │ [92mSUCCESS[0m │          │
+├───────────────────────┼─────────┼──────────┤
+│ ScenarioTimeoutTest   │ [92mSUCCESS[0m │ 0 times  │
+├───────────────────────┼─────────┼──────────┤
+│ Timeout               │ [92mSUCCESS[0m │          │
+╘═══════════════════════╧═════════╧══════════╛
+
+[1m> Registering the route statistics[0m
+False
+cost time=231.25366282463074
+[1m> Registering the global statistics[0m
+
+✅ Evaluation completed!
+Results saved to: /home/mh2803/projects/simlingo/eval_results_rc/Bench2Drive/simlingo/bench2drive/1/res/1_res.json
+Visualizations saved to: /home/mh2803/projects/simlingo/eval_results_rc/Bench2Drive/simlingo/bench2drive/1/viz/1

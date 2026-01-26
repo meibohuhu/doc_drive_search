@@ -108,7 +108,7 @@ class DrivingAdaptor(nn.Module):
         self.predict_route_as_wps = predict_route_as_wps
 
         if predict_route_as_wps:
-            self.future_waypoints = 20
+            self.future_waypoints = 20 #### mh 20260126 预测20个waypoints
             self.query_embeds_wps = nn.Parameter(0.02 * torch.randn((1, self.future_waypoints, hidden_size)))
             self.route_head = nn.Sequential(
                 nn.Linear(hidden_size, mlp_dim*2), nn.SiLU(True),nn.Linear(mlp_dim*2, mlp_dim), nn.SiLU(True), nn.Linear(mlp_dim, 2, bias=False)
@@ -125,7 +125,7 @@ class DrivingAdaptor(nn.Module):
             dim = 1
         else:
             raise ValueError(f"speed_wps_mode must be '1d' or '2d', not {speed_wps_mode}")
-        self.future_speed_waypoints = 10 #TODO: read from config
+        self.future_speed_waypoints = 10 #TODO: read from config, mh 20260126 预测10个speed waypoints
         self.query_embeds_speed = nn.Parameter(0.02 * torch.randn((1, self.future_speed_waypoints, hidden_size)))
         self.speed_wps_head = nn.Sequential(
                 nn.Linear(hidden_size, mlp_dim), nn.SiLU(True), nn.Linear(mlp_dim, dim, bias=False)
