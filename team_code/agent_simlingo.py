@@ -322,14 +322,14 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                     }
             ]
 
-        if HD_VIZ:
+        if HD_VIZ:  ##### mh 20260125: update width and height
             sensors += [{
                                                 'type': 'sensor.camera.rgb',
                                                 'x': -5.5, 'y': 0.0, 'z':3.5,
                                                 'roll': 0.0, 'pitch': -15.0, 'yaw': 0.0,
                                                 # 'width': 960, 'height': 540, 'fov': 110,
                                                 # 'width': 1280, 'height': 720, 'fov': 120,
-                                                'width': 1920, 'height': 1080, 'fov': 110,
+                                                'width': 960, 'height': 540, 'fov': 110,
                                                 'id': 'rgb_viz'
             }]
 
@@ -444,7 +444,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             result['gps'] = np.array([gps_pos[0], gps_pos[1]])
             
         speed = round(input_data['speed'][1]['speed'], 1)
-
+#### 根据每一步的GPS位置动态计算的，每个step都是重新计算的。
         waypoint_route = self._route_planner.run_step(np.append(result['gps'], gps_pos[2]))
 
         if len(waypoint_route) > 2:
@@ -478,6 +478,13 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.target_points = None
         placeholder_batch_list = []
 
+###### 从 XML waypoints 计算
+# XML waypoints (关键路径点)
+#   ↓ RouteParser 解析
+#   ↓ interpolate_trajectory() 插值
+# 全局路径 (密集路径点序列，每个点有 RoadOption 命令)
+#   ↓ RoutePlanner.run_step() 根据当前位置
+# target_point + command (当前目标点和命令)
         if self.config.eval_route_as == 'target_point' or self.config.eval_route_as == 'target_point_command':
             target_points = [ego_target_point, ego_next_target_point]
             self.target_points = target_points.copy()
@@ -677,6 +684,13 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
     @torch.no_grad()
     def run_step(self, input_data, timestamp, sensors=None):  # pylint: disable=locally-disabled, unused-argument
         self.step += 1
+        step_start = time.time()
+    # ===== 添加诊断代码 mh 20260125 =====
+        if self.step == 1:  # 只打印一次
+            print(f"[DIAGNOSTIC] Model device: {next(self.model.parameters()).device}", flush=True)
+            print(f"[DIAGNOSTIC] CUDA available: {torch.cuda.is_available()}", flush=True)
+            print(f"[DIAGNOSTIC] Current device: {torch.cuda.current_device()}", flush=True)
+        # ===== 诊断代码结束 =====
 
         if not self.initialized:
             self._init()
@@ -684,15 +698,38 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             self.control = control
             tick_data = self.tick(input_data)
             return control
-
+        # Need to run this every step for GPS filtering
+        tick_start = time.time()  # ← 添加
         # Need to run this every step for GPS filtering
         tick_data = self.tick(input_data)
+        tick_time = time.time() - tick_start  # ← 添加
 
         # initialize DrivingInput with dict self.DrivingInput
         model_input = DrivingInput(**self.DrivingInput)
-        pred_speed_wps, pred_route, language = self.model(model_input)
+        
+        # # Print model input (simplified)
+        # if model_input.prompt is not None and hasattr(model_input.prompt, 'language_string') and len(model_input.prompt.language_string) > 0:
+        #     prompt_text = model_input.prompt.language_string[0]
+        # else:
+        #     prompt_text = "N/A"
+        # speed_val = model_input.vehicle_speed.item() if model_input.vehicle_speed is not None else 0.0
+        # target_pt = model_input.target_point.cpu().numpy()[0] if model_input.target_point is not None else None
+        
+        # print(f"\n[Step {self.step}] Input: speed={speed_val:.1f}m/s, target_point={target_pt}, prompt='...{prompt_text[-100:]}'")
+        model_start = time.time()  # ← 添加
+        pred_speed_wps, pred_route, language = self.model(model_input)   #### pred_route 是预测的路径点
         pred_speed_wps = pred_speed_wps.float() if pred_speed_wps is not None else None
         pred_route = pred_route.float() if pred_route is not None else None
+        model_time = time.time() - model_start  # ← 添加
+        # # Print model output
+        # if pred_route is not None:
+        #     route_np = pred_route[0].detach().cpu().numpy()
+        #     print(f"[Step {self.step}] Output: pred_route shape={pred_route.shape}, first_3_waypoints={route_np[:3].tolist()}")
+        # if pred_speed_wps is not None:
+        #     speed_wps_np = pred_speed_wps[0].detach().cpu().numpy()
+        #     print(f"[Step {self.step}] Output: pred_speed_wps shape={pred_speed_wps.shape}, first_3_waypoints={speed_wps_np[:3].tolist()}")
+        # if language is not None:
+        #     print(f"[Step {self.step}] Output: language='{language[0][-100:]}...'")
 
         # prepare velocity input
         gt_velocity = tick_data['speed']
@@ -770,9 +807,11 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 
             # save
             image.save(f"{self.save_path_img}/{self.step}.png")
-            
-        steer, throttle, brake = self.control_pid(pred_route, gt_velocity, pred_speed_wps)
 
+        control_start = time.time()  # ← 添加
+        ### 通过 PID 控制器将预测的 waypoints 转换为控制命令：
+        steer, throttle, brake = self.control_pid(pred_route, gt_velocity, pred_speed_wps)
+        control_time = time.time() - control_start  # ← 添加
         # # 0.1 is just an arbitrary low number to threshold when the car is stopped
         if gt_velocity < 0.1:
             self.stuck_detector += 1
@@ -798,14 +837,19 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         else:
             self.control = control
             
-        metric_info = self.get_metric_info()
-        self.metric_info[self.step] = metric_info
-        if self.save_path_metric is not None and self.step % 1 == 0:
-                # metric info
-                outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
-                json.dump(self.metric_info, outfile, indent=4)
-                outfile.close()
-
+        ##### mh 20260125: not needed anymore?
+        # metric_info = self.get_metric_info()
+        # self.metric_info[self.step] = metric_info
+        # if self.save_path_metric is not None and self.step % 1 == 0:
+        #         # metric info
+        #         outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
+        #         json.dump(self.metric_info, outfile, indent=4)
+        #         outfile.close()
+            # 在return之前添加
+        total_time = time.time() - step_start  # ← 添加
+        if self.step % 5 == 0:  # 每5步打印一次
+            print(f"[TIMING] Step {self.step}: total={total_time:.2f}s, tick={tick_time:.2f}s, model={model_time:.2f}s, control={control_time:.2f}s", flush=True)
+    
         return control
 
     def control_pid(self, route_waypoints, velocity, speed_waypoints):
@@ -873,9 +917,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 
         del self.model
         del self.config
-        # Check if encoder key exists before accessing it
-        if hasattr(self.cfg.data_module, 'encoder') and self.cfg.data_module.encoder == 'llavanext':
-            del self.processor
+        # # Check if encoder key exists before accessing it     mh 20260125: not needed anymore?
+        # if hasattr(self.cfg.data_module, 'encoder') and self.cfg.data_module.encoder == 'llavanext':
+        #     del self.processor
 
 
 # Filter Functions
@@ -971,3 +1015,36 @@ def residual_measurement_h(a, b):
     y = a - b
     y[2] = t_u.normalize_angle(y[2])
     return y
+
+# [Step 105] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.001220703125, 0.00146484375], [1.0, -0.03369140625], [2.0, -0.05908203125]]
+# [Step 105] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.265625, -0.12109375], [4.46875, -0.1748046875], [6.625, -0.25]]
+# [Step 105] Output: language='the route. Maintain the reduced speed to stay behind the maroon car that is to the front. Waypoints:...'
+# === [Agent] -- Wallclock = 2026-01-24 11:30:16.382 -- System time = 572.844 -- Game time = 5.350 -- Ratio = 0.009x
+
+# [Step 106] Input: speed=8.8m/s, target_point=[22.589808  -0.7393668], prompt='...waypoint: <TARGET_POINT><TARGET_POINT>. What should the ego do next?<|im_end|><|im_start|>assistant
+# '
+# [Step 106] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0037841796875, 0.0029296875], [1.0, -0.02587890625], [2.0, -0.04296875]]
+# [Step 106] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.265625, -0.08837890625], [4.5, -0.138671875], [6.65625, -0.197265625]]
+# [Step 106] Output: language='tain the reduced speed to stay behind the maroon car that is to the front in 15.0 meters. Waypoints:...'
+# === [Agent] -- Wallclock = 2026-01-24 11:30:22.074 -- System time = 578.536 -- Game time = 5.400 -- Ratio = 0.009x
+
+# [Step 107] Input: speed=8.8m/s, target_point=[22.147799  -0.5663726], prompt='...waypoint: <TARGET_POINT><TARGET_POINT>. What should the ego do next?<|im_end|><|im_start|>assistant
+# '
+# [Step 107] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0001220703125, 0.00341796875], [1.0, -0.0107421875], [2.0, -0.0107421875]]
+# [Step 107] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.265625, -0.01397705078125], [4.4375, -0.04931640625], [6.5625, -0.1005859375]]
+# [Step 107] Output: language='the route. Maintain the reduced speed to stay behind the maroon car that is to the front. Waypoints:...'
+# === [Agent] -- Wallclock = 2026-01-24 11:30:27.037 -- System time = 583.499 -- Game time = 5.450 -- Ratio = 0.009x
+
+# [Step 108] Input: speed=8.7m/s, target_point=[21.705784   -0.45474473], prompt='...waypoint: <TARGET_POINT><TARGET_POINT>. What should the ego do next?<|im_end|><|im_start|>assistant
+# '
+# [Step 108] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0009765625, 0.00146484375], [1.0, -0.005859375], [2.0, -0.00341796875]]
+# [Step 108] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.25, 0.01202392578125], [4.40625, -0.00860595703125], [6.5, -0.0458984375]]
+# [Step 108] Output: language='tain the reduced speed to stay behind the maroon car that is to the front in 14.3 meters. Waypoints:...'
+# > Stopping the route
+
+
+# Step 106: target_point=[22.589808,  -0.7393668]
+# Step 107: target_point=[22.147799,  -0.5663726]  # x 减小了 ~0.44m
+# Step 108: target_point=[21.705784,  -0.45474473] # x 又减小了 ~0.44m
+# x 坐标在减小，说明车辆向前移动
+# 每步约 0.44m，符合车辆速度（约 8.8 m/s × 0.05s ≈ 0.44m）

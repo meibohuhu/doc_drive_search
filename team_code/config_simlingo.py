@@ -6,7 +6,7 @@ class GlobalConfig:
         # -----------------------------------------------------------------------------
         self.eval_route_as = 'target_point' # "target_point" or "target_point_command" "command", -1 -> use from model config
         # if target_point_command (trained on both we eval with targetpoint)
-        self.use_cot = True
+        self.use_cot = False   ##### mh 20260125: change to False
 
         self.carla_frame_rate = 1.0 / 20.0  # CARLA frame rate in milliseconds
         self.carla_fps = 20  # Simulator Frames per second

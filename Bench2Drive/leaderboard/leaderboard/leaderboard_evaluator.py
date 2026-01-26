@@ -128,7 +128,7 @@ class LeaderboardEvaluator(object):
 
         # Create the ScenarioManager
         self.manager = ScenarioManager(args.timeout, self.statistics_manager, args.debug)
-
+        print(f"ScenarioManager created successfully", flush=True)
         # Time control for summary purposes
         self._start_time = GameTime.get_time()
         self._end_time = None

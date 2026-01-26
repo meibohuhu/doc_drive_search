@@ -57,7 +57,7 @@ class RouteScenario(BasicScenario):
     """
 
     category = "RouteScenario"
-    INIT_THRESHOLD = 500 # Runtime initialization trigger distance to ego (m)
+    INIT_THRESHOLD = 100 # Runtime initialization trigger distance to ego (m)
     PARKED_VEHICLES_INIT_THRESHOLD = INIT_THRESHOLD - 50 # Runtime initialization trigger distance to parked vehicles (m)
 
     def __init__(self, world, config, debug_mode=0, criteria_enable=True):
@@ -203,39 +203,40 @@ class RouteScenario(BasicScenario):
         self.available_parking_locations = available_parking_locations
 
     def spawn_parked_vehicles(self, ego_vehicle, max_scenario_distance=10):
-        """Spawn parked vehicles."""
-        def is_close(slot_location, ego_location):
-            return slot_location.distance(ego_location) < self.PARKED_VEHICLES_INIT_THRESHOLD
-        def is_free(slot_location):
-            for occupied_slot in self.occupied_parking_locations:
-                if slot_location.distance(occupied_slot) < max_scenario_distance:
-                    return False
-            return True
+        return # TODO: 暂时禁用 parked vehicles
+        # """Spawn parked vehicles."""
+        # def is_close(slot_location, ego_location):
+        #     return slot_location.distance(ego_location) < self.PARKED_VEHICLES_INIT_THRESHOLD
+        # def is_free(slot_location):
+        #     for occupied_slot in self.occupied_parking_locations:
+        #         if slot_location.distance(occupied_slot) < max_scenario_distance:
+        #             return False
+        #     return True
 
-        new_parked_vehicles = []
+        # new_parked_vehicles = []
 
-        ego_location = CarlaDataProvider.get_location(ego_vehicle)
-        if ego_location is None:
-            return
+        # ego_location = CarlaDataProvider.get_location(ego_vehicle)
+        # if ego_location is None:
+        #     return
 
-        for slot in self.available_parking_locations:
-            slot_transform = carla.Transform(
-                location=carla.Location(slot["location"][0], slot["location"][1], slot["location"][2]),
-                rotation=carla.Rotation(slot["rotation"][0], slot["rotation"][1], slot["rotation"][2])
-            )
+        # for slot in self.available_parking_locations:
+        #     slot_transform = carla.Transform(
+        #         location=carla.Location(slot["location"][0], slot["location"][1], slot["location"][2]),
+        #         rotation=carla.Rotation(slot["rotation"][0], slot["rotation"][1], slot["rotation"][2])
+        #     )
 
-            # Add all vehicles that are close to the ego and in a free space
-            if is_close(slot_transform.location, ego_location) and is_free(slot_transform.location):
-                mesh_bp = CarlaDataProvider.get_world().get_blueprint_library().filter("static.prop.mesh")[0]
-                mesh_bp.set_attribute("mesh_path", slot["mesh"])
-                mesh_bp.set_attribute("scale", "0.9")
-                new_parked_vehicles.append(carla.command.SpawnActor(mesh_bp, slot_transform))
-                self.available_parking_locations.remove(slot)
+        #     # Add all vehicles that are close to the ego and in a free space
+        #     if is_close(slot_transform.location, ego_location) and is_free(slot_transform.location):
+        #         mesh_bp = CarlaDataProvider.get_world().get_blueprint_library().filter("static.prop.mesh")[0]
+        #         mesh_bp.set_attribute("mesh_path", slot["mesh"])
+        #         mesh_bp.set_attribute("scale", "0.9")
+        #         new_parked_vehicles.append(carla.command.SpawnActor(mesh_bp, slot_transform))
+        #         self.available_parking_locations.remove(slot)
 
-        # Add the actors to _parked_ids
-        for response in CarlaDataProvider.get_client().apply_batch_sync(new_parked_vehicles):
-            if not response.error:
-                self._parked_ids.append(response.actor_id)
+        # # Add the actors to _parked_ids
+        # for response in CarlaDataProvider.get_client().apply_batch_sync(new_parked_vehicles):
+        #     if not response.error:
+        #         self._parked_ids.append(response.actor_id)
 
     # pylint: disable=no-self-use
     def _draw_waypoints(self, waypoints, vertical_shift, size, downsample=1):
