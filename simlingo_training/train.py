@@ -10,12 +10,19 @@ import pytorch_lightning as pl
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelSummary, ThroughputMonitor
 from pytorch_lightning.loggers import CSVLogger, WandbLogger, TensorBoardLogger
+from pytorch_lightning.strategies import DDPStrategy
 from transformers import AutoProcessor
 
 from simlingo_training.utils.logging_project import setup_logging, sync_wandb
 
 from simlingo_training.config import TrainConfig
 from simlingo_training.callbacks.visualise import VisualiseCallback
+
+# mh 20260125: Import dataset classes to ensure they are available for Hydra instantiation
+from simlingo_training.dataloader.dataset_driving import Data_Driving
+from simlingo_training.dataloader.dataset_dreamer import Data_Dreamer
+from simlingo_training.dataloader.dataset_eval_qa_comm import Data_Eval
+from simlingo_training.dataloader.dataset_eval_dreamer import Eval_Dreamer
 
 
 @hydra.main(config_path=f"config", config_name="config", version_base="1.1")
@@ -104,6 +111,9 @@ def main(cfg: TrainConfig):
         strategy = pl.strategies.DeepSpeedStrategy(
             stage=2, loss_scale=cfg.fp16_loss_scale, logging_batch_size_per_gpu=cfg.data_module.batch_size
         )
+    elif strategy == "ddp":
+        # mh 20260125: 尽量不用 Enable find_unused_parameters to handle parameters not used in loss computation
+        strategy = DDPStrategy(find_unused_parameters=True)
 
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         save_top_k=-1,

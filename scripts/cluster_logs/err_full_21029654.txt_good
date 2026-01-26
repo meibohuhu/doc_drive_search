@@ -1,0 +1,54 @@
+/home/mh2803/miniconda3/envs/simlingo/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
+See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
+  ret = run_job(
+[rank: 0] Seed set to 42
+wandb: Currently logged in as: mhphoenix (mhphoenix-rochester-institute-of-technology). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.24.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.3
+wandb: Run data is saved locally in ./wandb/run-20260125_110318-2026_01_25_11_02_55_cluster_training_full
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run 2026_01_25_11_02_55_cluster_training_full
+wandb: ⭐️ View project at https://wandb.ai/mhphoenix-rochester-institute-of-technology/simlingo
+wandb: 🚀 View run at https://wandb.ai/mhphoenix-rochester-institute-of-technology/simlingo/runs/2026_01_25_11_02_55_cluster_training_full
+wandb: logging graph, to disable use `wandb.watch(log_graph=False)`
+Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.model_summary.ModelSummary'>]. Skipping setting a default `ModelSummary` callback.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+initializing deepspeed distributed: GLOBAL_RANK: 0, MEMBER: 1/1
+Enabling DeepSpeed FP16. Model parameters and inputs will be cast to `float16`.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Loading `train_dataloader` to estimate number of stepping batches.
+
+   | Name                             | Type                 | Params | Mode 
+-----------------------------------------------------------------------------------
+0  | vision_model                     | VLMEncoderModel      | 308 M  | train
+1  | vision_model.image_encoder       | LingoInternVLModel   | 308 M  | train
+2  | vision_model.image_encoder.model | InternVLChatModel    | 308 M  | eval 
+3  | language_model                   | LLM                  | 647 M  | train
+4  | language_model.model             | PeftModel            | 647 M  | train
+5  | language_model.model.base_model  | LoraModel            | 647 M  | train
+6  | adaptors                         | AdaptorList          | 272 M  | train
+7  | adaptors.driving                 | DrivingAdaptor       | 848 K  | train
+8  | adaptors.driving.route_head      | Sequential           | 591 K  | train
+9  | adaptors.driving.speed_wps_head  | Sequential           | 230 K  | train
+10 | adaptors.language                | LanguageAdaptor      | 271 M  | train
+11 | wp_encoder                       | WaypointInputAdaptor | 592 K  | train
+12 | wp_encoder.mlp                   | Sequential           | 592 K  | train
+13 | wp_encoder.mlp.0                 | Linear               | 768    | train
+14 | wp_encoder.mlp.1                 | ReLU                 | 0      | train
+15 | wp_encoder.mlp.2                 | Linear               | 131 K  | train
+16 | wp_encoder.mlp.3                 | ReLU                 | 0      | train
+17 | wp_encoder.mlp.4                 | Linear               | 459 K  | train
+-----------------------------------------------------------------------------------
+327 M     Trainable params
+629 M     Non-trainable params
+957 M     Total params
+3,828.782 Total estimated model params size (MB)
+1705      Modules in train mode
+690       Modules in eval mode
+SLURM auto-requeueing enabled. Setting signal handlers.
+/home/mh2803/miniconda3/envs/simlingo/lib/python3.8/site-packages/pytorch_lightning/utilities/data.py:78: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 4. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
+/home/mh2803/miniconda3/envs/simlingo/lib/python3.8/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:431: It is recommended to use `self.log('val/loss', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+[2026-01-25T11:19:25.121] error: *** JOB 21029654 ON skl-a-26 CANCELLED AT 2026-01-25T11:19:25 DUE TO TIME LIMIT ***

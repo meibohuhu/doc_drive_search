@@ -162,20 +162,20 @@ class DrivingModel(pl.LightningModule):
             dtype=self.language_model.model.dtype
         )
 
-        # mh 20260121  Print input before LLM (every 1000 steps to avoid too much output)
-        current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
-        if current_step % 100 == 0:
-            print(f"\n{'='*60}")
-            print(f"[Input Before LLM] - Global Step {current_step}")
-            print(f"{'='*60}")
-            print(f"  Vision embeddings shape: {vision_embeds.shape}")
-            print(f"  Adaptor embeddings shape: {adaptor_embeds.shape}")
-            print(f"  Concatenated input embeddings shape: {input_embeds.shape}")
-            print(f"  Input dtype: {input_embeds.dtype}")
-            print(f"  Vision embeddings range: [{vision_embeds.min().item():.4f}, {vision_embeds.max().item():.4f}]")
-            print(f"  Adaptor embeddings range: [{adaptor_embeds.min().item():.4f}, {adaptor_embeds.max().item():.4f}]")
-            print(f"  Input embeddings range: [{input_embeds.min().item():.4f}, {input_embeds.max().item():.4f}]")
-            print(f"  Input embeddings mean: {input_embeds.mean().item():.4f}, std: {input_embeds.std().item():.4f}")
+        # # mh 20260121  Print input before LLM (every 1000 steps to avoid too much output)
+        # current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
+        # if current_step % 100 == 0:
+        #     print(f"\n{'='*60}")
+        #     print(f"[Input Before LLM] - Global Step {current_step}")
+        #     print(f"{'='*60}")
+        #     print(f"  Vision embeddings shape: {vision_embeds.shape}")
+        #     print(f"  Adaptor embeddings shape: {adaptor_embeds.shape}")
+        #     print(f"  Concatenated input embeddings shape: {input_embeds.shape}")
+        #     print(f"  Input dtype: {input_embeds.dtype}")
+        #     print(f"  Vision embeddings range: [{vision_embeds.min().item():.4f}, {vision_embeds.max().item():.4f}]")
+        #     print(f"  Adaptor embeddings range: [{adaptor_embeds.min().item():.4f}, {adaptor_embeds.max().item():.4f}]")
+        #     print(f"  Input embeddings range: [{input_embeds.min().item():.4f}, {input_embeds.max().item():.4f}]")
+        #     print(f"  Input embeddings mean: {input_embeds.mean().item():.4f}, std: {input_embeds.std().item():.4f}")
 
         outputs = self.language_model.forward(
             input_embeds,
@@ -229,7 +229,7 @@ class DrivingModel(pl.LightningModule):
         
         # mh 20260121  Print predictions and losses (every 10 steps to avoid too much output)
         current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
-        if current_step % 1000 == 0:
+        if current_step % 100 == 0:
             print(f"\n{'='*60}")
             print(f"Global Step {current_step}")
             print(f"{'='*60}")
@@ -327,15 +327,28 @@ class DrivingModel(pl.LightningModule):
 
 
     def configure_optimizers(self):
-
         param_groups = [
             ParamGroup(r"^(model|language_model|language_projection|adaptors|speed_encoder|route_encoder)\..*", self.lr, self.weight_decay),
             ParamGroup(r"^vision_model\..*", self.vision_lr, self.weight_decay),
         ]
-        optimizer_class = (
-            FusedAdam if isinstance(self.trainer.strategy, pl.strategies.DeepSpeedStrategy) else torch.optim.AdamW
-        )
-        optimizer = optimizer_class(configure_params_groups(self, param_groups, verbose=False), betas=self.betas)
+        param_groups_list = configure_params_groups(self, param_groups, verbose=False)
+        
+        # Check if using DeepSpeed and single GPU - FusedAdam can hang on single GPU
+        use_fused_adam = isinstance(self.trainer.strategy, pl.strategies.DeepSpeedStrategy)
+        num_gpus = getattr(self.trainer, 'num_devices', 1) or 1
+        
+        if use_fused_adam and num_gpus == 1:
+            # FusedAdam can hang on single GPU with DeepSpeed - use AdamW instead
+            optimizer = torch.optim.AdamW(param_groups_list, betas=self.betas)
+        elif use_fused_adam:
+            try:
+                optimizer = FusedAdam(param_groups_list, betas=self.betas)
+            except Exception:
+                # Fallback to AdamW if FusedAdam fails
+                optimizer = torch.optim.AdamW(param_groups_list, betas=self.betas)
+        else:
+            optimizer = torch.optim.AdamW(param_groups_list, betas=self.betas)
+        
         lrs = [pg['lr'] for pg in optimizer.param_groups]
         if self.trainer.max_steps == -1:
             max_steps = self.trainer.estimated_stepping_batches

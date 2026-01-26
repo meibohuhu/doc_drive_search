@@ -93,8 +93,14 @@ class DataModule(LightningDataModule):
                         used_driving_datasets.append(dataset)
                         used_train_partitions.append(partition)
                 
-                weights_driving = 0.5
-                weights_dreamer = 1 - weights_driving
+                # mh 20260125: Only split weights if both datasets are used
+                if self.driving_dataset is not None and self.dreamer_dataset is not None:
+                    weights_driving = 0.5
+                    weights_dreamer = 1 - weights_driving
+                else:
+                    # If only one dataset is used, use full weight
+                    weights_driving = 1.0
+                    weights_dreamer = 1.0
                 for udd_i, (used_driving_dataset, used_train_partitions) in enumerate(zip(used_driving_datasets, used_train_partitions)):
                     num_datasets += 1
                     if used_train_partitions is not None:

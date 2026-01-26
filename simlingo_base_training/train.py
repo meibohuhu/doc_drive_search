@@ -8,6 +8,7 @@ from omegaconf import OmegaConf
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelSummary, ThroughputMonitor
 from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger, WandbLogger
+from pytorch_lightning.strategies import DDPStrategy
 
 from simlingo_base_training.callbacks.visualise import VisualiseCallback
 from simlingo_base_training.config import TrainConfig
@@ -82,6 +83,9 @@ def main(cfg: TrainConfig):
 
     wandblogger = None
     if not cfg.debug and cfg.enable_wandb:
+        print("Creating WandbLogger...")
+        import sys
+        sys.stdout.flush()
         wandblogger = WandbLogger(
             project=cfg.wandb_project,
             id=cfg.wandb_name,
@@ -89,14 +93,21 @@ def main(cfg: TrainConfig):
             config=OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True),
             resume=resume_wandb,
         )
-        wandblogger.watch(model)
+        print("WandbLogger created, skipping wandb.watch() to avoid hanging...")
+        sys.stdout.flush()
+        # wandblogger.watch(model)  # Temporarily disabled - can cause hanging
         loggers.append(wandblogger)
+        print("WandbLogger added to loggers")
+        sys.stdout.flush()
 
     strategy = cfg.strategy
     if strategy == "deepspeed_stage_2":
         strategy = pl.strategies.DeepSpeedStrategy(
             stage=2, loss_scale=cfg.fp16_loss_scale, logging_batch_size_per_gpu=cfg.data_module.batch_size
         )
+    elif strategy == "ddp":
+        # Enable find_unused_parameters to handle parameters not used in loss computation
+        strategy = DDPStrategy(find_unused_parameters=True)
 
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         save_top_k=-1,
@@ -143,7 +154,12 @@ def main(cfg: TrainConfig):
             # val_check_interval=cfg.val_check_interval,
         )
 
+    print("Starting training...")
+    import sys
+    sys.stdout.flush()
     trainer.fit(model, data_module, ckpt_path=resume_path)
+    print("Training completed!")
+    sys.stdout.flush()
 
 
 if __name__ == "__main__":

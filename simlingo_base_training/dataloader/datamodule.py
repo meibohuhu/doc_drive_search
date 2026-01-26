@@ -75,6 +75,10 @@ class DataModule(LightningDataModule):
 
 
     def setup(self, stage=None):
+        import sys
+        print(f"DataModule.setup() called with stage={stage}")
+        sys.stdout.flush()
+        
         if not self.predict:
             if self.train_partitions is not None:
                 bucket_list = list(self.train_partitions.keys())
@@ -98,22 +102,75 @@ class DataModule(LightningDataModule):
                     **self.cfg,
                 )
 
+            # mh 20260125 Filter out empty datasets ????????? 可以去掉
+            dataset_sizes = {bucket: datasets[bucket].__len__() for bucket in bucket_list}
+            empty_buckets = [bucket for bucket, size in dataset_sizes.items() if size == 0]
+            
+            if empty_buckets:
+                print(f"\033[91mWarning: Datasets with 0 samples: {empty_buckets}\033[00m")
+                print(f"\033[91mFiltering out empty datasets and continuing...\033[00m")
+            
+            # Remove empty datasets
+            sample_weights = [sample_weights[i] for i, bucket in enumerate(bucket_list) if dataset_sizes[bucket] > 0]
+            bucket_list = [bucket for bucket in bucket_list if dataset_sizes[bucket] > 0]
+            datasets = {bucket: datasets[bucket] for bucket in bucket_list}
+            
+            if len(bucket_list) == 0:
+                raise ValueError(
+                    "All training datasets are empty! Please check:\n"
+                    f"  - Data path: {self.cfg.get('data_path', 'not set')}\n"
+                    f"  - Bucket path: {self.cfg.get('bucket_path', 'not set')}\n"
+                    f"  - Dataset split: train"
+                )
+
             self.train_dataset = torch.utils.data.ConcatDataset([datasets[bucket] for bucket in bucket_list])
             weights_train = [[sample_weights[i]] * datasets[bucket].__len__() for i, bucket in enumerate(bucket_list)]
             weights_train = list(itertools.chain.from_iterable(weights_train))
             num_samples_all = [datasets[bucket].__len__() // sample_weights[i] for i, bucket in enumerate(bucket_list)]
             num_samples = int(min(num_samples_all))
+            
             print(f"Num samples: {num_samples}")
-            print(f"Num samples all: {datasets['all'].__len__()}")
+            if 'all' in datasets:
+                print(f"Num samples all: {datasets['all'].__len__()}")
+            else:
+                print(f"Dataset sizes: {dataset_sizes}")
+            
+            if num_samples <= 0:
+                raise ValueError(
+                    f"num_samples must be positive, but got {num_samples}. "
+                    f"Dataset sizes: {dataset_sizes}, sample_weights: {sample_weights}"
+                )
+            
             # num_samples = int(datasets[bucket_list[-1]].__len__()//sample_weights[-1])
             self.sampler_train = torch.utils.data.WeightedRandomSampler(weights=weights_train, num_samples=num_samples, replacement=True)
 
-            self.val_dataset = CARLA_Data(
-                split="val",
-                bucket_name="all",
-                **self.cfg,
-            )
+            print("Creating validation dataset...")
+            import sys
+            sys.stdout.flush()  # Force flush output
+            
+            try:
+                print("Instantiating CARLA_Data for validation...")
+                sys.stdout.flush()
+                self.val_dataset = CARLA_Data(
+                    split="val",
+                    bucket_name="all",
+                    **self.cfg,
+                )
+                print(f"Validation dataset created, getting length...")
+                sys.stdout.flush()
+                val_len = len(self.val_dataset)
+                print(f"Validation dataset created with {val_len} samples")
+                sys.stdout.flush()
+            except Exception as e:
+                print(f"ERROR creating validation dataset: {e}")
+                import traceback
+                traceback.print_exc()
+                sys.stdout.flush()
+                raise
+            
             self.predict_dataset = None
+            print("DataModule setup completed successfully!")
+            sys.stdout.flush()
 
         else:
 

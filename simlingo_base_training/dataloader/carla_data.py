@@ -26,7 +26,45 @@ class CARLA_Data(BaseDataset):  # pylint: disable=locally-disabled, invalid-name
         """Returns the item at index idx. """
         # Disable threading because the data loader will already split in threads.
         cv2.setNumThreads(0)
-
+        
+        # mh 20260125: Retry logic for handling corrupted images/files
+        max_retries = 3  # Increased retries to handle multiple corrupted samples
+        original_index = index
+        tried_indices = {index}
+        
+        for retry in range(max_retries):
+            try:
+                return self._load_sample(index)
+            except (FileNotFoundError, ValueError) as e:
+                # If it's an image loading error, try a different sample
+                if retry < max_retries - 1:
+                    # Try random index to avoid consecutive bad samples
+                    # Keep trying until we find an index we haven't tried yet
+                    import random
+                    for _ in range(100):  # Try up to 100 times to find a new index
+                        new_index = random.randint(0, len(self.images) - 1)
+                        if new_index not in tried_indices:
+                            index = new_index
+                            tried_indices.add(index)
+                            break
+                    else:
+                        # If we've tried too many indices, just increment
+                        index = (index + 1) % len(self.images)
+                        tried_indices.add(index)
+                    continue
+                else:
+                    # If all retries failed, raise the error with more context
+                    raise ValueError(
+                        f"Failed to load sample after {max_retries} retries. "
+                        f"Original index: {original_index}, tried indices: {sorted(tried_indices)[:10]}. "
+                        f"Last error: {e}"
+                    )
+            except Exception as e:
+                # For other errors, don't retry
+                raise e
+    
+    def _load_sample(self, index):
+        """Internal method to load a single sample."""
         data = {}
         images = self.images[index]
         boxes = self.boxes[index]
@@ -89,7 +127,7 @@ class CARLA_Data(BaseDataset):  # pylint: disable=locally-disabled, invalid-name
         data = self.load_images(data, images, augment_sample=augment_sample)
         # print(f"########## self.route_as is: {self.route_as} ##########")   #### mh 20260120 target_point
         if self.route_as == 'coords':
-            map_route = route[:20]
+            map_route = data['route'][:20]
             data['map_route'] = map_route
         elif self.route_as == 'target_point':
             tp = [target_point, next_target_point]

@@ -68,10 +68,17 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         
         augment_exist = False
 
-
+        # Helper function to handle both absolute and relative paths
+        def get_full_path(path):
+            """Return full path, handling both absolute and relative paths."""
+            if os.path.isabs(path):
+                return path
+            else:
+                return os.path.join(repo_path, path)
 
         if not self.bucket_name == "all":
-            with open(f"{repo_path}/" + self.bucket_path + '/buckets_paths.pkl', 'rb') as f:
+            bucket_path_full = get_full_path(self.bucket_path)
+            with open(os.path.join(bucket_path_full, 'buckets_paths.pkl'), 'rb') as f:
                 bucket_dict = pkl.load(f)
 
             bucket_run_ids = None
@@ -109,23 +116,25 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                     run_id_path = Path(run_id)
                     run_id_parent = run_id_path.parent
                     run_id_name = run_id_path.name
-                    run_id_absolut = str(run_id_parent)
-                    run_id_absolut = f"{repo_path}/{str(run_id_parent)}"
+                    # Handle both absolute and relative paths
+                    run_id_absolut = get_full_path(str(run_id_parent))
                     if run_id_absolut not in run_id_dict:
                         run_id_dict[run_id_absolut] = [run_id_name]
                     else:
                         run_id_dict[run_id_absolut].append(run_id_name)
 
         #### mh 20260120  读取simlingo数据集route的目录
-        route_dirs = glob.glob(f"{repo_path}/" + self.data_path + '/data/simlingo/*/*/*/Town*')
-        print(f'Found {len(route_dirs)} routes in {repo_path + self.data_path}')
+        data_path_full = get_full_path(self.data_path)
+        route_pattern = os.path.join(data_path_full, 'data/simlingo/*/*/*/Town*')
+        route_dirs = glob.glob(route_pattern)
+        print(f'Found {len(route_dirs)} routes in {data_path_full}')
         
         if not self.use_old_towns:
             route_dirs = [route_dir for route_dir in route_dirs if 'lb1_split' not in route_dir]
-            print(f'Found {len(route_dirs)} routes in {repo_path + self.data_path} after filtering out old towns')
+            print(f'Found {len(route_dirs)} routes in {data_path_full} after filtering out old towns')
         elif self.bucket_name == "old_towns":
             route_dirs = [route_dir for route_dir in route_dirs if 'lb1_split' in route_dir]
-            print(f'Found {len(route_dirs)} routes in {repo_path + self.data_path} after filtering out non old towns')
+            print(f'Found {len(route_dirs)} routes in {data_path_full} after filtering out non old towns')
         
 
         random.shuffle(route_dirs)
@@ -261,6 +270,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         print('Crashed routes:', crashed_routes)
         print('Perfect routes:', perfect_routes)
         print('Fail reasons:', fail_reasons)
+        sys.stdout.flush()  # Force flush to see output immediately
 
     def __len__(self):
         """Returns the length of the dataset. """
@@ -278,9 +288,20 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         for i in range(self.hist_len):
             measurement_file = str(measurements[0], encoding='utf-8') + (f'/{(sample_start + i):04}.json.gz')
 
-            with gzip.open(measurement_file, 'rt') as f1:
-                measurements_i = ujson.load(f1)
-            loaded_measurements.append(measurements_i)
+            try:
+                with gzip.open(measurement_file, 'rt') as f1:
+                    measurements_i = ujson.load(f1)
+                loaded_measurements.append(measurements_i)
+            except Exception as e:
+                # If measurement file is corrupted, raise a more informative error
+                file_size = os.path.getsize(measurement_file) if os.path.exists(measurement_file) else 0
+                raise ValueError(
+                    f"Failed to load measurement file: {measurement_file}\n"
+                    f"  Error type: {type(e).__name__}\n"
+                    f"  Error message: {e}\n"
+                    f"  File size: {file_size} bytes\n"
+                    f"  File exists: {os.path.exists(measurement_file)}"
+                ) from e
 
         end = self.pred_len + self.hist_len
         start = self.hist_len
@@ -362,10 +383,19 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                 images_path = images_path.replace('rgb', 'rgb_augmented')
 
             if not os.path.isfile(images_path):
-                print(f"File not found: {images_path}")
-                raise FileNotFoundError
+                raise FileNotFoundError(f"Image file not found: {images_path}")
+            
+            # Check file size before attempting to read
+            file_size = os.path.getsize(images_path)
+            if file_size == 0:
+                raise ValueError(f"Image file is empty (0 bytes): {images_path}")
 
             images_i = cv2.imread(images_path, cv2.IMREAD_COLOR)
+            if images_i is None:
+                raise ValueError(f"Failed to load image (cv2.imread returned None): {images_path}. "
+                               f"File exists: {os.path.exists(images_path)}, "
+                               f"File size: {file_size} bytes")
+            
             images_i = cv2.cvtColor(images_i, cv2.COLOR_BGR2RGB)
             if self.image_enhancing:
                 images_i = histogram_equalization(images_i)

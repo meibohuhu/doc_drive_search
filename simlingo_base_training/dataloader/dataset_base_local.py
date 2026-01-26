@@ -26,6 +26,7 @@ from tqdm import tqdm
 import simlingo_training.utils.transfuser_utils as t_u
 from simlingo_training.utils.custom_types import DatasetOutput
 from simlingo_training.utils.projection import get_camera_intrinsics, project_points
+from simlingo_base_training.utils.image_enhancing import histogram_equalization
 
 VIZ_DATA = False
 
@@ -35,8 +36,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
     """
 
     def __init__(self,
-            dreamer = False,
-            evaluation = False,
+            base = False,
             **cfg,
         ):
         for key, value in cfg.items():
@@ -65,101 +65,19 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         fail_reasons = {}
 
         repo_path = get_original_cwd()
-        # If get_original_cwd() returns simlingo_training directory, go up one level to project root
-        if os.path.basename(repo_path) == 'simlingo_training':
-            repo_path = os.path.dirname(repo_path)
-        # Also check if we're in simlingo_base_training
-        elif os.path.basename(repo_path) == 'simlingo_base_training':
-            repo_path = os.path.dirname(repo_path)
         
-        # load templates
-        template_file = f"{repo_path}/data/augmented_templates/commentary_augmented.json"
-        if not os.path.exists(template_file):
-            raise FileNotFoundError(f"Template file not found: {template_file}")
-        with open(template_file, 'r') as f:
-            self.templates_commentary = ujson.load(f)
-    
-        # load templates
-        if dreamer:
-            print(f"Loading dreamer templates from {repo_path}/data/augmented_templates/dreamer.json")
-            template_file = f"{repo_path}/data/augmented_templates/dreamer.json"
-            if not os.path.exists(template_file):
-                raise FileNotFoundError(f"Template file not found: {template_file}")
-            with open(template_file, 'r') as f:
-                self.templates_neg = ujson.load(f)
-        
-        if self.use_lmdrive_commands:
-            command_templates_file = f"{repo_path}/data/augmented_templates/lmdrive.json"
-            if not os.path.exists(command_templates_file):
-                raise FileNotFoundError(f"Template file not found: {command_templates_file}")
-            with open(command_templates_file, 'r') as f:
-                self.command_templates = ujson.load(f)
-
-
-        # during eval we only want to load predefines paths
-        if evaluation:
-            if self.use_qa:
-                chosen_eval_samples_path = f'{repo_path}/data/evalset_vqa.json'
-            elif self.use_commentary:
-                chosen_eval_samples_path = f'{repo_path}/data/evalset_commentary.json'
-            
-            with open(chosen_eval_samples_path, 'r') as f:
-                self.chosen_eval_samples = ujson.load(f)
-                self.all_eval_samples = []
-                self.all_eval_samples_dict = {}
-                for key, value in self.chosen_eval_samples.items():
-                    if self.use_qa:
-                        if 'important objects' in key:
-                            continue
-
-                        for answer in value.keys():
-                            for sample in value[answer]:
-                                sample = repo_path + '/' + sample.replace('vqa', 'measurements').replace('drivelm', 'data')
-                                self.all_eval_samples.append(sample)
-                                
-                                if sample not in self.all_eval_samples_dict:
-                                    self.all_eval_samples_dict[sample] = [(key, answer)]
-                                else:
-                                    self.all_eval_samples_dict[sample].append((key, answer))
-                    else:
-                        for sample in value:
-                            sample = repo_path + '/' + sample.replace('commentary/simlingo', 'data/simlingo').replace('commentary', 'measurements')
-                            self.all_eval_samples.append(sample)
-
-
         augment_exist = False
 
-        if not dreamer:
-            if self.use_qa:
-                as_augment_file = f'{repo_path}/data/augmented_templates/drivelm_train_augmented_v2/all_as_augmented.json'
-                with open(as_augment_file, 'r') as f:
-                    self.a_augment = ujson.load(f)
-                qs_augment_file = f'{repo_path}/data/augmented_templates/drivelm_train_augmented_v2/all_qs_augmented.json'
-                with open(qs_augment_file, 'r') as f:
-                    self.q_augment = ujson.load(f)
-
-            prompt_probabilities = {
-                'driving': 1.0
-            }
-            if self.use_qa:
-                prompt_probabilities['qa'] = 1.0
-            if self.use_commentary:
-                prompt_probabilities['commentary'] = 1.0
-            
-            # divide by the sum to get the probabilities
-            prompt_probabilities = {k: v / sum(prompt_probabilities.values()) for k, v in prompt_probabilities.items()}
-            self.prompt_probabilities = prompt_probabilities
-            self.num_sampled_per_type = {k: 0 for k in prompt_probabilities.keys()}
-
-
+        # Helper function to handle both absolute and relative paths
+        def get_full_path(path):
+            """Return full path, handling both absolute and relative paths."""
+            if os.path.isabs(path):
+                return path
+            else:
+                return os.path.join(repo_path, path)
 
         if not self.bucket_name == "all":
-            ## mh 20260125: Handle both absolute and relative paths for bucket_path
-            if os.path.isabs(self.bucket_path):
-                bucket_path_full = self.bucket_path
-            else:
-                bucket_path_full = os.path.join(repo_path, self.bucket_path)
-            
+            bucket_path_full = get_full_path(self.bucket_path)
             with open(os.path.join(bucket_path_full, 'buckets_paths.pkl'), 'rb') as f:
                 bucket_dict = pkl.load(f)
 
@@ -198,47 +116,34 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                     run_id_path = Path(run_id)
                     run_id_parent = run_id_path.parent
                     run_id_name = run_id_path.name
-                    # mh 20260125 Handle both absolute and relative paths
-                    if os.path.isabs(str(run_id_parent)):
-                        run_id_absolut = str(run_id_parent)
-                    else:
-                        run_id_absolut = os.path.join(repo_path, str(run_id_parent))
+                    # Handle both absolute and relative paths
+                    run_id_absolut = get_full_path(str(run_id_parent))
                     if run_id_absolut not in run_id_dict:
                         run_id_dict[run_id_absolut] = [run_id_name]
                     else:
                         run_id_dict[run_id_absolut].append(run_id_name)
 
-
-        # mh 20260125 Handle both absolute and relative paths for data_path
-        if os.path.isabs(self.data_path):
-            data_path_full = self.data_path
-        else:
-            data_path_full = os.path.join(repo_path, self.data_path)
-        
-        # Print bucket name for better debugging
-        if hasattr(self, 'bucket_name') and self.bucket_name:
-            print(f'[Bucket: {self.bucket_name}] Scanning routes in {data_path_full}...')
-        
-        route_dirs = glob.glob(data_path_full + '/data/simlingo/*/*/*/Town*')
+        #### mh 20260120  读取simlingo数据集route的目录
+        data_path_full = get_full_path(self.data_path)
+        route_pattern = os.path.join(data_path_full, 'data/simlingo/*/*/*/Town*')
+        route_dirs = glob.glob(route_pattern)
         print(f'Found {len(route_dirs)} routes in {data_path_full}')
         
         if not self.use_old_towns:
             route_dirs = [route_dir for route_dir in route_dirs if 'lb1_split' not in route_dir]
             print(f'Found {len(route_dirs)} routes in {data_path_full} after filtering out old towns')
-        elif self.use_only_old_towns or self.bucket_name == "old_towns":
+        elif self.bucket_name == "old_towns":
             route_dirs = [route_dir for route_dir in route_dirs if 'lb1_split' in route_dir]
             print(f'Found {len(route_dirs)} routes in {data_path_full} after filtering out non old towns')
         
 
         random.shuffle(route_dirs)
         split_percentage = 0.99
-        if dreamer or not self.use_town13:
+        if not self.use_town13:
             # split the data into official training(Town12 and old Towns) and validation set (Town13)
             if self.split == "train":
-                print("Using Town12 for training")
                 route_dirs = [route_dir for route_dir in route_dirs if 'routes_training' in route_dir]
             elif self.split == "val":
-                print("Using Town13 for validation")
                 route_dirs = [route_dir for route_dir in route_dirs if 'routes_validation' in route_dir]
                 route_dirs = route_dirs[:int(0.02 * len(route_dirs))]
         else:
@@ -249,17 +154,12 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                 route_dirs = route_dirs[int(split_percentage * len(route_dirs)):]
         
         total_routes += len(route_dirs)
-        
-        # route_dirs = route_dirs[:100]
         print(f'Use {len(route_dirs)} routes.')
         
+        ##### 20260120 mh 遍历route_dirs中的每个route_dir
         for sub_root in tqdm(route_dirs, file=sys.stdout):
 
             route_dir = sub_root # + '/' + route
-            if dreamer:
-                dreamer_dir = route_dir.replace('data/', f'{self.dreamer_folder}/')
-                if not os.path.exists(dreamer_dir):
-                    continue
 
             if filter_infractions_per_route:
                 if not os.path.isfile(route_dir + '/results.json.gz'):
@@ -297,12 +197,12 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
 
             perfect_routes += 1
 
-            # if not os.path.exists(route_dir + f'/{self.rgb_folder}'):
-            #     if "no_rgb_folder" not in fail_reasons:
-            #         fail_reasons["no_rgb_folder"] = 1
-            #     else:
-            #         fail_reasons["no_rgb_folder"] += 1
-            #     continue
+            if not os.path.exists(route_dir + f'/{self.rgb_folder}'):
+                if "no_rgb_folder" not in fail_reasons:
+                    fail_reasons["no_rgb_folder"] = 1
+                else:
+                    fail_reasons["no_rgb_folder"] += 1
+                continue
 
             num_seq = len(os.listdir(route_dir + f'/{self.rgb_folder}'))
 
@@ -313,15 +213,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                 augment_exist = False
 
                 measurement_file = route_dir + '/measurements' + f'/{(seq + self.hist_len-1):04}.json.gz'
-
-                if evaluation and measurement_file not in self.all_eval_samples:
-                    continue
                 
-                if dreamer:
-                    dreamer_file_path = measurement_file.replace('measurements', f'{self.dreamer_folder}').replace('data/', f'{self.dreamer_folder}/')
-                    if not os.path.exists(dreamer_file_path):
-                        continue
-                 
                 if self.bucket_name is not None and self.bucket_name != "all":
                     measurement_file_path = Path(measurement_file)
                     if str(measurement_file_path.parent) in run_id_dict:
@@ -359,8 +251,6 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                 self.measurements.append(measurement)
                 self.sample_start.append(seq)
                 self.augment_exists.append(augment_exist)
-                if dreamer:
-                    self.alternative_trajectories.append(dreamer_file_path)
 
         # There is a complex "memory leak"/performance issue when using Python
         # objects like lists in a Dataloader that is loaded with
@@ -372,8 +262,6 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         self.images = np.array(self.images).astype(np.string_)
         self.boxes = np.array(self.boxes).astype(np.string_)
         self.measurements = np.array(self.measurements).astype(np.string_)
-        if dreamer:
-            self.alternative_trajectories = np.array(self.alternative_trajectories).astype(np.string_)
 
         self.sample_start = np.array(self.sample_start)
         # if rank == 0:
@@ -488,6 +376,8 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
 
             images_i = cv2.imread(images_path, cv2.IMREAD_COLOR)
             images_i = cv2.cvtColor(images_i, cv2.COLOR_BGR2RGB)
+            if self.image_enhancing:
+                images_i = histogram_equalization(images_i)
 
             if self.img_augmentation: # and random.random() <= self.img_augmentation_prob:
                 images_i = self.tfs(image=images_i)
@@ -506,6 +396,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
 
         # we want [T, N, C, H, W], T is the number of temporal frames, N is the number of cam views, C is the number of channels, H is the height and W is the width
         processed_image = np.transpose(processed_image, (0, 3, 1, 2)) # (T, C, H, W)
+        processed_image = np.expand_dims(processed_image, axis=1) # add a new dimension for the number of views -> T, N, C, H, W
         processed_image_org_size = np.transpose(processed_image_org_size, (0, 3, 1, 2)) # (T, C, H, W)
 
         data['rgb'] = processed_image
@@ -513,8 +404,6 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
 
         return data
 
-
-###### 根据route_as的不同，生成不同的语言描述， 1: target_point（target_point_language） 2: command 3: target_point_command 
     def get_navigational_conditioning(self, data, current_measurement, target_point, next_target_point):
         placeholder_values = {}
         target_options = []
@@ -573,9 +462,8 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         
         return target_options, placeholder_values
 
-#### 把一条不等距的轨迹 points → 变成等间距采样的 route， 不理解
     def equal_spacing_route(self, points):
-        route = np.concatenate((np.zeros_like(points[:1]),  points)) # Add 0 to front  人为地在轨迹前面加一个起点 (0,0)
+        route = np.concatenate((np.zeros_like(points[:1]),  points)) # Add 0 to front
         shift = np.roll(route, 1, axis=0) # Shift by 1
         shift[0] = shift[1] # Set wraparound value to 0
 
@@ -584,7 +472,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
         dists += np.arange(0, len(dists))*1e-4 # Prevents dists not being strictly increasing
 
         x = np.arange(0, 20, 1)
-        interp_points = np.array([np.interp(x, dists, route[:, 0]), np.interp(x, dists, route[:, 1])]).T    #### 插值
+        interp_points = np.array([np.interp(x, dists, route[:, 0]), np.interp(x, dists, route[:, 1])]).T
 
         return interp_points
     

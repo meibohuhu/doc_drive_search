@@ -9,24 +9,16 @@
 ```bash
 cd /home/mh2803/projects/simlingo
 
-# 创建conda环境
-conda env create -f environment.yaml
+# 创建conda环境（使用简化版配置文件）
+conda env create -f environment_simplified.yaml
 conda activate simlingo
 
-# 安装PyTorch
-pip install torch==2.2.0
+# 注意：PyTorch 2.2.0 已包含在 environment_simplified.yaml 中，无需单独安装
 
 # ⚠️ 跳过 flash-attn（可选，用于加速但不是必需的）
 # 训练可以正常运行，只是速度会稍慢一些
 ```
 
-### 2. 安装 Git LFS
-
-```bash
-# Ubuntu/Debian
-sudo apt install git-lfs
-git lfs install
-```
 
 ### 3. 配置 Wandb
 
@@ -40,15 +32,21 @@ wandb login
 #### 方法1：使用下载脚本（推荐，更快）
 
 ```bash
-# 使用优化后的下载脚本（自动使用huggingface-cli，比git lfs快）
-bash download_dataset.sh
+# 下载训练数据（只下载训练文件，不包括验证数据）
+bash download_training_data.sh
+
+# 解压数据（如果目录已有内容会自动跳过）
+bash extract_training_data.sh
 ```
 
-脚本会自动：
-- 激活simlingo conda环境
-- 使用huggingface-cli下载（比git lfs更快）
-- 自动解压所有文件
-- 数据集保存到：`/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo_extracted`
+脚本功能：
+- `download_training_data.sh`: 下载训练数据文件（~545 GB压缩）
+  - 激活simlingo conda环境
+  - 使用huggingface-cli下载（比git lfs更快）
+  - 文件保存到：`/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo`
+- `extract_training_data.sh`: 解压数据文件
+  - 自动检测目标目录是否已有内容，如有则跳过
+  - 解压到：`/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo_extracted`
 
 #### 方法2：手动下载（如果脚本失败）
 
@@ -69,37 +67,16 @@ huggingface-cli download RenzKa/simlingo \
     --local-dir simlingo \
     --local-dir-use-symlinks False
 
-# 解压数据
-mkdir -p simlingo_extracted
-cd simlingo
-for file in *.tar.gz; do
-    echo "解压 $file ..."
-    tar -xzf "$file" -C ../simlingo_extracted/
-done
-```
+# 解压数据（使用解压脚本，如果目录已有内容会自动跳过）
+bash extract_training_data.sh
 
-#### 方法3：使用git lfs（备用，较慢）
-
-```bash
-# 创建数据集目录
-mkdir -p /shared/rc/llm-gen-agent/mhu/simlingo_dataset/database
-cd /shared/rc/llm-gen-agent/mhu/simlingo_dataset/database
-
-# 克隆数据集
-git clone https://huggingface.co/datasets/RenzKa/simlingo
-cd simlingo
-
-# 下载数据（这需要较长时间）
-git lfs pull
-
-# 解压数据
-cd ..
-mkdir -p simlingo_extracted
-cd simlingo
-for file in *.tar.gz; do
-    echo "解压 $file ..."
-    tar -xzf "$file" -C ../simlingo_extracted/
-done
+# 或者手动解压：
+# mkdir -p simlingo_extracted
+# cd simlingo
+# for file in *.tar.gz; do
+#     echo "解压 $file ..."
+#     tar -xzf "$file" -C ../simlingo_extracted/
+# done
 ```
 
 ### 5. 配置训练路径
