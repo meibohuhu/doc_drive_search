@@ -12,23 +12,23 @@
 
 set -e
 
-# Activate conda environment
-# Try different conda paths
-if [ -f ~/miniconda3/etc/profile.d/conda.sh ]; then
-    source ~/miniconda3/etc/profile.d/conda.sh
-elif [ -f ~/anaconda3/etc/profile.d/conda.sh ]; then
-    source ~/anaconda3/etc/profile.d/conda.sh
-elif [ -f /opt/conda/etc/profile.d/conda.sh ]; then
-    source /opt/conda/etc/profile.d/conda.sh
-fi
+# # Activate conda environment
+# # Try different conda paths
+# if [ -f ~/miniconda3/etc/profile.d/conda.sh ]; then
+#     source ~/miniconda3/etc/profile.d/conda.sh
+# elif [ -f ~/anaconda3/etc/profile.d/conda.sh ]; then
+#     source ~/anaconda3/etc/profile.d/conda.sh
+# elif [ -f /opt/conda/etc/profile.d/conda.sh ]; then
+#     source /opt/conda/etc/profile.d/conda.sh
+# fi
 
-conda activate simlingo || {
-    echo "Warning: Could not activate simlingo environment"
-}
+# conda activate simlingo || {
+#     echo "Warning: Could not activate simlingo environment"
+# }
 
 # Set directories
-COMPRESSED_DIR="${COMPRESSED_DIR:-/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo}"
-EXTRACTED_DIR="${EXTRACTED_DIR:-/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo_extracted}"
+COMPRESSED_DIR="${COMPRESSED_DIR:-/mnt/localssd/simlingo}"
+EXTRACTED_DIR="${EXTRACTED_DIR:-/mnt/localssd/simlingo_extracted}"
 
 # Determine extraction mode based on arguments
 EXTRACT_MODE="training"  # default: training
@@ -199,7 +199,7 @@ else
     
     # Set number of parallel processes (default: 4, can be overridden via PARALLEL_JOBS env var)
     # Adjust based on your CPU cores and I/O capacity
-    PARALLEL_JOBS="${PARALLEL_JOBS:-4}"
+    PARALLEL_JOBS="${PARALLEL_JOBS:-8}"
     echo "Using ${PARALLEL_JOBS} parallel processes"
     echo ""
     

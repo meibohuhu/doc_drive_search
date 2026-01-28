@@ -305,7 +305,7 @@ class DrivingModel(pl.LightningModule):
         
         # Print predictions and losses (every 1000 steps to avoid too much output)
         current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
-        if current_step % 10 == 0:
+        if current_step % 1000 == 0:
             print(f"\n{'='*60}")
             print(f"Global Step {current_step}")
             print(f"{'='*60}")

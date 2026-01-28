@@ -11,23 +11,23 @@
 
 set -e
 
-# Activate conda environment
-# Try different conda paths
-if [ -f ~/miniconda3/etc/profile.d/conda.sh ]; then
-    source ~/miniconda3/etc/profile.d/conda.sh
-elif [ -f ~/anaconda3/etc/profile.d/conda.sh ]; then
-    source ~/anaconda3/etc/profile.d/conda.sh
-elif [ -f /opt/conda/etc/profile.d/conda.sh ]; then
-    source /opt/conda/etc/profile.d/conda.sh
-fi
+# # Activate conda environment
+# # Try different conda paths
+# if [ -f ~/miniconda3/etc/profile.d/conda.sh ]; then
+#     source ~/miniconda3/etc/profile.d/conda.sh
+# elif [ -f ~/anaconda3/etc/profile.d/conda.sh ]; then
+#     source ~/anaconda3/etc/profile.d/conda.sh
+# elif [ -f /opt/conda/etc/profile.d/conda.sh ]; then
+#     source /opt/conda/etc/profile.d/conda.sh
+# fi
 
-conda activate simlingo || {
-    echo "Warning: Could not activate simlingo environment, trying to use pip installed packages"
-}
+# conda activate simlingo || {
+#     echo "Warning: Could not activate simlingo environment, trying to use pip installed packages"
+# }
 
 # Set dataset directory
-DATASET_DIR="${DATASET_DIR:-/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo}"
-
+DATASET_DIR="${DATASET_DIR:-/mnt/localssd/simlingo}"
+# VIDEO_OUTPUT_DIR="${VIDEO_OUTPUT_DIR:-/mnt/localssd/sign_mllm}"  # 视频输出目录
 # Determine what to download based on argument
 DOWNLOAD_TYPE="${1:-training}"
 

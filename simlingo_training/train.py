@@ -4,7 +4,9 @@ import hydra
 from omegaconf import OmegaConf
 import torch
 import wandb
-
+os.environ["WANDB_DISABLED"] = "true"
+os.environ["WANDB_MODE"] = "disabled"
+os.environ["WANDB_SILENT"] = "true"
 from deepspeed.utils.zero_to_fp32 import get_fp32_state_dict_from_zero_checkpoint
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer
