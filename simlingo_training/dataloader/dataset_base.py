@@ -248,7 +248,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
             elif self.split == "val":
                 route_dirs = route_dirs[int(split_percentage * len(route_dirs)):]
         
-        total_routes += len(route_dirs)
+        # total_routes += len(route_dirs)   #### mh 20260128 删除重复这行
         
         # route_dirs = route_dirs[:100]
         print(f'Use {len(route_dirs)} routes.')

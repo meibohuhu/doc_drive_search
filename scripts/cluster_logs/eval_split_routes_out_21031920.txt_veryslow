@@ -1,0 +1,17 @@
+==========================================
+JOB ID: 21031920
+Processing all routes in: /home/mh2803/projects/simlingo/Bench2Drive/leaderboard/data/split
+Seed: 1
+Checkpoint: /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt
+==========================================
+libjpeg-turbo not available via spack
+Using conda libjpeg from /home/mh2803/miniconda3/envs/simlingo/lib
+Found 2 route files to process
+
+
+==========================================
+[1/2] Processing Route 212
+==========================================
+Route file: /home/mh2803/projects/simlingo/Bench2Drive/leaderboard/data/split/bench2drive_212.xml
+Port: 20000, TM Port: 30000
+[Route 212] Starting evaluation on port 20000...
