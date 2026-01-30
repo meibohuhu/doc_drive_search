@@ -6,7 +6,10 @@ from torch import Tensor, nn
 
 from simlingo_training.utils.custom_types import DrivingExample
 
-
+# mh 20260130: 类似 DETR：
+# Learnable query tokens = object queries
+# LLM = Transformer encoder（学习 tokens 与视觉的关系）
+# Adapter heads = prediction heads（解码为最终预测）
 def cross_track_error(points: Tensor, path: Tensor):
     """
     Computes the cross track error between a set of points and a path.

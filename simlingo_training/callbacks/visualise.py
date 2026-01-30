@@ -1,3 +1,4 @@
+import os
 import textwrap
 from functools import wraps
 from typing import Any, Callable, Dict
@@ -155,14 +156,23 @@ class VisualiseCallback(Callback):
         if not pl_module.logger:
             return
 
-        if 'waypoints' in name:
-            waypoint_vis, prompt_img = visualise_waypoints(batch, waypoints, language_pred=language_pred)
-        elif 'route' in name:
-            waypoint_vis, prompt_img = visualise_waypoints(batch, waypoints, language_pred=language_pred, route=True)
-        pl_module.logger.log_image(
-            f"visualise/{name}", images=[Image.fromarray(waypoint_vis), prompt_img], step=trainer.global_step
-        )
-        plt.close("all")
+        # mh 20260130: Fix 字体问题: Only log images if logger supports it (e.g., WandbLogger)
+        # CSVLogger doesn't support log_image, so skip visualization in that case
+        if not hasattr(pl_module.logger, 'log_image'):
+            return
+
+        try:
+            if 'waypoints' in name:
+                waypoint_vis, prompt_img = visualise_waypoints(batch, waypoints, language_pred=language_pred)
+            elif 'route' in name:
+                waypoint_vis, prompt_img = visualise_waypoints(batch, waypoints, language_pred=language_pred, route=True)
+            pl_module.logger.log_image(
+                f"visualise/{name}", images=[Image.fromarray(waypoint_vis), prompt_img], step=trainer.global_step
+            )
+            plt.close("all")
+        except Exception as e:
+            # Silently skip visualization if it fails (e.g., font issues, logger issues)
+            pass
 
 
 def fig_to_np(fig):
@@ -204,6 +214,18 @@ def visualise_waypoints(batch: DrivingExample, waypoints, route=False, language_
     white_pil = Image.new("RGB", (1024, 1024), "white")
     white_draw = ImageDraw.Draw(white_pil)
 
+    # mh 20260130: Fix 字体问题: Try to load custom font, fallback to default if not available
+    try:
+        font_path = f"{repo_root}/arial.ttf"
+        if os.path.exists(font_path):
+            font = ImageFont.truetype(font_path, 20)
+        else:
+            # Try to use default font
+            font = ImageFont.load_default()
+    except (OSError, IOError):
+        # Fallback to default font if truetype fails
+        font = ImageFont.load_default()
+
     # add space for text
     fig.subplots_adjust(hspace=0.8)
     y_curr = 10
@@ -217,9 +239,9 @@ def visualise_waypoints(batch: DrivingExample, waypoints, route=False, language_
             lines_wrap = len(textwrap.wrap(wrapped_text, width=80))
             lines_wrap_pred = len(textwrap.wrap(wrapped_pred_text, width=80))
         #### mh 20260125: add language prediction to the image
-            white_draw.text((10, y_curr), f'{i} GT: {wrapped_text}', fill="black", font=ImageFont.truetype(f"{repo_root}/arial.ttf", 20))
+            white_draw.text((10, y_curr), f'{i} GT: {wrapped_text}', fill="black", font=font)
             y_curr += 20*lines_wrap
-            white_draw.text((10, y_curr), f'{i} Pred: {wrapped_pred_text}', fill="black", font=ImageFont.truetype(f"{repo_root}/arial.ttf", 20))
+            white_draw.text((10, y_curr), f'{i} Pred: {wrapped_pred_text}', fill="black", font=font)
             y_curr += 20*lines_wrap_pred + 20
         ax = fig.add_subplot(rows, cols, i + 1)
         # Predicted waypoints

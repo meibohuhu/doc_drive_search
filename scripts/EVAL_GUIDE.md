@@ -1,6 +1,18 @@
 # Bench2Drive 本地评估指南（不使用 SLURM）
 
 ## 📋 快速开始
+1. CARLA提供: GPS位置, Speed, RGB图像, IMU
+   ↓
+2. RoutePlanner.run_step() → 计算target_point和command
+   ↓ target_point 和 command 不是 CARLA 直接提供，而是根据当前 GPS 位置和全局路径动态计算
+3. 构建模型输入: image + speed + (target_point或command)
+   ↓
+4. 模型预测: pred_route (20 waypoints) + pred_speed_wps (10 waypoints)
+   ↓
+5. control_pid() → 转换为steer, throttle, brake
+   ↓ 用 pred_route（20个waypoints）通过 LateralPIDController 计算 steer
+   ↓ 用 pred_speed_wps（10个waypoints）计算 desired_speed，再通过 PIDController 计算 throttle/brake
+7. 循环回到步骤1
 
 ### 1. 准备路由文件
 
@@ -72,57 +84,6 @@ cat eval_results/Bench2Drive/simlingo_mini.json
 python Bench2Drive/tools/merge_route_json.py -f eval_results/Bench2Drive/
 ```
 
-## 🆘 常见问题
-
-### 问题1：找不到路由文件
-
-**解决**：
-1. 从 Bench2Drive GitHub 下载路由文件
-2. 或使用 `prepare_routes_mini.py` 生成简化版本
-
-### 问题2：端口被占用
-
-**解决**：修改 `run_eval_local.sh` 中的端口号：
-```bash
-BASE_PORT=2001  # 改为其他端口
-BASE_TM_PORT=8001
-```
-
-### 问题3：CARLA 启动失败
-
-**解决**：
-- 检查 CARLA_ROOT 是否正确
-- 确保 GPU 可用：`nvidia-smi`
-- 清理旧的 CARLA 进程：`bash Bench2Drive/tools/clean_carla.sh`
-
-### 问题4：模型加载失败
-
-**解决**：
-- 检查模型路径是否正确
-- 确认模型文件完整：`ls -lh pretrained/simlingo/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt`
-
-## 📝 注意事项
-
-1. **GPU 内存**：每个评估任务需要约 15-20 GB 显存
-2. **CARLA 自动启动**：脚本会自动启动 CARLA 服务器，无需手动启动
-3. **评估时间**：单个路由评估可能需要几分钟到十几分钟
-4. **并行评估**：如果需要并行评估多个路由，需要修改脚本使用不同端口
-
-## 🔄 评估多个路由
-
-如果需要评估多个路由，可以创建一个循环脚本：
-
-```bash
-#!/bin/bash
-# 评估多个路由
-
-ROUTES_DIR="/local1/mhu/doc_drive_search/Bench2Drive/leaderboard/data"
-for route_file in ${ROUTES_DIR}/*.xml; do
-    echo "评估路由: $route_file"
-    # 修改 run_eval_local.sh 中的 ROUTES 变量
-    # 或创建新的评估脚本
-done
-```
 
 
 

@@ -157,23 +157,60 @@ class DataModule(LightningDataModule):
             self.train_dataset = None
             if len(datasets) > 0:
                 
+                # Print bucket statistics before filtering
+                print(f"\n{'='*60}")
+                print("Bucket Statistics (before filtering):")
+                print(f"{'='*60}")
+                for bucket in bucket_list:
+                    num_samples_bucket = datasets[bucket].__len__()
+                    weight = sample_weights[bucket_list.index(bucket)]
+                    status = "✓" if num_samples_bucket > 0 else "✗ (empty)"
+                    print(f"  {bucket:30s}: {num_samples_bucket:6d} samples, weight={weight:.4f} {status}")
+                print(f"{'='*60}\n")
+                
                 # remove datasets with 0 samples
                 sample_weights = [sample_weights[i] for i, bucket in enumerate(bucket_list) if datasets[bucket].__len__() > 0]
                 bucket_list = [bucket for bucket in bucket_list if datasets[bucket].__len__() > 0]
                 if len(bucket_list) != len(datasets):
                     # print in red
-                    print(f"\033[91mDatasets with 0 samples: {set(datasets.keys()) - set(bucket_list)}\033[00m")
+                    empty_buckets = set(datasets.keys()) - set(bucket_list)
+                    print(f"\033[91mDatasets with 0 samples: {empty_buckets}\033[00m")
                     print(f"\033[91mContinue without this bucket.\033[00m")
                 datasets = {key: value for key, value in datasets.items() if value.__len__() > 0}
+
+                # mh 20260129: Re-normalize sample_weights after filtering out empty datasets  可能加上dreamer需要改变
+                # This ensures weights sum to 1.0 even if some datasets were removed
+                if len(sample_weights) > 0:
+                    sum_weights = sum(sample_weights)
+                    if sum_weights > 0:
+                        sample_weights = [w / sum_weights for w in sample_weights]
+                    else:
+                        # If all weights are 0, set equal weights
+                        sample_weights = [1.0 / len(sample_weights)] * len(sample_weights)
 
                 self.train_dataset = torch.utils.data.ConcatDataset([datasets[bucket] for bucket in bucket_list])
                 weights_train = [[sample_weights[i]] * datasets[bucket].__len__() for i, bucket in enumerate(bucket_list)]
                 weights_train = list(itertools.chain.from_iterable(weights_train))
                 num_samples_all = [datasets[bucket].__len__() // sample_weights[i] for i, bucket in enumerate(bucket_list)]
                 num_samples = int(min(num_samples_all))# * num_datasets
-                print(f"Num samples: {num_samples}")
-                if self.driving_dataset is not None:
-                    print(f"Num samples all: {datasets['all'].__len__()}")
+                
+                # mh 20260130: Print final bucket statistics after filtering and re-normalization
+                print(f"\n{'='*60}")
+                print("Final Bucket Configuration (after filtering):")
+                print(f"{'='*60}")
+                for i, bucket in enumerate(bucket_list):
+                    num_samples_bucket = datasets[bucket].__len__()
+                    weight = sample_weights[i]
+                    effective_samples = int(num_samples_bucket / weight) if weight > 0 else 0
+                    print(f"  {bucket:30s}: {num_samples_bucket:6d} samples, weight={weight:.4f}, effective={effective_samples:6d}")
+                print(f"{'='*60}")
+                print(f"Total training samples per epoch: {num_samples}")
+                print(f"Steps per epoch (batch_size={self.batch_size}): {num_samples // self.batch_size}")
+                if self.driving_dataset is not None and 'all' in datasets:
+                    print(f"  Note: 'all' bucket has {datasets['all'].__len__()} samples")
+                print(f"{'='*60}\n")
+                # mh 20260130: Print final bucket statistics after filtering and re-normalization
+                
                 self.sampler_train = torch.utils.data.WeightedRandomSampler(weights=weights_train, num_samples=num_samples, replacement=True)
 
             self.val_dataset = torch.utils.data.ConcatDataset(self.val_datasets)

@@ -862,7 +862,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             self.control = control
             
         ##### mh 20260125: not needed anymore?
-        # metric_info = self.get_metric_info()
+        # metric_info = self.get_metric_info()    ##### 只包含车辆状态（location, rotation, acceleration等）
         # self.metric_info[self.step] = metric_info
         # if self.save_path_metric is not None and self.step % 1 == 0:
         #         # metric info

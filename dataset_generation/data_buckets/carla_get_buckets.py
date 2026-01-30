@@ -260,7 +260,7 @@ class CARLA_Data(Dataset):
         ##########################
         ###### data buckets ######
         ##########################
-        data['buckets'] = []
+        data['buckets'] = []  ##### mh 20260126: 每个样本会被添加到多个 bucket（通过多次 data['buckets'].append()）
         remove_sample = False
 
         is_affecting_in_box = True

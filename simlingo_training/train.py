@@ -11,7 +11,7 @@ from deepspeed.utils.zero_to_fp32 import get_fp32_state_dict_from_zero_checkpoin
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelSummary, ThroughputMonitor
-from pytorch_lightning.loggers import CSVLogger, WandbLogger, TensorBoardLogger
+from pytorch_lightning.loggers import CSVLogger, WandbLogger
 from pytorch_lightning.strategies import DDPStrategy
 from transformers import AutoProcessor
 
@@ -94,19 +94,68 @@ def main(cfg: TrainConfig):
 
     # setup lightning logger
     loggers = []
-    # csvlogger = CSVLogger("log/", "CSVLogger")
-    # loggers.append(csvlogger)
-    # csvlogger = None
-
-    wandblogger = WandbLogger(
-        project=cfg.wandb_project,
-        id=cfg.wandb_name,
-        name=cfg.wandb_name,
-        config=OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True),
-        resume=resume_wandb,
+    
+    # mh 20260129: 加上csv_logger  Create log directory based on experiment name   
+    log_dir = f"logs/{cfg.wandb_name}_{cfg.name}"
+    os.makedirs(log_dir, exist_ok=True)
+    
+    # Add CSV logger for metrics (saves to CSV files)
+    csv_logger = CSVLogger(
+        save_dir=log_dir,
+        name="csv_logs",
+        version="",
     )
-    wandblogger.watch(model)
-    loggers.append(wandblogger)
+    # Override the experiment's save method to handle hyperparameters safely
+    # This prevents YAML serialization errors with complex objects
+    original_save = csv_logger.experiment.save
+    def safe_save():
+        try:
+            # Try to save with hyperparameters
+            original_save()
+        except (AttributeError, TypeError, ValueError) as e:
+            # If hyperparameters can't be serialized, save without them
+            print(f"Warning: Could not save hyperparameters to CSV logger: {e}")
+            print("  Continuing without hyperparameters (metrics will still be logged)")
+            # Clear hyperparameters to avoid future errors
+            if hasattr(csv_logger.experiment, 'hparams'):
+                csv_logger.experiment.hparams = {}
+            try:
+                original_save()
+            except:
+                pass
+    csv_logger.experiment.save = safe_save
+    
+    # Also override finalize to handle errors during cleanup
+    original_finalize = csv_logger.finalize
+    def safe_finalize(status):
+        try:
+            original_finalize(status)
+        except (AttributeError, TypeError, ValueError):
+            # Ignore errors during finalize
+            pass
+    csv_logger.finalize = safe_finalize
+    
+    loggers.append(csv_logger)
+    print(f"CSV logger initialized: {log_dir}/csv_logs/")
+    
+    # Optionally keep WandbLogger if enable_wandb is True (but disabled by default)
+    if cfg.enable_wandb and not cfg.debug:
+        try:
+            wandblogger = WandbLogger(
+                project=cfg.wandb_project,
+                id=cfg.wandb_name,
+                name=cfg.wandb_name,
+                config=OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True),
+                resume=resume_wandb,
+            )
+            wandblogger.watch(model)
+            loggers.append(wandblogger)
+            print("Wandb logger initialized")
+        except Exception as e:
+            print(f"Warning: Failed to initialize WandbLogger: {e}")
+            print("Continuing with local loggers only")
+    
+    print(f"\nLogging to: {log_dir}")
 
     strategy = cfg.strategy
     if strategy == "deepspeed_stage_2":
@@ -117,15 +166,20 @@ def main(cfg: TrainConfig):
         # mh 20260125: 尽量不用 Enable find_unused_parameters to handle parameters not used in loss computation
         strategy = DDPStrategy(find_unused_parameters=True)
 
+
+    # Ensure checkpoint directory exists
+    checkpoint_dir = "./checkpoints"
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    # Normal mode: save checkpoint every N epochs
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         save_top_k=-1,
         monitor=None,
-        dirpath="./checkpoints",
+        dirpath=checkpoint_dir,
         filename="{epoch:03d}",
         save_last=True,
         every_n_epochs=cfg.val_every_n_epochs,
-        # every_n_train_steps=cfg.val_check_interval,
     )
+    print(f"✓ Checkpoint normal mode: saving every {cfg.val_every_n_epochs} epochs to {os.path.abspath(checkpoint_dir)}")
 
     lr_monitor = LearningRateMonitor(logging_interval='step')
     model_summary = ModelSummary(max_depth=3)
@@ -133,8 +187,22 @@ def main(cfg: TrainConfig):
         checkpoint_callback, 
         model_summary, 
         # ThroughputMonitor(batch_size_fn=lambda batch: batch.driving_input.camera_images.size(0)), 
-        VisualiseCallback(interval=1000, val_interval=1000)
     ]
+    
+    # mh 20260130: Add visualization callback only if WandbLogger is enabled (CSVLogger doesn't support images)
+    # Visualization helps debug training by showing predicted vs ground truth waypoints
+    # Set to False to disable visualization and speed up training
+    enable_visualization = cfg.enable_wandb and not cfg.debug
+    if enable_visualization:
+        # Check if any logger supports log_image
+        has_image_logger = any(hasattr(logger, 'log_image') for logger in loggers)
+        if has_image_logger:
+            callbacks.append(VisualiseCallback(interval=1000, val_interval=1000))
+            print("Visualization callback enabled (for debugging training progress)")
+        else:
+            print("Visualization disabled: no logger supports image logging (requires WandbLogger)")
+    else:
+        print("Visualization disabled: enable_wandb=False or debug mode")
     # Only add LearningRateMonitor if there's a logger and not in debug mode
     if not cfg.debug and len(loggers) > 0: 
         callbacks.append(lr_monitor)
@@ -165,7 +233,13 @@ def main(cfg: TrainConfig):
         )
 
     trainer.fit(model, data_module, ckpt_path=resume_path)
-    wandb.finish()
-
+    
+    # mh 20260130: Finish wandb if it was used
+    if cfg.enable_wandb and not cfg.debug:
+        try:
+            wandb.finish()
+        except:
+            pass
+    
 if __name__ == "__main__":
     main()

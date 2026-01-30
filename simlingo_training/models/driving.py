@@ -239,27 +239,27 @@ class DrivingModel(pl.LightningModule):
         )
         attention_mask = adaptor_mask
 
-        # Print input before LLM (every 100 steps to avoid too much output)
-        current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
-        if current_step % 100 == 0:
-            print(f"\n{'='*60}")
-            print(f"[Input Before LLM] - Global Step {current_step}")
-            print(f"{'='*60}")
-            print(f"  Adaptor embeddings shape: {adaptor_embeds.shape}")
-            print(f"  Input embeddings shape: {input_embeds.shape}")
-            print(f"  Attention mask shape: {attention_mask.shape}")
-            print(f"  Input dtype: {input_embeds.dtype}")
-            print(f"  Adaptor embeddings range: [{adaptor_embeds.min().item():.4f}, {adaptor_embeds.max().item():.4f}]")
-            print(f"  Input embeddings range: [{input_embeds.min().item():.4f}, {input_embeds.max().item():.4f}]")
-            print(f"  Input embeddings mean: {input_embeds.mean().item():.4f}, std: {input_embeds.std().item():.4f}")
-            if 'language_inputs' in adaptor_dict:
-                language_inputs = adaptor_dict['language_inputs']
-                if isinstance(language_inputs, list):
-                    print(f"  Language inputs (list of {len(language_inputs)} tensors)")
-                    for i, lang_inp in enumerate(language_inputs[:3]):  # Print first 3
-                        print(f"    Language input {i} shape: {lang_inp.shape}")
-                else:
-                    print(f"  Language inputs shape: {language_inputs.shape}")
+        # # Print input before LLM (every 100 steps to avoid too much output)
+        # current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
+        # if current_step % 100 == 0:
+        #     print(f"\n{'='*60}")
+        #     print(f"[Input Before LLM] - Global Step {current_step}")
+        #     print(f"{'='*60}")
+        #     print(f"  Adaptor embeddings shape: {adaptor_embeds.shape}")
+        #     print(f"  Input embeddings shape: {input_embeds.shape}")
+        #     print(f"  Attention mask shape: {attention_mask.shape}")
+        #     print(f"  Input dtype: {input_embeds.dtype}")
+        #     print(f"  Adaptor embeddings range: [{adaptor_embeds.min().item():.4f}, {adaptor_embeds.max().item():.4f}]")
+        #     print(f"  Input embeddings range: [{input_embeds.min().item():.4f}, {input_embeds.max().item():.4f}]")
+        #     print(f"  Input embeddings mean: {input_embeds.mean().item():.4f}, std: {input_embeds.std().item():.4f}")
+        #     if 'language_inputs' in adaptor_dict:
+        #         language_inputs = adaptor_dict['language_inputs']
+        #         if isinstance(language_inputs, list):
+        #             print(f"  Language inputs (list of {len(language_inputs)} tensors)")
+        #             for i, lang_inp in enumerate(language_inputs[:3]):  # Print first 3
+        #                 print(f"    Language input {i} shape: {lang_inp.shape}")
+        #         else:
+        #             print(f"  Language inputs shape: {language_inputs.shape}")
 
         outputs = self.language_model.model(
             attention_mask=attention_mask,
@@ -303,26 +303,26 @@ class DrivingModel(pl.LightningModule):
         
         pred_labels = {k:v for k, v in loss_dict.items() if not k.endswith("loss") and not k.endswith("log")}
         
-        # Print predictions and losses (every 1000 steps to avoid too much output)
-        current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
-        if current_step % 1000 == 0:
-            print(f"\n{'='*60}")
-            print(f"Global Step {current_step}")
-            print(f"{'='*60}")
+        # # mh 20260129: Print predictions and losses (every 1000 steps to avoid too much output)
+        # current_step = getattr(self.trainer, 'global_step', 0) if hasattr(self, 'trainer') and self.trainer else 0
+        # if current_step % 1000 == 0:
+        #     print(f"\n{'='*60}")
+        #     print(f"Global Step {current_step}")
+        #     print(f"{'='*60}")
             
-            # Print losses
-            print("\n[Losses]")
-            for loss_key, loss_val in loss_dict_only_losses.items():
-                if isinstance(loss_val, tuple):
-                    loss_val_cpu = loss_val[0].detach().cpu()
-                    loss_count = loss_val[1].detach().cpu() if len(loss_val) > 1 else None
-                    if loss_count is not None:
-                        print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape}, count: {loss_count.sum().item()})")
-                    else:
-                        print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape})")
-                else:
-                    loss_val_cpu = loss_val.detach().cpu()
-                    print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape})")
+        #     # Print losses
+        #     print("\n[Losses]")
+        #     for loss_key, loss_val in loss_dict_only_losses.items():
+        #         if isinstance(loss_val, tuple):
+        #             loss_val_cpu = loss_val[0].detach().cpu()
+        #             loss_count = loss_val[1].detach().cpu() if len(loss_val) > 1 else None
+        #             if loss_count is not None:
+        #                 print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape}, count: {loss_count.sum().item()})")
+        #             else:
+        #                 print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape})")
+        #         else:
+        #             loss_val_cpu = loss_val.detach().cpu()
+        #             print(f"  {loss_key}: {loss_val_cpu.mean().item():.6f} (shape: {loss_val_cpu.shape})")
             
             # # Print predictions and labels
             # print("\n[Predictions & Labels]")
@@ -803,8 +803,10 @@ class DrivingModel(pl.LightningModule):
     def log_training_output(self, training_output: TrainingOutput, mode: str, dataset: Optional[str] = None):
         losses = {k: n.detach() for k, n in training_output.loss_averages.items()}
         counts = {k: n.detach().sum() for k, n in training_output.loss_counts.items()}
-        losses["loss"] = training_output.loss.detach()
-        counts["loss"] = 1  # loss is already averaged
+        # Don't log total loss here - it's already logged automatically by PyTorch Lightning  mh 20260129: 不记录total loss
+        # from the training_step return value, and also manually logged as train/loss
+        # losses["loss"] = training_output.loss.detach()
+        # counts["loss"] = 1  # loss is already averaged
         for k, v in sorted(losses.items()):
             log_key = f"{mode}_losses/{k}"
             self.log(log_key, v, batch_size=counts[k], sync_dist=True, add_dataloader_idx=False)
@@ -821,6 +823,8 @@ class DrivingModel(pl.LightningModule):
             max_steps = self.trainer.estimated_stepping_batches
         else:
             max_steps = self.trainer.max_steps
+
+        print(f"Training Max steps: {max_steps}")
         scheduler = torch.optim.lr_scheduler.OneCycleLR(
             optimizer, max_lr=self.lr, total_steps=max_steps, pct_start=self.pct_start, verbose=False
         )

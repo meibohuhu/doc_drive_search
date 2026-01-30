@@ -153,6 +153,9 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
 
 
 
+        # Initialize run_id_dict - empty if bucket_name is "all", populated otherwise
+        run_id_dict = {}
+        
         if not self.bucket_name == "all":
             ## mh 20260125: Handle both absolute and relative paths for bucket_path
             if os.path.isabs(self.bucket_path):
@@ -166,9 +169,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
             bucket_run_ids = None
 
             # TODO: this is stupid that its manual, should change bucket names to match the saved dict with pathes
-            if self.bucket_name == "all":
-                pass
-            elif self.bucket_name == 'acceleration_negative_5':
+            if self.bucket_name == 'acceleration_negative_5':
                 bucket_run_ids = bucket_dict['acceleration_-5']# + bucket_dict['acceleration_-20'] + bucket_dict['acceleration_-40']
             elif self.bucket_name == "acceleration_negative_1":
                 bucket_run_ids = bucket_dict['acceleration_-1']
@@ -191,10 +192,19 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                     raise ValueError(f"Bucket name {self.bucket_name} not found.")
                 bucket_run_ids = bucket_dict[self.bucket_name]
 
-            run_id_dict = {}
             if bucket_run_ids is not None:
+                # mh 20260129: Replace the old database path with the actual data_path
+                # Bucket file paths are like: database/simlingo_v2_2025_01_10/data/simlingo/...
+                # Actual data paths are like: data/simlingo_dataset/database/simlingo_extracted/data/simlingo/...
+                # We need to replace 'database/simlingo_v2_2025_01_10' with the actual data_path
+                if os.path.isabs(self.data_path):
+                    data_path_for_replace = self.data_path
+                else:
+                    data_path_for_replace = os.path.join(repo_path, self.data_path)
+                
                 for run_id in bucket_run_ids:
-                    run_id = run_id.replace('database/simlingo_v2_2025_01_10', self.bucket_path)
+                    # Replace the old database path with the actual data_path
+                    run_id = run_id.replace('database/simlingo_v2_2025_01_10', data_path_for_replace)
                     run_id_path = Path(run_id)
                     run_id_parent = run_id_path.parent
                     run_id_name = run_id_path.name
