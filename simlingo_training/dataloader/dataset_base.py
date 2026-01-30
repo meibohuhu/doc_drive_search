@@ -210,9 +210,9 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                     run_id_name = run_id_path.name
                     # mh 20260125 Handle both absolute and relative paths
                     if os.path.isabs(str(run_id_parent)):
-                        run_id_absolut = str(run_id_parent)
+                        run_id_absolut = os.path.normpath(str(run_id_parent))
                     else:
-                        run_id_absolut = os.path.join(repo_path, str(run_id_parent))
+                        run_id_absolut = os.path.normpath(os.path.join(repo_path, str(run_id_parent)))
                     if run_id_absolut not in run_id_dict:
                         run_id_dict[run_id_absolut] = [run_id_name]
                     else:
@@ -334,8 +334,9 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                  
                 if self.bucket_name is not None and self.bucket_name != "all":
                     measurement_file_path = Path(measurement_file)
-                    if str(measurement_file_path.parent) in run_id_dict:
-                        if measurement_file_path.name not in run_id_dict[str(measurement_file_path.parent)]:
+                    measurement_parent_normalized = os.path.normpath(str(measurement_file_path.parent))
+                    if measurement_parent_normalized in run_id_dict:
+                        if measurement_file_path.name not in run_id_dict[measurement_parent_normalized]:
                             if "measurement_file_not_in_bucket" not in fail_reasons:
                                 fail_reasons["measurement_file_not_in_bucket"] = 1
                             else:
