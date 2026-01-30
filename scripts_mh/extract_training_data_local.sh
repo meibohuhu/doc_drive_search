@@ -27,8 +27,8 @@ set -e
 # }
 
 # Set directories
-COMPRESSED_DIR="${COMPRESSED_DIR:-/mnt/localssd/simlingo}"
-EXTRACTED_DIR="${EXTRACTED_DIR:-/mnt/localssd/simlingo_extracted}"
+COMPRESSED_DIR="${COMPRESSED_DIR:-/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo}"
+EXTRACTED_DIR="${EXTRACTED_DIR:-/shared/rc/llm-gen-agent/mhu/simlingo_dataset/database/simlingo_extracted_test}"
 
 # Determine extraction mode based on arguments
 EXTRACT_MODE="training"  # default: training
@@ -241,7 +241,7 @@ else
     
     # Set number of parallel processes (default: 4, can be overridden via PARALLEL_JOBS env var)
     # Adjust based on your CPU cores and I/O capacity
-    PARALLEL_JOBS="${PARALLEL_JOBS:-8}"
+    PARALLEL_JOBS="${PARALLEL_JOBS:-4}"
     echo "Using ${PARALLEL_JOBS} parallel processes"
     echo ""
     
