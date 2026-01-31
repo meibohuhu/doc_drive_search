@@ -117,7 +117,7 @@ extract_file() {
     local counter=$2
     local total=$3
     local filename=$(basename "$file")
-    local error_log="/home/mh2803/projects/simlingo/scripts_mh/extract_error_${filename//[^a-zA-Z0-9]/_}.log"
+    local error_log="/code/doc_drive_search/scripts_mh/extract_error_${filename//[^a-zA-Z0-9]/_}.log"
     
     if [ -n "$counter" ] && [ -n "$total" ]; then
         echo "[${counter}/${total}] Starting: ${filename}"

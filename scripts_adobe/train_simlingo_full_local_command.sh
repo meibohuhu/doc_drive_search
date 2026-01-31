@@ -33,7 +33,7 @@ TRAIN_ARGS="${@:-experiment=adobe_training_full_command}"
 # 3. 默认使用 GPU 0
 
 # 先尝试从 TRAIN_ARGS 中解析 gpus= 参数（支持数字或逗号分隔列表）
-GPU_IDS=""
+GPU_IDS="0,1,2,3,4,5,6,7"
 if echo "${TRAIN_ARGS}" | grep -q -E 'gpus=[0-9,]+'; then
     GPU_PARAM=$(echo "${TRAIN_ARGS}" | grep -o -E 'gpus=[0-9,]+' | head -n1 | cut -d'=' -f2)
     if echo "${GPU_PARAM}" | grep -q ','; then
@@ -52,7 +52,7 @@ if echo "${TRAIN_ARGS}" | grep -q -E 'gpus=[0-9,]+'; then
 fi
 
 # 如果外部环境变量 CUDA_VISIBLE_DEVICES 被设置，则用它覆盖（支持 "0,2" 列表）
-GPU_LIST_ENV=${CUDA_VISIBLE_DEVICES:-0,1,2,3}
+GPU_LIST_ENV=${CUDA_VISIBLE_DEVICES:-0,1,2,3,4,5,6,7}
 if [ -n "${GPU_LIST_ENV}" ]; then
     GPU_IDS="${GPU_LIST_ENV}"
     NUM_DEVICES=$(echo "${GPU_IDS}" | tr ',' '\n' | wc -l)

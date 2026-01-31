@@ -1,7 +1,7 @@
 # @package _global_
 # 本地训练配置（用于小规模数据集） carla_bucket_v12_dreamer
 defaults:
-  - /data_module: carla_no_buckets
+  - /data_module: carla_bucket_v12
   - /model/vision_model: vlm 
   - /data_module/base_dataset: dataset
 
@@ -40,12 +40,12 @@ model:
 #     use_safety_flag: True
 
 data_module:
-  batch_size: 8  # 根据GPU显存调整（8GB显存建议2，16GB建议4-6）
+  batch_size: 12  # 根据GPU显存调整（8GB显存建议2，16GB建议4-6）
   num_workers: 16  # 根据CPU核心数调整
   base_dataset:
     # 修改为你的数据集路径（相对于项目根目录）
-    data_path: /mnt/localssd/simlingo_extracted
-    bucket_path: data/simlingo_dataset/database/bucketsv2_simlingo
+    data_path: /mnt/localssd/simlingo_extracted/
+    bucket_path: /code/doc_drive_search/data/
     pred_len: 11
     cut_bottom_quarter: True
     use_commentary: False
@@ -60,12 +60,12 @@ data_module:
     use_town13: True
     use_safety_flag: True
 
-max_epochs: 15
-val_every_n_epochs: 3
+max_epochs: 14
+val_every_n_epochs: 2
 
 gpus: 1  # 单GPU训练
 seed: 42
-name: adobe_training_full_command
+name: adobe_training_full_command_0130
 enable_wandb: True  # 启用 wandb
 
 hydra:
