@@ -82,13 +82,20 @@ echo "接受 ToS..."
 $HOME/anaconda3/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
 $HOME/anaconda3/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 
+# 永久初始化conda（在创建环境之前）
+echo "正在永久启用conda..."
+$HOME/anaconda3/bin/conda init bash
+
+# 重新初始化conda以便在当前脚本中使用
+eval "$($HOME/anaconda3/bin/conda shell.bash hook)"
+
 echo "正在创建simlingo环境..."
-# 检查环境是否已存在
-if conda env list | grep -q "^simlingo "; then
+# 检查环境是否已存在（使用完整路径确保可用）
+if $HOME/anaconda3/bin/conda env list | grep -q "^simlingo "; then
     echo "环境 simlingo 已存在，跳过创建"
 else
     echo "正在创建新环境 simlingo..."
-    # 进入项目目录（假设simlingo项目在 //code/doc_drive_search）
+    # 进入项目目录
     cd /code/doc_drive_search
     
     # 使用 environment_simplified.yaml 创建环境
@@ -105,34 +112,57 @@ echo "正在进入项目目录..."
 cd /code/doc_drive_search
 
 echo "正在激活simlingo环境..."
-# 激活环境
+# 激活环境（使用source方式确保在脚本中生效）
+source $HOME/anaconda3/etc/profile.d/conda.sh
 conda activate simlingo
+
+# 验证环境已激活
+if [ "$CONDA_DEFAULT_ENV" != "simlingo" ]; then
+    echo "⚠️  警告：环境激活可能失败，尝试使用备用方法..."
+    source activate simlingo || {
+        echo "❌ 无法激活simlingo环境，请手动检查"
+        exit 1
+    }
+fi
+
+echo "当前conda环境: $CONDA_DEFAULT_ENV"
 
 # 注意：PyTorch 2.2.0 已包含在 environment_simplified.yaml 中，无需单独安装
 
+echo "正在安装flash-attn..."
+pip install flash-attn --no-build-isolation
 
+echo "正在清理pip缓存..."
 pip cache purge
-
 
 # 设置环境变量
 echo "正在设置环境变量..."
-export PYTHONPATH="/home/mh2803/projects/simlingo:${PYTHONPATH:-}"
+# 修正PYTHONPATH路径：项目在 /code/doc_drive_search
+export PYTHONPATH="/code/doc_drive_search:${PYTHONPATH:-}"
 export TOKENIZERS_PARALLELISM=false
 export OMP_NUM_THREADS=8
 
 # 添加到bashrc以便永久生效
-if ! grep -q "export PYTHONPATH.*simlingo" ~/.bashrc 2>/dev/null; then
+if ! grep -q "export PYTHONPATH.*doc_drive_search" ~/.bashrc 2>/dev/null; then
     echo "" >> ~/.bashrc
     echo "# SimLingo environment" >> ~/.bashrc
-    echo "export PYTHONPATH=\"/home/mh2803/projects/simlingo:\${PYTHONPATH:-}\"" >> ~/.bashrc
+    echo "export PYTHONPATH=\"/code/doc_drive_search:\${PYTHONPATH:-}\"" >> ~/.bashrc
     echo "export TOKENIZERS_PARALLELISM=false" >> ~/.bashrc
+    echo "export OMP_NUM_THREADS=8" >> ~/.bashrc
+    # 添加conda初始化（如果还没有）
+    if ! grep -q "conda initialize" ~/.bashrc 2>/dev/null; then
+        echo "" >> ~/.bashrc
+        echo "# >>> conda initialize >>>" >> ~/.bashrc
+        echo "# !! Contents within this block are managed by 'conda init' !!" >> ~/.bashrc
+        echo "eval \"\$($HOME/anaconda3/bin/conda shell.bash hook)\"" >> ~/.bashrc
+        echo "# <<< conda initialize <<<" >> ~/.bashrc
+    fi
 fi
 
 echo "设置完成！"
-
-# enable conda env  ############################################################################### 
-
-# 永久初始化conda并激活base环境
-echo "正在永久启用conda..."
-$HOME/anaconda3/bin/conda init bash
-exec bash
+echo "当前环境信息："
+echo "  - Conda环境: $CONDA_DEFAULT_ENV"
+echo "  - Python路径: $(which python)"
+echo "  - PYTHONPATH: $PYTHONPATH"
+echo ""
+echo "提示：如果在新终端中使用，请运行: source ~/.bashrc"

@@ -24,12 +24,12 @@ export PYTHONPATH=${PROJECT_ROOT}:${PYTHONPATH}  # 添加 PROJECT_ROOT 以便导
 export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla:${PYTHONPATH}
 
 # 评估配置
-BASE_PORT=2000
-BASE_TM_PORT=8000
+BASE_PORT=20001
+BASE_TM_PORT=30001
 TRAFFIC_MANAGER_SEED=1  # 添加traffic manager seed，与官方脚本一致
 IS_BENCH2DRIVE=True
 # ROUTES='/local1/mhu/doc_drive_search/leaderboard_backup/data/bench2drive_split/bench2drive_199.xml'  #  bench2drive_mini_10
-ROUTES=${WORK_DIR}/leaderboard/data/bench2drive_2.xml  #  bench2drive_mini_10
+ROUTES='/local1/mhu/doc_drive_search/Bench2Drive/leaderboard/bench2drive_split/bench2drive_02.xml'  #  bench2drive_mini_10
 TEAM_AGENT=${PROJECT_ROOT}/team_code/agent_simlingo.py
 TEAM_CONFIG=${PROJECT_ROOT}/pretrained/simlingo/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt
 CHECKPOINT_ENDPOINT=${PROJECT_ROOT}/eval_results/Bench2Drive/simlingo_mini.json

@@ -32,6 +32,11 @@
 ## 脚本期望的数据格式
 
 脚本期望一个名为 `step_logs.json` 的文件，格式如下：
+predicted_waypoints: 模型预测的waypoints（车辆坐标系）
+actual_command: 实际command（从self.last_command_tmp获取）
+current_heading: 当前heading（从compass获取，已归一化到[-π, π]）
+is_in_junction: 是否在junction内（command 1,2,3表示在junction附近）
+metadata: 包含location、speed、target_point等额外信息
 
 ```json
 [

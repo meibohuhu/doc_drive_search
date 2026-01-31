@@ -322,6 +322,8 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self._route_planner.set_route(self._global_plan, True)
         self.initialized = True
         self.metric_info = {}
+        # Initialize step logs for command alignment evaluation
+        self.step_logs = []
 
     def sensors(self):
         sensors = []
@@ -862,14 +864,70 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             self.control = control
             
         ##### mh 20260125: not needed anymore?
-        # metric_info = self.get_metric_info()    ##### 只包含车辆状态（location, rotation, acceleration等）
-        # self.metric_info[self.step] = metric_info
-        # if self.save_path_metric is not None and self.step % 1 == 0:
-        #         # metric info
-        #         outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
-        #         json.dump(self.metric_info, outfile, indent=4)
-        #         outfile.close()
-            # 在return之前添加
+        metric_info = self.get_metric_info()    ##### 只包含车辆状态（location, rotation, acceleration等）
+        self.metric_info[self.step] = metric_info
+        if self.save_path_metric is not None and self.step % 1 == 0:
+                # metric info
+                outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
+                json.dump(self.metric_info, outfile, indent=4)
+                outfile.close()
+        
+        # Save step log for command alignment evaluation
+        if hasattr(self, 'step_logs') and pred_route is not None:
+            # Get predicted waypoints (vehicle coordinate system)
+            predicted_waypoints = pred_route[0].detach().cpu().numpy().tolist()
+            
+            # Get actual command (use last_command_tmp which is the current command from route planner)
+            actual_command = self.last_command_tmp.value if hasattr(self.last_command_tmp, 'value') else (self.commands[-1] if len(self.commands) > 0 else 4)
+            
+            # Get current heading from compass (in radians)
+            current_heading = tick_data.get('compass', 0.0)
+            # compass is already normalized angle, but we need to ensure it's in [-pi, pi]
+            if isinstance(current_heading, (list, np.ndarray)):
+                current_heading = current_heading[-1] if len(current_heading) > 0 else 0.0
+            current_heading = t_u.normalize_angle(float(current_heading))
+            
+            # Determine if in junction: command 1, 2, 3 typically indicate junction-related commands
+            is_in_junction = actual_command in [1, 2, 3]
+            
+            # Get metadata (optional additional information)
+            gps_data = tick_data.get('gps', [0.0, 0.0])
+            if isinstance(gps_data, np.ndarray):
+                gps_data = gps_data.tolist()
+            elif not isinstance(gps_data, list):
+                gps_data = [0.0, 0.0]
+            
+            target_point_data = tick_data.get('target_point', None)
+            if target_point_data is not None and hasattr(target_point_data, 'cpu'):
+                target_point_data = target_point_data.cpu().numpy().tolist() if hasattr(target_point_data, 'cpu') else None
+            
+            metadata = {
+                'location': gps_data,
+                'speed': float(gt_velocity.item()) if hasattr(gt_velocity, 'item') else float(gt_velocity),
+                'target_point': target_point_data,
+            }
+            
+            log_entry = {
+                'step': self.step,
+                'predicted_waypoints': predicted_waypoints,
+                'actual_command': int(actual_command),
+                'current_heading': float(current_heading),
+                'is_in_junction': is_in_junction,
+                'metadata': metadata
+            }
+            
+            self.step_logs.append(log_entry)
+            
+            # Periodically save step_logs.json (every N steps, same as metric_info.json)
+            # This prevents data loss if the program crashes
+            if hasattr(self, 'save_path') and self.step % 10 == 0:  # Save every step (can be changed to N steps)
+                step_logs_file = Path(self.save_path) / 'step_logs.json'
+                try:
+                    with open(step_logs_file, 'w') as f:
+                        json.dump(self.step_logs, f, indent=2)
+                except Exception as e:
+                    print(f"[WARNING] Failed to save step_logs.json at step {self.step}: {e}", flush=True)
+        
         total_time = time.time() - step_start  # ← 添加
         if self.step % 10 == 0:  # 每5步打印一次
             print(f"[TIMING] Step {self.step}: total={total_time:.2f}s, tick={tick_time:.2f}s, model={model_time:.2f}s, control={control_time:.2f}s", flush=True)
@@ -938,6 +996,17 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         The leaderboard client doesn't properly clear up the agent after the route finishes so we need to do it here.
         Also writes logging files to disk.
         """
+        
+        # Save step_logs.json for command alignment evaluation
+        # This ensures the final step and any steps not saved during periodic saves are saved
+        if hasattr(self, 'step_logs') and len(self.step_logs) > 0 and hasattr(self, 'save_path'):
+            step_logs_file = Path(self.save_path) / 'step_logs.json'
+            try:
+                with open(step_logs_file, 'w') as f:
+                    json.dump(self.step_logs, f, indent=2)
+                print(f"[INFO] Saved {len(self.step_logs)} step logs to {step_logs_file}", flush=True)
+            except Exception as e:
+                print(f"[WARNING] Failed to save step_logs.json: {e}", flush=True)
 
         del self.model
         del self.config

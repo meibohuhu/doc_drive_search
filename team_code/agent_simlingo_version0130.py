@@ -146,7 +146,28 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.route_planner_min_distance = 7.5
 
         #load config from .hydra folder
+        # Try to find config.yaml relative to checkpoint path
+        # Path structure: .../simlingo/checkpoints/epoch=XXX.ckpt/pytorch_model.pt
+        # Config should be at: .../simlingo/.hydra/config.yaml
         self.config_load_path = Path(self.config_path).parent.parent.parent / '.hydra' / 'config.yaml'
+        
+        # If config not found at relative path, try the pretrained models location
+        if not self.config_load_path.exists():
+            # Fallback to pretrained models config (for downloaded models)
+            pretrained_config_path = Path('/home/mh2803/projects/simlingo/pretrained_models/simlingo/.hydra/config.yaml')
+            if pretrained_config_path.exists():
+                self.config_load_path = pretrained_config_path
+                print(f"Config not found at relative path, using pretrained model config: {self.config_load_path}")
+            else:
+                raise FileNotFoundError(
+                    f"Config file not found at:\n"
+                    f"  - Relative path: {self.config_load_path}\n"
+                    f"  - Pretrained path: {pretrained_config_path}\n"
+                    f"  - Checkpoint path: {self.config_path}"
+                )
+        else:
+            print(f"Loading config from: {self.config_load_path}")
+        
         with open(self.config_load_path, 'r') as file:
             cfg = OmegaConf.load(file)
         self.cfg = cfg
@@ -322,14 +343,14 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                     }
             ]
 
-        if HD_VIZ:
+        if HD_VIZ:  ##### mh 20260125: update width and height
             sensors += [{
                                                 'type': 'sensor.camera.rgb',
                                                 'x': -5.5, 'y': 0.0, 'z':3.5,
                                                 'roll': 0.0, 'pitch': -15.0, 'yaw': 0.0,
                                                 # 'width': 960, 'height': 540, 'fov': 110,
                                                 # 'width': 1280, 'height': 720, 'fov': 120,
-                                                'width': 1920, 'height': 1080, 'fov': 110,
+                                                'width': 960, 'height': 540, 'fov': 110,
                                                 'id': 'rgb_viz'
             }]
 
@@ -684,6 +705,13 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
     @torch.no_grad()
     def run_step(self, input_data, timestamp, sensors=None):  # pylint: disable=locally-disabled, unused-argument
         self.step += 1
+        step_start = time.time()
+    # ===== 添加诊断代码 mh 20260125 =====
+        if self.step == 1:  # 只打印一次
+            print(f"[DIAGNOSTIC] Model device: {next(self.model.parameters()).device}", flush=True)
+            print(f"[DIAGNOSTIC] CUDA available: {torch.cuda.is_available()}", flush=True)
+            print(f"[DIAGNOSTIC] Current device: {torch.cuda.current_device()}", flush=True)
+        # ===== 诊断代码结束 =====
 
         if not self.initialized:
             self._init()
@@ -691,41 +719,46 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             self.control = control
             tick_data = self.tick(input_data)
             return control
-
+        # Need to run this every step for GPS filtering
+        tick_start = time.time()  # ← 添加
         # Need to run this every step for GPS filtering
         tick_data = self.tick(input_data)
+        tick_time = time.time() - tick_start  # ← 添加
 
         # initialize DrivingInput with dict self.DrivingInput
         model_input = DrivingInput(**self.DrivingInput)
         
-        # # Print model input (simplified)
-        # if model_input.prompt is not None and hasattr(model_input.prompt, 'language_string') and len(model_input.prompt.language_string) > 0:
-        #     prompt_text = model_input.prompt.language_string[0]
-        # else:
-        #     prompt_text = "N/A"
-        # speed_val = model_input.vehicle_speed.item() if model_input.vehicle_speed is not None else 0.0
-        # target_pt = model_input.target_point.cpu().numpy()[0] if model_input.target_point is not None else None
+        # if self.step%5 == 0:
+        #     # Print model input (simplified)
+        #     if model_input.prompt is not None and hasattr(model_input.prompt, 'language_string') and len(model_input.prompt.language_string) > 0:
+        #         prompt_text = model_input.prompt.language_string[0]
+        #     else:
+        #         prompt_text = "N/A"
+        #     speed_val = model_input.vehicle_speed.item() if model_input.vehicle_speed is not None else 0.0
+        #     target_pt = model_input.target_point.cpu().numpy()[0] if model_input.target_point is not None else None
+        #     print(f"\n[Step {self.step}] Input: speed={speed_val:.1f}m/s, target_point={target_pt}, prompt='...{prompt_text[-100:]}'")
         
-        # print(f"\n[Step {self.step}] Input: speed={speed_val:.1f}m/s, target_point={target_pt}, prompt='...{prompt_text[-100:]}'")
-        
+        model_start = time.time()  # ← 添加
         pred_speed_wps, pred_route, language = self.model(model_input)   #### pred_route 是预测的路径点
         pred_speed_wps = pred_speed_wps.float() if pred_speed_wps is not None else None
         pred_route = pred_route.float() if pred_route is not None else None
-        
-        # # Print model output
-        # if pred_route is not None:
-        #     route_np = pred_route[0].detach().cpu().numpy()
-        #     print(f"[Step {self.step}] Output: pred_route shape={pred_route.shape}, first_3_waypoints={route_np[:3].tolist()}")
-        # if pred_speed_wps is not None:
-        #     speed_wps_np = pred_speed_wps[0].detach().cpu().numpy()
-        #     print(f"[Step {self.step}] Output: pred_speed_wps shape={pred_speed_wps.shape}, first_3_waypoints={speed_wps_np[:3].tolist()}")
-        # if language is not None:
-        #     print(f"[Step {self.step}] Output: language='{language[0][-100:]}...'")
+        model_time = time.time() - model_start  # ← 添加
+
+        # if self.step%5 == 0:
+        #     # Print model output
+        #     if pred_route is not None:
+        #         route_np = pred_route[0].detach().cpu().numpy()
+        #         print(f"[Step {self.step}] Output: pred_route shape={pred_route.shape}, first_3_waypoints={route_np[:6].tolist()}")
+        #     if pred_speed_wps is not None:
+        #         speed_wps_np = pred_speed_wps[0].detach().cpu().numpy()
+        #         print(f"[Step {self.step}] Output: pred_speed_wps shape={pred_speed_wps.shape}, first_3_waypoints={speed_wps_np[:3].tolist()}")
+        #     if language is not None:
+        #         print(f"[Step {self.step}] Output: language='{language[0][-100:]}...'")
 
         # prepare velocity input
         gt_velocity = tick_data['speed']
 
-        if DEBUG and self.step%5 == 0:
+        if DEBUG and self.step%10 == 0:
             tvec = None
             rvec = None
 
@@ -799,9 +832,10 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             # save
             image.save(f"{self.save_path_img}/{self.step}.png")
 
+        control_start = time.time()  # ← 添加
         ### 通过 PID 控制器将预测的 waypoints 转换为控制命令：
         steer, throttle, brake = self.control_pid(pred_route, gt_velocity, pred_speed_wps)
-
+        control_time = time.time() - control_start  # ← 添加
         # # 0.1 is just an arbitrary low number to threshold when the car is stopped
         if gt_velocity < 0.1:
             self.stuck_detector += 1
@@ -827,14 +861,19 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         else:
             self.control = control
             
-        metric_info = self.get_metric_info()
-        self.metric_info[self.step] = metric_info
-        if self.save_path_metric is not None and self.step % 1 == 0:
-                # metric info
-                outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
-                json.dump(self.metric_info, outfile, indent=4)
-                outfile.close()
-
+        ##### mh 20260125: not needed anymore?
+        # metric_info = self.get_metric_info()    ##### 只包含车辆状态（location, rotation, acceleration等）
+        # self.metric_info[self.step] = metric_info
+        # if self.save_path_metric is not None and self.step % 1 == 0:
+        #         # metric info
+        #         outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
+        #         json.dump(self.metric_info, outfile, indent=4)
+        #         outfile.close()
+            # 在return之前添加
+        total_time = time.time() - step_start  # ← 添加
+        if self.step % 10 == 0:  # 每5步打印一次
+            print(f"[TIMING] Step {self.step}: total={total_time:.2f}s, tick={tick_time:.2f}s, model={model_time:.2f}s, control={control_time:.2f}s", flush=True)
+    
         return control
 
     def control_pid(self, route_waypoints, velocity, speed_waypoints):
@@ -902,9 +941,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 
         del self.model
         del self.config
-        # Check if encoder key exists before accessing it
-        if hasattr(self.cfg.data_module, 'encoder') and self.cfg.data_module.encoder == 'llavanext':
-            del self.processor
+        # # Check if encoder key exists before accessing it     mh 20260125: not needed anymore?
+        # if hasattr(self.cfg.data_module, 'encoder') and self.cfg.data_module.encoder == 'llavanext':
+        #     del self.processor
 
 
 # Filter Functions
