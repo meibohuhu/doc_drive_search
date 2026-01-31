@@ -52,7 +52,7 @@ if echo "${TRAIN_ARGS}" | grep -q -E 'gpus=[0-9,]+'; then
 fi
 
 # 如果外部环境变量 CUDA_VISIBLE_DEVICES 被设置，则用它覆盖（支持 "0,2" 列表）
-GPU_LIST_ENV=${CUDA_VISIBLE_DEVICES:-4,5,6,7}
+GPU_LIST_ENV=${CUDA_VISIBLE_DEVICES:-0,1,2,3,4,5,6,7}
 if [ -n "${GPU_LIST_ENV}" ]; then
     GPU_IDS="${GPU_LIST_ENV}"
     NUM_DEVICES=$(echo "${GPU_IDS}" | tr ',' '\n' | wc -l)
