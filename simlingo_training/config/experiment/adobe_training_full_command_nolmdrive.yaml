@@ -1,0 +1,77 @@
+# @package _global_
+# 本地训练配置（用于小规模数据集） carla_bucket_v12_dreamer
+defaults:
+  - /data_module: carla_bucket_v12
+  - /model/vision_model: vlm 
+  - /data_module/base_dataset: dataset
+
+model:
+  lr: 3e-5
+  predict_route_as_wps: True
+  speed_wps_mode: 2d
+  language_model:
+    variant: 'OpenGVLab/InternVL2-1B'
+    lora: True
+    lora_alpha: 32
+    lora_r: 16
+    lora_dropout: 0.1
+  vision_model:
+    variant: 'OpenGVLab/InternVL2-1B'
+
+# data_module:
+#   batch_size: 4  # 根据GPU显存调整（8GB显存建议2，16GB建议4-6）
+#   num_workers: 4  # 根据CPU核心数调整
+#   base_dataset:
+#     # 修改为你的数据集路径（相对于项目根目录）
+#     data_path: data/simlingo_dataset/database/simlingo_extracted
+#     bucket_path: data/simlingo_dataset/database/bucketsv2_simlingo
+#     pred_len: 11
+#     cut_bottom_quarter: True
+#     use_commentary: True
+#     use_qa: True
+#     qa_augmentation: True
+#     img_shift_augmentation: True
+#     img_shift_augmentation_prob: 0.5
+#     hist_len: 1
+#     route_as: target_point_command
+#     use_lmdrive_commands: True
+#     use_old_towns: True
+#     use_town13: True
+#     use_safety_flag: True
+
+data_module:
+  batch_size: 12  # 根据GPU显存调整（8GB显存建议2，16GB建议4-6）
+  num_workers: 16  # 根据CPU核心数调整
+  base_dataset:
+    # 修改为你的数据集路径（相对于项目根目录）
+    data_path: /mnt/localssd/simlingo_extracted/
+    bucket_path: /code/doc_drive_search/data/
+    pred_len: 11
+    cut_bottom_quarter: True
+    use_commentary: False
+    use_qa: False
+    qa_augmentation: False
+    img_shift_augmentation: True
+    img_shift_augmentation_prob: 0.5
+    hist_len: 1
+    route_as: command
+    use_lmdrive_commands: False
+    use_old_towns: True
+    use_town13: True
+    use_safety_flag: True
+
+max_epochs: 16
+val_every_n_epochs: 2
+
+gpus: 1  # 单GPU训练
+seed: 42
+name: adobe_training_full_command_0130
+enable_wandb: True  # 启用 wandb
+
+hydra:
+  run:
+    dir: outputs/${wandb_name}_${name}
+
+
+
+
