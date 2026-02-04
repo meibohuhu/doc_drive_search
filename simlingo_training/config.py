@@ -56,7 +56,7 @@ class DatasetBaseConfig:
     use_only_old_towns: bool = False
     use_town13: bool = False
 
-    skip_first_n_frames: int = 10
+    skip_first_n_frames: int = 5
     pred_len: int = 11 # including the current time step
     hist_len: int = 1 # including the current time step
     hist_len_commentary: int = 5 # including the current time step

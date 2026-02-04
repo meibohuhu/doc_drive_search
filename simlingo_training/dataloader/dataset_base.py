@@ -581,12 +581,13 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                 lmdrive_command = lmdrive_command.replace('[x]', str(dist_to_command))
                 lm_command = f'Command: {lmdrive_command}.'
                 target_options.append(lm_command)
-        
+        print(f"target_options: {target_options}")
         return target_options, placeholder_values
 
-#### 把一条不等距的轨迹 points → 变成等间距采样的 route， 不理解
+#### 把一条不等距的轨迹 points → 变成等间距采样的 route， route_adjusted 从 (0,0) 开始，例如 [[0.0, 0.0], [1.0, -0.0001], [2.0, -0.0002], ...]
+#### 原本的routes可能从7或者别的数字开始
     def equal_spacing_route(self, points):
-        route = np.concatenate((np.zeros_like(points[:1]),  points)) # Add 0 to front  人为地在轨迹前面加一个起点 (0,0)
+        route = np.concatenate((np.zeros_like(points[:1]),  points)) # Add 0  人为地在轨迹前面加一个起点 (0,0)
         shift = np.roll(route, 1, axis=0) # Shift by 1
         shift[0] = shift[1] # Set wraparound value to 0
 

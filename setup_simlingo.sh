@@ -129,9 +129,6 @@ echo "当前conda环境: $CONDA_DEFAULT_ENV"
 
 # 注意：PyTorch 2.2.0 已包含在 environment_simplified.yaml 中，无需单独安装
 
-echo "正在安装flash-attn..."
-pip install flash-attn --no-build-isolation
-
 echo "正在清理pip缓存..."
 pip cache purge
 

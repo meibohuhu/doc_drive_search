@@ -1,7 +1,7 @@
 # @package _global_
 # 本地训练配置（用于小规模数据集） carla_bucket_v12_dreamer
 defaults:
-  - /data_module: carla_bucket_v12
+  - /data_module: carla_no_buckets
   - /model/vision_model: vlm 
   - /data_module/base_dataset: dataset
 
@@ -42,6 +42,7 @@ model:
 data_module:
   batch_size: 6  # 根据GPU显存调整（8GB显存建议2，16GB建议4-6）
   num_workers: 4  # 根据CPU核心数调整
+  dreamer_dataset: null  # 禁用dreamer模式，因为数据集中没有dreamer目录
   base_dataset:
     # 修改为你的数据集路径（相对于项目根目录）
     data_path: data/simlingo_dataset/database/simlingo_extracted
