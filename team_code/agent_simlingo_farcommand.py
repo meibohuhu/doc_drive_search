@@ -58,7 +58,7 @@ def get_entry_point():
     return 'LingoAgent'
 
 
-DEBUG = False # saves images during evaluation
+DEBUG = True # saves images during evaluation
 HD_VIZ = False
 USE_UKF = True
 
@@ -143,7 +143,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.dense_route_planner_max_distance = 50.0
         self.log_route_planner_min_distance = 4.0
         self.route_planner_max_distance = 50.0
-        self.route_planner_min_distance = 7.5
+        self.route_planner_min_distance = 0.5
 
         #load config from .hydra folder
         # Try to find config.yaml relative to checkpoint path
@@ -322,6 +322,8 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self._route_planner.set_route(self._global_plan, True)
         self.initialized = True
         self.metric_info = {}
+        # Initialize prompt logs for each step
+        self.prompt_logs = []
 
     def sensors(self):
         sensors = []
@@ -506,6 +508,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 # 全局路径 (密集路径点序列，每个点有 RoadOption 命令)
 #   ↓ RoutePlanner.run_step() 根据当前位置
 # target_point + command (当前目标点和命令)
+        # Initialize prompt_tp to ensure it's always defined
+        prompt_tp = "Command: follow the road."
+        
         if self.config.eval_route_as == 'target_point' or self.config.eval_route_as == 'target_point_command':
             target_points = [ego_target_point, ego_next_target_point]
             self.target_points = target_points.copy()
@@ -549,24 +554,57 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                 prompt_tp = f'Command: {lmdrive_command}'
                 
             else:
-                command = map_command[far_command]
-                next_command = map_command[next_far_command]
+                # Determine which command to use
+                # If we're in the process of going through an intersection/turn (far_command==4 but last_command was intersection/turn),
+                # continue using the last_command until we're past the intersection
+                intersection_transition_threshold = 15.0  # meters: continue using last_command if within this distance
+                
                 if self.last_command in [1, 2, 3] and far_command == 4:
-                    next_command = command
-                    command = map_command[self.last_command]
-                    
+                    # Still in intersection/turn process, use last_command
+                    # Optionally check distance: if still close to intersection, continue using last_command
+                    if dist_to_command < intersection_transition_threshold:
+                        command = map_command[self.last_command]
+                        use_last_command = True
+                    else:
+                        # Far enough from intersection, switch to follow the road
+                        command = map_command[far_command]
+                        use_last_command = False
+                else:
+                    # Normal case: use current far_command
+                    command = map_command[far_command]
+                    use_last_command = False
+                
+                # Get next_command text
+                # If we're using last_command (in intersection transition), next_command should be far_command (4)
+                if use_last_command:
+                    next_command = map_command[far_command]  # Use far_command (4) as next_command
+                else:
+                    next_command = map_command[next_far_command]  # Normal case: use next_far_command
+                
+                # Determine if we should merge next_command
                 if command != next_command:
-                        next_command = f' then {next_command}'
+                    next_command_str = f' then {next_command}'
                 else:
-                        next_command = ''
-                        
-                if far_command == 4:
-                        prompt_tp = f'Command: {command}{next_command}.'
+                    next_command_str = ''
+                
+                # Print debug info
+                far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
+                next_cmd_value = next_far_command.value if hasattr(next_far_command, 'value') else next_far_command
+                print(f"[DEBUG] Step {self.step}: far_command={far_cmd_value}, next_far_command={next_cmd_value}, last_command={self.last_command}, use_last_command={use_last_command}, command='{command}', next_command='{next_command}', dist_to_command={dist_to_command}", flush=True)
+                
+                # Generate prompt with command and optionally next_command
+                if use_last_command or far_command == 4:
+                    # When using last_command or far_command is 4, don't include distance
+                    prompt_tp = f'Command: {command}{next_command_str}.'
                 else:
-                        prompt_tp = f'Command: {command} in {dist_to_command} meter{next_command}.'
+                    # Include distance for intersection/turn commands
+                    prompt_tp = f'Command: {command} in {dist_to_command} meter{next_command_str}.'
                 
         else:
-            result['route'] = route_img
+            # For other eval_route_as modes, use default prompt_tp (already initialized above)
+            # Note: route_img is not defined, this branch may need to be updated if needed
+            # result['route'] = route_img  # Commented out as route_img is not defined
+            pass
 
         if self.config.use_cot:
             prompt = f"Current speed: {speed} m/s. {prompt_tp} What should the ego do next?"
@@ -725,6 +763,14 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         tick_data = self.tick(input_data)
         tick_time = time.time() - tick_start  # ← 添加
 
+        # Log full prompt for this step
+        if hasattr(self, 'prompt') and self.prompt is not None:
+            prompt_log_entry = {
+                'step': self.step,
+                'full_prompt': self.prompt
+            }
+            self.prompt_logs.append(prompt_log_entry)
+
         # initialize DrivingInput with dict self.DrivingInput
         model_input = DrivingInput(**self.DrivingInput)
         
@@ -758,7 +804,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         # prepare velocity input
         gt_velocity = tick_data['speed']
 
-        if DEBUG and self.step%10 == 0:
+        if DEBUG and self.step%5 == 0:
             tvec = None
             rvec = None
 
@@ -869,7 +915,17 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         #         outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
         #         json.dump(self.metric_info, outfile, indent=4)
         #         outfile.close()
-            # 在return之前添加
+        
+        # Periodically save prompt logs (every 10 steps to prevent data loss)
+        if hasattr(self, 'prompt_logs') and hasattr(self, 'save_path') and self.save_path and self.step % 10 == 0:
+            try:
+                prompt_logs_file = Path(self.save_path) / 'prompt_logs.json'
+                with open(prompt_logs_file, 'w') as f:
+                    json.dump(self.prompt_logs, f, indent=2)
+            except Exception as e:
+                print(f"[WARNING] Failed to save prompt_logs.json at step {self.step}: {e}", flush=True)
+        
+        # 在return之前添加
         total_time = time.time() - step_start  # ← 添加
         if self.step % 10 == 0:  # 每5步打印一次
             print(f"[TIMING] Step {self.step}: total={total_time:.2f}s, tick={tick_time:.2f}s, model={model_time:.2f}s, control={control_time:.2f}s", flush=True)
@@ -938,6 +994,21 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         The leaderboard client doesn't properly clear up the agent after the route finishes so we need to do it here.
         Also writes logging files to disk.
         """
+        
+        # Save prompt logs for command alignment evaluation
+        # This ensures the final steps and any steps not saved during periodic saves are saved
+        if hasattr(self, 'prompt_logs') and len(self.prompt_logs) > 0 and hasattr(self, 'save_path') and self.save_path:
+            prompt_logs_file = Path(self.save_path) / 'prompt_logs.json'
+            try:
+                with open(prompt_logs_file, 'w') as f:
+                    json.dump(self.prompt_logs, f, indent=2)
+                print(f"[INFO] Saved {len(self.prompt_logs)} prompt logs to {prompt_logs_file}", flush=True)
+            except Exception as e:
+                print(f"[WARNING] Failed to save prompt_logs.json: {e}", flush=True)
+        
+        # Clear prompt_logs after saving to prevent accumulation across routes
+        if hasattr(self, 'prompt_logs'):
+            self.prompt_logs = []
 
         del self.model
         del self.config

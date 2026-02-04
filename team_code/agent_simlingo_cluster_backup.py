@@ -26,12 +26,6 @@ from filterpy.kalman import MerweScaledSigmaPoints
 from filterpy.kalman import UnscentedKalmanFilter as UKF
 from hydra.utils import get_original_cwd, to_absolute_path
 from leaderboard.autoagents import autonomous_agent
-try:
-    from leaderboard.autoagents.agent_wrapper import AgentError
-except ImportError:
-    # Fallback if AgentError is not available
-    class AgentError(Exception):
-        pass
 from omegaconf import OmegaConf
 from PIL import Image, ImageDraw, ImageFont
 from scipy.interpolate import PchipInterpolator
@@ -205,8 +199,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.T = 1
         self.stuck_detector = 0
         self.force_move = 0
-        self.zero_speed_counter = 0  # Counter for consecutive steps with speed = 0
-        self.ZERO_SPEED_THRESHOLD = 800  # Maximum consecutive steps with speed = 0 before route failure
 
         self.commands = deque(maxlen=2)
         self.commands.append(4)
@@ -330,8 +322,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self._route_planner.set_route(self._global_plan, True)
         self.initialized = True
         self.metric_info = {}
-        # Reset zero speed counter for new route
-        self.zero_speed_counter = 0
 
     def sensors(self):
         sensors = []
@@ -772,30 +762,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 
         # prepare velocity input
         gt_velocity = tick_data['speed']
-        
-        # Check for zero speed failure condition
-        # If speed is 0 (or very close to 0) for more than ZERO_SPEED_THRESHOLD consecutive steps, fail the route
-        # Extract speed value from tensor
-        if isinstance(gt_velocity, torch.Tensor):
-            speed_value = float(gt_velocity[0].item() if gt_velocity.numel() > 0 else gt_velocity.item())
-        else:
-            speed_value = float(gt_velocity)
-        
-        if abs(speed_value) < 0.01:  # Speed is effectively 0
-            self.zero_speed_counter += 1
-            if self.zero_speed_counter >= self.ZERO_SPEED_THRESHOLD:
-                error_msg = f"Route failed: Vehicle has been stationary (speed=0) for {self.zero_speed_counter} consecutive steps (threshold: {self.ZERO_SPEED_THRESHOLD})"
-                print(f"\n\033[91m{error_msg}\033[0m", flush=True)
-                raise AgentError(error_msg)
-            # Print warning every 200 steps to track progress
-            if self.zero_speed_counter % 200 == 0:
-                print(f"[WARNING] Vehicle stationary for {self.zero_speed_counter}/{self.ZERO_SPEED_THRESHOLD} steps", flush=True)
-        else:
-            # Reset counter if speed is not zero
-            if self.zero_speed_counter > 0:
-                if self.step % 100 == 0:  # Print every 100 steps if recovering from zero speed
-                    print(f"[INFO] Recovered from zero speed after {self.zero_speed_counter} steps", flush=True)
-            self.zero_speed_counter = 0
 
         if DEBUG and self.step%10 == 0:
             tvec = None

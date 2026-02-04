@@ -245,10 +245,10 @@ class RoutePlanner(object):
 
             cumulative_distance += self.route_distances[i]
 
-            diff = self.route[i][0] - gps
+            diff = self.route[i][0] - gps ## # 计算当前路径点到车辆的距离
             distance = (diff[0]**2 + diff[1]**2)**0.5
 
-            if farthest_in_range < distance <= self.min_distance:
+            if farthest_in_range < distance <= self.min_distance:  ## # 找到在 min_distance 范围内且最远的点
                 farthest_in_range = distance
                 to_pop = i
 

@@ -9,7 +9,7 @@
 #SBATCH --output=/home/mh2803/projects/simlingo/scripts/cluster_logs/eval_out_%j.txt
 #SBATCH --account=llm-gen-agent
 #SBATCH --nodes=1
-#SBATCH --time=15:30:00  # 30 minutes for testing
+#SBATCH --time=00:15:00  # 30 minutes for testing
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --partition=tier3
@@ -21,15 +21,18 @@ ROUTE_ID="${2:-bench2drive220_part3}"  # Route ID from filename (e.g., bench2dri
 SEED="${3:-1}"
 # /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo
 CHECKPOINT="${4:-/shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt}"
-AGENT_FILE="/home/mh2803/projects/simlingo/team_code/agent_simlingo.py"
+AGENT_FILE="/home/mh2803/projects/simlingo/team_code/agent_simlingo_cluster.py"
 REPO_ROOT="/home/mh2803/projects/simlingo"
 CARLA_ROOT="${CARLA_ROOT:-/home/mh2803/software/carla0915}"  # Adjust if CARLA is installed elsewhere
 VIZ_PATH="${REPO_ROOT}/eval_results_rc/Bench2Drive/simlingo/bench2drive/${SEED}/viz/${ROUTE_ID}"
 RESULT_FILE="${REPO_ROOT}/eval_results_rc/Bench2Drive/simlingo/bench2drive/${SEED}/res/${ROUTE_ID}_res.json"
 
 # Ports for CARLA (adjust if needed, should be unique per job)
-PORT="${5:-20002}"
-TM_PORT="${6:-30002}"
+PORT="${5:-20005}"
+TM_PORT="${6:-30005}"
+
+# Resume option: if RESUME is set to "1" or "true", or if RESULT_FILE exists and is valid, enable resume
+RESUME_FLAG="${7:-true}"  # "auto", "1"/"true", or "0"/"false"
 
 echo "JOB ID $SLURM_JOB_ID"
 echo "Route: ${ROUTE_FILE}"
@@ -38,6 +41,7 @@ echo "Seed: ${SEED}"
 echo "Checkpoint: ${CHECKPOINT}"
 echo "CARLA Port: ${PORT}"
 echo "Traffic Manager Port: ${TM_PORT}"
+echo "Resume flag: ${RESUME_FLAG}"
 
 # Load spack modules (adjust based on your cluster setup)
 spack load /lhqcen5
@@ -123,6 +127,43 @@ export SAVE_PATH="${VIZ_PATH}"
 # Change to project directory
 cd "${REPO_ROOT}"
 
+# Determine if we should resume
+SHOULD_RESUME=false
+if [ "${RESUME_FLAG}" = "auto" ]; then
+    # Auto-detect: check if RESULT_FILE exists and is a valid JSON file
+    if [ -f "${RESULT_FILE}" ]; then
+        # Check if it's a valid JSON and contains checkpoint data
+        if python3 -c "import json; data = json.load(open('${RESULT_FILE}')); exit(0 if ('_checkpoint' in data or 'entry_status' in data) else 1)" 2>/dev/null; then
+            SHOULD_RESUME=true
+            echo "Auto-detected: Found existing checkpoint file, enabling resume mode"
+        else
+            echo "Auto-detected: Checkpoint file exists but is invalid, starting fresh"
+        fi
+    else
+        echo "Auto-detected: No checkpoint file found, starting fresh"
+    fi
+elif [ "${RESUME_FLAG}" = "1" ] || [ "${RESUME_FLAG}" = "true" ] || [ "${RESUME_FLAG}" = "True" ]; then
+    SHOULD_RESUME=true
+    echo "Resume mode explicitly enabled"
+elif [ "${RESUME_FLAG}" = "0" ] || [ "${RESUME_FLAG}" = "false" ] || [ "${RESUME_FLAG}" = "False" ]; then
+    SHOULD_RESUME=false
+    echo "Resume mode explicitly disabled"
+else
+    echo "Warning: Invalid resume flag '${RESUME_FLAG}', defaulting to no resume"
+    SHOULD_RESUME=false
+fi
+
+# Build command arguments
+# Note: argparse's type=bool converts any non-empty string to True, so we only pass --resume when needed
+RESUME_ARG=""
+if [ "${SHOULD_RESUME}" = true ]; then
+    RESUME_ARG="--resume=True"
+    echo "Will resume from checkpoint: ${RESULT_FILE}"
+else
+    # Don't pass --resume argument, use default (False)
+    echo "Will start fresh evaluation"
+fi
+
 # Run evaluation
 echo "Starting evaluation..."
 python -u "${REPO_ROOT}/Bench2Drive/leaderboard/leaderboard/leaderboard_evaluator.py" \
@@ -130,6 +171,7 @@ python -u "${REPO_ROOT}/Bench2Drive/leaderboard/leaderboard/leaderboard_evaluato
     --repetitions=1 \
     --track=SENSORS \
     --checkpoint="${RESULT_FILE}" \
+    ${RESUME_ARG} \
     --timeout=600 \
     --agent="${AGENT_FILE}" \
     --agent-config="${CHECKPOINT}" \

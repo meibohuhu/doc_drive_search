@@ -9,7 +9,12 @@ import json
 import numpy as np
 from pathlib import Path
 from typing import List, Dict
-from team_code.command_alignment_evaluator import CommandAlignmentEvaluator
+import sys
+import os
+
+# Add scripts directory to path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from command_alignment_evaluator import CommandAlignmentEvaluator
 import argparse
 
 

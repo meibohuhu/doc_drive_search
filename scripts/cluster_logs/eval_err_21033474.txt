@@ -1,8 +1,0 @@
-/home/mh2803/miniconda3/envs/simlingo/lib/python3.8/site-packages/scipy/optimize/_minpack_py.py:178: RuntimeWarning: The iteration is not making good progress, as measured by the 
-  improvement from the last ten iterations.
-  warnings.warn(msg, RuntimeWarning)
-/home/mh2803/miniconda3/envs/simlingo/lib/python3.8/site-packages/numpy/core/_methods.py:164: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
-  arr = asanyarray(a)
-terminate called after throwing an instance of 'carla::client::TimeoutException'
-  what():  time-out of 600000ms while waiting for the simulator, make sure the simulator is ready and connected to localhost:20002
-/var/spool/slurmd/job21033474/slurm_script: line 138: 2958330 Aborted                 (core dumped) python -u "${REPO_ROOT}/Bench2Drive/leaderboard/leaderboard/leaderboard_evaluator.py" --routes="${ROUTE_FILE}" --repetitions=1 --track=SENSORS --checkpoint="${RESULT_FILE}" --timeout=600 --agent="${AGENT_FILE}" --agent-config="${CHECKPOINT}" --traffic-manager-seed="${SEED}" --port="${PORT}" --traffic-manager-port="${TM_PORT}"
