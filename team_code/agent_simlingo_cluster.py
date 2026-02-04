@@ -836,39 +836,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                 for points_2d in pred_speed_wps_img_coords:
                         draw.ellipse((points_2d[0]-2, points_2d[1]-2, points_2d[0]+2, points_2d[1]+2), fill=(0, 255, 0, 255))
 
-            if language is not None:
-                # write the language to the bottom of the image
-                black_box = Image.new('RGBA', (W, 400), (0, 0, 0, 255))
-                # concatenate the images
-                image_all = Image.new('RGBA', (W, H+400))
-                image_all.paste(image, (0, 0))
-                image_all.paste(black_box, (0, H))
-                image = image_all
-                draw = ImageDraw.Draw(image)
-
-                if HD_VIZ:
-                    font_size = 50
-                    line_width = 60
-                    y_dist = 60
-                    y_start = H + 20
-                else:
-                    font_size = 20
-                    line_width = 100
-                    y_dist = 30
-                    y_start = H + 20
-                font = ImageFont.truetype("arial.ttf", font_size)
-                import textwrap
-                lines = textwrap.wrap(f"Prompt: {self.prompt}", width=line_width)
-                for idx, line in enumerate(lines):
-                        draw.text((10, y_start + y_dist*(idx)), line, font=font, fill=(255, 255, 255, 255))
-                
-                y_start = H + 20 + y_dist*(idx+1)
-
-                lines = textwrap.wrap(f"Answer: {language[0]}", width=line_width)
-                for idx, line in enumerate(lines):
-                        draw.text((10, y_start + y_dist*(idx)), line, font=font, fill=(255, 255, 255, 255))
-
-            # save
+            # save (removed text overlay, only save image with waypoints)
             image.save(f"{self.save_path_img}/{self.step}.png")
 
         control_start = time.time()  # ← 添加

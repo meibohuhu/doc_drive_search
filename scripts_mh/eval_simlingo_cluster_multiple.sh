@@ -17,11 +17,11 @@
 
 # Configuration - modify these variables as needed
 ROUTE_FILE="${1:-/home/mh2803/projects/simlingo/Bench2Drive/leaderboard/data/bench2drive_changelane.xml}"
-ROUTE_ID="${2:-bench2drive_multiple_changelane_targetpoint}"  # Route ID from filename (e.g., bench2drive_1.xml -> "1")
+ROUTE_ID="${2:-bench2drive_multiple_changelane_command}"  # Route ID from filename (e.g., bench2drive_1.xml -> "1")
 SEED="${3:-1}"
 # /shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo
 CHECKPOINT="${4:-/shared/rc/llm-gen-agent/mhu/pretrained_models/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt}"
-AGENT_FILE="/home/mh2803/projects/simlingo/team_code/agent_simlingo_cluster.py"
+AGENT_FILE="/home/mh2803/projects/simlingo/team_code/agent_simlingo.py"
 REPO_ROOT="/home/mh2803/projects/simlingo"
 CARLA_ROOT="${CARLA_ROOT:-/home/mh2803/software/carla0915}"  # Adjust if CARLA is installed elsewhere
 VIZ_PATH="${REPO_ROOT}/eval_results_rc/Bench2Drive/simlingo/bench2drive/${SEED}/viz/${ROUTE_ID}"

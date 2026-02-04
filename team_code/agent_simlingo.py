@@ -628,7 +628,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                 
                 # If command is 1 or 2 (go left/right) and distance > 19m, replace with follow the road
                 command_replaced = False
-                if not use_last_command and self.actual_command in [1, 2] and dist_to_command >= 19:
+                if not use_last_command and self.actual_command in [1, 2, 5, 6] and dist_to_command >= 19:
                     command = map_command[4]  # follow the road
                     # Update actual_command to 4 (follow the road)
                     self.actual_command = 4
