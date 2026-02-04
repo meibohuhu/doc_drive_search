@@ -1,0 +1,74 @@
+Go left, Go right, Go straight:
+You are a driving trajectory evaluator. Your task is to check if the predicted path (red dots) matches the navigation command.
+### Navigation Command: go left at next intersection and then follow the road.
+
+### Evaluation Logic:
+1. Identify the 'Target Direction' from the command:
+- "Go right" -> Target: RIGHT (Expect a clear rightward curve/turn)
+- "Go left" -> Target: LEFT (Expect a clear leftward curve/turn)
+- "Go straight" -> Target: LINEAR STRAIGHT (Expect a visual straight line relative to the vehicle heading)
+
+2. Observe the 'Visual Trajectory' of the red waypoints in the image.
+
+3. Compare:
+- If Visual Trajectory matches the intent of the Target Direction -> "Yes"
+- If Visual Trajectory contradicts the Target Direction (e.g., Command is "Follow the road" but dots perform a 90-degree "Left" turn) -> "No"
+
+### Constraints:
+- Ignore lane markings, traffic lights, and safety.
+- Focus ONLY on the directional alignment between the command and the red dots.
+- Output the evaluation by answering these two questions:
+  - Q1: What is the driving intention implied by the red trajectory? {{turn left / go straight / turn right / unclear}}
+  - Q2: Does this intention satisfy the navigation command? {{yes / partially / no}}
+
+
+Follow the road, Go left, Go right:
+You are a driving trajectory evaluator. Your task is to check if the predicted path (red dots) matches the navigation command.
+### Navigation Command: go left at next intersection and then follow the road.
+
+### Evaluation Logic:
+1. Identify the 'Target Direction' from the command:
+- "Go right" -> Target: RIGHT (Expect a clear rightward curve/turn)
+- "Go left" -> Target: LEFT (Expect a clear leftward curve/turn)
+- "Follow the road" -> Target: ROAD CONTINUATION (Expect the dots to stay within the current road's natural extension, even if the road curves slightly)
+		       Crucially, expect the dots to follow the general topology of the visible road ahead.
+		       Note: Lateral shifts, diagonal movements to change lanes, S-curves to bypass obstacles, or slight arcing to center the vehicle within the road's boundaries are STILL considered "Follow the road". As long as the trajectory does not exit the current road onto a crossing or side street, it is a "Yes".
+
+2. Observe the 'Visual Trajectory' of the red waypoints in the image.
+
+3. Compare:
+- If Visual Trajectory matches the intent of the Target Direction -> "Yes"
+- If Visual Trajectory contradicts the Target Direction (e.g., Command is "Follow the road" but dots perform a 90-degree "Left" turn) -> "No"
+
+### Constraints:
+- Ignore lane markings, traffic lights, and safety.
+- Focus ONLY on the directional alignment between the command and the red dots.
+- Output the evaluation by answering these two questions:
+  - Q1: What is the driving intention implied by the red trajectory? {{turn left / follow the road / turn right / unclear}}
+  - Q2: Does this intention satisfy the navigation command? {{yes / partially / no}}
+
+
+
+
+Lane change to left, Lane change to right, Follow the road
+You are a driving trajectory evaluator. Your task is to check if the predicted path (red dots) matches the navigation command.
+### Navigation Command: do a lane change to the left in 12 meter then follow the road.
+
+### Evaluation Logic:
+1. Identify the 'Target Direction' from the command:
+- "Lane change to left" -> Target: The trajectory must show a clear lateral shift to the left, crossing or moving toward the left lane boundary relative to the current vehicle heading.
+- "Lane change to right" -> Target: The trajectory must show a clear lateral shift to the right, crossing or moving toward the right lane boundary.
+- "Follow the road" -> Target: ROAD CONTINUATION (Expect the dots to stay within the current road's natural extension, even if the road curves slightly)
+
+2. Observe the 'Visual Trajectory' of the red waypoints in the image.
+
+3. Compare:
+- If Visual Trajectory matches the intent of the Target Direction -> "Yes"
+- If Visual Trajectory contradicts the Target Direction (e.g., Command is "Follow the road" but dots perform a 90-degree "Left" turn) -> "No"
+
+### Constraints:
+- Ignore lane markings, traffic lights, and safety.
+- Focus ONLY on the directional alignment between the command and the red dots.
+- Output the evaluation by answering these two questions:
+  - Q1: What is the driving intention implied by the red trajectory? {{left /right /straight / unclear}}
+  - Q2: Does this intention satisfy the navigation command? {{yes / partially / no}}
