@@ -24,12 +24,11 @@ export PYTHONPATH=${PROJECT_ROOT}:${PYTHONPATH}  # 添加 PROJECT_ROOT 以便导
 export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla:${PYTHONPATH}
 
 # 评估配置
-BASE_PORT=20001
-BASE_TM_PORT=30001
+BASE_PORT=2000
+BASE_TM_PORT=8000
 TRAFFIC_MANAGER_SEED=1  # 添加traffic manager seed，与官方脚本一致
 IS_BENCH2DRIVE=True
-# ROUTES='/local1/mhu/doc_drive_search/leaderboard_backup/data/bench2drive_split/bench2drive_199.xml'  #  bench2drive_mini_10
-ROUTES='/local1/mhu/doc_drive_search/Bench2Drive/leaderboard/bench2drive_split/bench2drive_02.xml'  #  bench2drive_mini_10
+ROUTES='/local1/mhu/doc_drive_search/leaderboard_backup/data/bench2drive_split/bench2drive_02.xml'  #  bench2drive_mini_10
 TEAM_AGENT=${PROJECT_ROOT}/team_code/agent_simlingo.py
 TEAM_CONFIG=${PROJECT_ROOT}/pretrained/simlingo/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt
 CHECKPOINT_ENDPOINT=${PROJECT_ROOT}/eval_results/Bench2Drive/simlingo_mini.json
@@ -116,7 +115,7 @@ EVAL_LOG="${SAVE_PATH}/eval_$(date +%Y%m%d_%H%M%S).log"
 echo "评估日志将保存到: ${EVAL_LOG}"
 echo ""
 
-CUDA_VISIBLE_DEVICES=${GPU_RANK} python -u ${WORK_DIR}/leaderboard/leaderboard/leaderboard_evaluator.py \
+CUDA_VISIBLE_DEVICES=${MODEL_GPU} python -u ${WORK_DIR}/leaderboard/leaderboard/leaderboard_evaluator.py \
     --routes="${ROUTES}" \
     --repetitions=1 \
     --track=SENSORS \
@@ -128,7 +127,7 @@ CUDA_VISIBLE_DEVICES=${GPU_RANK} python -u ${WORK_DIR}/leaderboard/leaderboard/l
     --port=${BASE_PORT} \
     --traffic-manager-port=${BASE_TM_PORT} \
     --traffic-manager-seed=${TRAFFIC_MANAGER_SEED} \
-    --gpu-rank=${GPU_RANK} \
+    --gpu-rank=${CARLA_GPU} \
     --timeout=600 2>&1 | tee "${EVAL_LOG}" || {  # timeout=600秒（10分钟），如果agent慢可以增加
     EVAL_EXIT_CODE=${PIPESTATUS[0]}
     echo ""

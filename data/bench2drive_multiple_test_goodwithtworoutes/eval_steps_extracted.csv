@@ -1,0 +1,623 @@
+route,step,far_command,next_far_command,last_command,use_last_command,actual_command,command,next_command,dist_to_command,command_replaced
+RouteScenario_1711,0,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,1,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,2,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,3,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,4,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,5,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,6,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,7,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,8,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,9,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,10,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,11,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,12,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,13,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,14,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,15,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,16,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,17,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,18,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,19,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,20,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,21,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,22,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,23,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,24,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,25,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,26,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,27,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,28,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,29,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,30,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,31,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,32,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,33,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,34,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,35,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,36,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,37,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,38,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,39,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,40,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,41,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,42,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,43,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,44,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,45,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,46,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,47,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,48,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,49,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,50,4,4,-1,False,4,follow the road,follow the road,47,False
+RouteScenario_1711,51,4,4,-1,False,4,follow the road,follow the road,47,False
+RouteScenario_1711,52,4,4,-1,False,4,follow the road,follow the road,47,False
+RouteScenario_1711,53,4,4,-1,False,4,follow the road,follow the road,47,False
+RouteScenario_1711,54,4,4,-1,False,4,follow the road,follow the road,47,False
+RouteScenario_1711,55,4,4,-1,False,4,follow the road,follow the road,46,False
+RouteScenario_1711,56,4,4,-1,False,4,follow the road,follow the road,46,False
+RouteScenario_1711,57,4,4,-1,False,4,follow the road,follow the road,46,False
+RouteScenario_1711,58,4,4,-1,False,4,follow the road,follow the road,46,False
+RouteScenario_1711,59,4,4,-1,False,4,follow the road,follow the road,46,False
+RouteScenario_1711,60,4,4,-1,False,4,follow the road,follow the road,45,False
+RouteScenario_1711,61,4,4,-1,False,4,follow the road,follow the road,45,False
+RouteScenario_1711,62,4,4,-1,False,4,follow the road,follow the road,45,False
+RouteScenario_1711,63,4,4,-1,False,4,follow the road,follow the road,45,False
+RouteScenario_1711,64,4,4,-1,False,4,follow the road,follow the road,44,False
+RouteScenario_1711,65,4,4,-1,False,4,follow the road,follow the road,44,False
+RouteScenario_1711,66,4,4,-1,False,4,follow the road,follow the road,44,False
+RouteScenario_1711,67,4,4,-1,False,4,follow the road,follow the road,44,False
+RouteScenario_1711,68,4,4,-1,False,4,follow the road,follow the road,43,False
+RouteScenario_1711,69,4,4,-1,False,4,follow the road,follow the road,43,False
+RouteScenario_1711,70,4,4,-1,False,4,follow the road,follow the road,43,False
+RouteScenario_1711,71,4,4,-1,False,4,follow the road,follow the road,42,False
+RouteScenario_1711,72,4,4,-1,False,4,follow the road,follow the road,42,False
+RouteScenario_1711,73,4,4,-1,False,4,follow the road,follow the road,41,False
+RouteScenario_1711,74,4,4,-1,False,4,follow the road,follow the road,41,False
+RouteScenario_1711,75,4,4,-1,False,4,follow the road,follow the road,41,False
+RouteScenario_1711,76,4,4,-1,False,4,follow the road,follow the road,40,False
+RouteScenario_1711,77,4,4,-1,False,4,follow the road,follow the road,40,False
+RouteScenario_1711,78,4,4,-1,False,4,follow the road,follow the road,39,False
+RouteScenario_1711,79,4,4,-1,False,4,follow the road,follow the road,39,False
+RouteScenario_1711,80,4,4,-1,False,4,follow the road,follow the road,38,False
+RouteScenario_1711,81,4,4,-1,False,4,follow the road,follow the road,38,False
+RouteScenario_1711,82,4,4,-1,False,4,follow the road,follow the road,37,False
+RouteScenario_1711,83,4,4,-1,False,4,follow the road,follow the road,37,False
+RouteScenario_1711,84,4,4,-1,False,4,follow the road,follow the road,36,False
+RouteScenario_1711,85,4,4,-1,False,4,follow the road,follow the road,36,False
+RouteScenario_1711,86,4,4,-1,False,4,follow the road,follow the road,35,False
+RouteScenario_1711,87,4,4,-1,False,4,follow the road,follow the road,35,False
+RouteScenario_1711,88,4,4,-1,False,4,follow the road,follow the road,34,False
+RouteScenario_1711,89,4,4,-1,False,4,follow the road,follow the road,33,False
+RouteScenario_1711,90,4,4,-1,False,4,follow the road,follow the road,33,False
+RouteScenario_1711,91,4,4,-1,False,4,follow the road,follow the road,32,False
+RouteScenario_1711,92,4,4,-1,False,4,follow the road,follow the road,31,False
+RouteScenario_1711,93,4,4,-1,False,4,follow the road,follow the road,31,False
+RouteScenario_1711,94,4,4,-1,False,4,follow the road,follow the road,30,False
+RouteScenario_1711,95,4,4,-1,False,4,follow the road,follow the road,30,False
+RouteScenario_1711,96,4,4,-1,False,4,follow the road,follow the road,29,False
+RouteScenario_1711,97,4,4,-1,False,4,follow the road,follow the road,28,False
+RouteScenario_1711,98,4,4,-1,False,4,follow the road,follow the road,28,False
+RouteScenario_1711,99,4,4,-1,False,4,follow the road,follow the road,27,False
+RouteScenario_1711,100,4,4,-1,False,4,follow the road,follow the road,27,False
+RouteScenario_1711,101,4,4,-1,False,4,follow the road,follow the road,26,False
+RouteScenario_1711,102,4,4,-1,False,4,follow the road,follow the road,26,False
+RouteScenario_1711,103,4,4,-1,False,4,follow the road,follow the road,25,False
+RouteScenario_1711,104,4,4,-1,False,4,follow the road,follow the road,25,False
+RouteScenario_1711,105,4,4,-1,False,4,follow the road,follow the road,24,False
+RouteScenario_1711,106,4,4,-1,False,4,follow the road,follow the road,24,False
+RouteScenario_1711,107,4,4,-1,False,4,follow the road,follow the road,24,False
+RouteScenario_1711,108,4,4,-1,False,4,follow the road,follow the road,23,False
+RouteScenario_1711,109,4,4,-1,False,4,follow the road,follow the road,23,False
+RouteScenario_1711,110,4,4,-1,False,4,follow the road,follow the road,22,False
+RouteScenario_1711,111,4,4,-1,False,4,follow the road,follow the road,22,False
+RouteScenario_1711,112,4,4,-1,False,4,follow the road,follow the road,22,False
+RouteScenario_1711,113,4,4,-1,False,4,follow the road,follow the road,22,False
+RouteScenario_1711,114,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,115,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,116,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,117,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,118,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,119,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,120,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,121,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,122,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,123,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,124,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,125,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,126,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,127,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,128,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,129,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,130,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,131,4,4,-1,False,4,follow the road,follow the road,19,False
+RouteScenario_1711,132,4,4,-1,False,4,follow the road,follow the road,19,False
+RouteScenario_1711,133,4,4,-1,False,4,follow the road,follow the road,19,False
+RouteScenario_1711,134,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,135,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,136,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,137,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,138,4,4,-1,False,4,follow the road,follow the road,17,False
+RouteScenario_1711,139,4,4,-1,False,4,follow the road,follow the road,17,False
+RouteScenario_1711,140,4,4,-1,False,4,follow the road,follow the road,17,False
+RouteScenario_1711,141,4,4,-1,False,4,follow the road,follow the road,16,False
+RouteScenario_1711,142,4,4,-1,False,4,follow the road,follow the road,16,False
+RouteScenario_1711,143,4,4,-1,False,4,follow the road,follow the road,15,False
+RouteScenario_1711,144,4,4,-1,False,4,follow the road,follow the road,15,False
+RouteScenario_1711,145,4,4,-1,False,4,follow the road,follow the road,15,False
+RouteScenario_1711,146,4,4,-1,False,4,follow the road,follow the road,14,False
+RouteScenario_1711,147,4,4,-1,False,4,follow the road,follow the road,14,False
+RouteScenario_1711,148,4,4,-1,False,4,follow the road,follow the road,13,False
+RouteScenario_1711,149,4,4,-1,False,4,follow the road,follow the road,13,False
+RouteScenario_1711,150,4,4,-1,False,4,follow the road,follow the road,12,False
+RouteScenario_1711,151,4,4,-1,False,4,follow the road,follow the road,12,False
+RouteScenario_1711,152,4,4,-1,False,4,follow the road,follow the road,11,False
+RouteScenario_1711,153,4,4,-1,False,4,follow the road,follow the road,11,False
+RouteScenario_1711,154,4,4,-1,False,4,follow the road,follow the road,10,False
+RouteScenario_1711,155,4,4,-1,False,4,follow the road,follow the road,10,False
+RouteScenario_1711,156,4,4,-1,False,4,follow the road,follow the road,9,False
+RouteScenario_1711,157,4,4,-1,False,4,follow the road,follow the road,9,False
+RouteScenario_1711,158,4,4,-1,False,4,follow the road,follow the road,8,False
+RouteScenario_1711,159,4,4,-1,False,4,follow the road,follow the road,8,False
+RouteScenario_1711,160,4,4,-1,False,4,follow the road,follow the road,7,False
+RouteScenario_1711,161,4,4,-1,False,4,follow the road,follow the road,7,False
+RouteScenario_1711,162,4,4,-1,False,4,follow the road,follow the road,7,False
+RouteScenario_1711,163,4,4,-1,False,4,follow the road,follow the road,6,False
+RouteScenario_1711,164,4,4,-1,False,4,follow the road,follow the road,6,False
+RouteScenario_1711,165,4,4,-1,False,4,follow the road,follow the road,6,False
+RouteScenario_1711,166,4,4,-1,False,4,follow the road,follow the road,5,False
+RouteScenario_1711,167,4,4,-1,False,4,follow the road,follow the road,5,False
+RouteScenario_1711,168,4,4,-1,False,4,follow the road,follow the road,5,False
+RouteScenario_1711,169,4,4,-1,False,4,follow the road,follow the road,4,False
+RouteScenario_1711,170,4,4,-1,False,4,follow the road,follow the road,4,False
+RouteScenario_1711,171,4,4,-1,False,4,follow the road,follow the road,4,False
+RouteScenario_1711,172,4,4,-1,False,4,follow the road,follow the road,3,False
+RouteScenario_1711,173,4,4,-1,False,4,follow the road,follow the road,3,False
+RouteScenario_1711,174,4,4,-1,False,4,follow the road,follow the road,2,False
+RouteScenario_1711,175,4,4,-1,False,4,follow the road,follow the road,2,False
+RouteScenario_1711,176,4,4,-1,False,4,follow the road,follow the road,2,False
+RouteScenario_1711,177,4,4,-1,False,4,follow the road,follow the road,1,False
+RouteScenario_1711,178,4,4,-1,False,4,follow the road,follow the road,52,False
+RouteScenario_1711,179,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,180,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,181,4,4,-1,False,4,follow the road,follow the road,51,False
+RouteScenario_1711,182,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,183,4,4,-1,False,4,follow the road,follow the road,50,False
+RouteScenario_1711,184,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,185,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,186,4,4,-1,False,4,follow the road,follow the road,49,False
+RouteScenario_1711,187,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,188,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,189,4,4,-1,False,4,follow the road,follow the road,48,False
+RouteScenario_1711,190,4,4,-1,False,4,follow the road,follow the road,47,False
+RouteScenario_1711,191,4,4,-1,False,4,follow the road,follow the road,47,False
+RouteScenario_1711,192,4,4,-1,False,4,follow the road,follow the road,47,False
+RouteScenario_1711,193,4,4,-1,False,4,follow the road,follow the road,46,False
+RouteScenario_1711,194,4,4,-1,False,4,follow the road,follow the road,46,False
+RouteScenario_1711,195,4,4,-1,False,4,follow the road,follow the road,46,False
+RouteScenario_1711,196,4,4,-1,False,4,follow the road,follow the road,45,False
+RouteScenario_1711,197,4,4,-1,False,4,follow the road,follow the road,45,False
+RouteScenario_1711,198,4,4,-1,False,4,follow the road,follow the road,45,False
+RouteScenario_1711,199,4,4,-1,False,4,follow the road,follow the road,45,False
+RouteScenario_1711,200,4,4,-1,False,4,follow the road,follow the road,44,False
+RouteScenario_1711,201,4,4,-1,False,4,follow the road,follow the road,44,False
+RouteScenario_1711,202,4,4,-1,False,4,follow the road,follow the road,44,False
+RouteScenario_1711,203,4,4,-1,False,4,follow the road,follow the road,43,False
+RouteScenario_1711,204,4,4,-1,False,4,follow the road,follow the road,43,False
+RouteScenario_1711,205,4,4,-1,False,4,follow the road,follow the road,43,False
+RouteScenario_1711,206,4,4,-1,False,4,follow the road,follow the road,42,False
+RouteScenario_1711,207,4,4,-1,False,4,follow the road,follow the road,42,False
+RouteScenario_1711,208,4,4,-1,False,4,follow the road,follow the road,42,False
+RouteScenario_1711,209,4,4,-1,False,4,follow the road,follow the road,41,False
+RouteScenario_1711,210,4,4,-1,False,4,follow the road,follow the road,41,False
+RouteScenario_1711,211,4,4,-1,False,4,follow the road,follow the road,41,False
+RouteScenario_1711,212,4,4,-1,False,4,follow the road,follow the road,40,False
+RouteScenario_1711,213,4,4,-1,False,4,follow the road,follow the road,40,False
+RouteScenario_1711,214,4,4,-1,False,4,follow the road,follow the road,40,False
+RouteScenario_1711,215,4,4,-1,False,4,follow the road,follow the road,40,False
+RouteScenario_1711,216,4,4,-1,False,4,follow the road,follow the road,40,False
+RouteScenario_1711,217,4,4,-1,False,4,follow the road,follow the road,40,False
+RouteScenario_1711,218,4,4,-1,False,4,follow the road,follow the road,39,False
+RouteScenario_1711,219,4,4,-1,False,4,follow the road,follow the road,39,False
+RouteScenario_1711,220,4,4,-1,False,4,follow the road,follow the road,39,False
+RouteScenario_1711,221,4,4,-1,False,4,follow the road,follow the road,38,False
+RouteScenario_1711,222,4,4,-1,False,4,follow the road,follow the road,38,False
+RouteScenario_1711,223,4,4,-1,False,4,follow the road,follow the road,38,False
+RouteScenario_1711,224,4,4,-1,False,4,follow the road,follow the road,38,False
+RouteScenario_1711,225,4,4,-1,False,4,follow the road,follow the road,37,False
+RouteScenario_1711,226,4,4,-1,False,4,follow the road,follow the road,37,False
+RouteScenario_1711,227,4,4,-1,False,4,follow the road,follow the road,37,False
+RouteScenario_1711,228,4,4,-1,False,4,follow the road,follow the road,36,False
+RouteScenario_1711,229,4,4,-1,False,4,follow the road,follow the road,36,False
+RouteScenario_1711,230,4,4,-1,False,4,follow the road,follow the road,35,False
+RouteScenario_1711,231,4,4,-1,False,4,follow the road,follow the road,35,False
+RouteScenario_1711,232,4,4,-1,False,4,follow the road,follow the road,34,False
+RouteScenario_1711,233,4,4,-1,False,4,follow the road,follow the road,34,False
+RouteScenario_1711,234,4,4,-1,False,4,follow the road,follow the road,34,False
+RouteScenario_1711,235,4,4,-1,False,4,follow the road,follow the road,33,False
+RouteScenario_1711,236,4,4,-1,False,4,follow the road,follow the road,33,False
+RouteScenario_1711,237,4,4,-1,False,4,follow the road,follow the road,32,False
+RouteScenario_1711,238,4,4,-1,False,4,follow the road,follow the road,32,False
+RouteScenario_1711,239,4,4,-1,False,4,follow the road,follow the road,31,False
+RouteScenario_1711,240,4,4,-1,False,4,follow the road,follow the road,31,False
+RouteScenario_1711,241,4,4,-1,False,4,follow the road,follow the road,30,False
+RouteScenario_1711,242,4,4,-1,False,4,follow the road,follow the road,30,False
+RouteScenario_1711,243,4,4,-1,False,4,follow the road,follow the road,29,False
+RouteScenario_1711,244,4,4,-1,False,4,follow the road,follow the road,29,False
+RouteScenario_1711,245,4,4,-1,False,4,follow the road,follow the road,28,False
+RouteScenario_1711,246,4,4,-1,False,4,follow the road,follow the road,27,False
+RouteScenario_1711,247,4,4,-1,False,4,follow the road,follow the road,27,False
+RouteScenario_1711,248,4,4,-1,False,4,follow the road,follow the road,26,False
+RouteScenario_1711,249,4,4,-1,False,4,follow the road,follow the road,26,False
+RouteScenario_1711,250,4,4,-1,False,4,follow the road,follow the road,25,False
+RouteScenario_1711,251,4,4,-1,False,4,follow the road,follow the road,25,False
+RouteScenario_1711,252,4,4,-1,False,4,follow the road,follow the road,24,False
+RouteScenario_1711,253,4,4,-1,False,4,follow the road,follow the road,24,False
+RouteScenario_1711,254,4,4,-1,False,4,follow the road,follow the road,23,False
+RouteScenario_1711,255,4,4,-1,False,4,follow the road,follow the road,23,False
+RouteScenario_1711,256,4,4,-1,False,4,follow the road,follow the road,22,False
+RouteScenario_1711,257,4,4,-1,False,4,follow the road,follow the road,22,False
+RouteScenario_1711,258,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,259,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,260,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,261,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,262,4,4,-1,False,4,follow the road,follow the road,19,False
+RouteScenario_1711,263,4,4,-1,False,4,follow the road,follow the road,19,False
+RouteScenario_1711,264,4,4,-1,False,4,follow the road,follow the road,19,False
+RouteScenario_1711,265,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,266,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,267,4,4,-1,False,4,follow the road,follow the road,17,False
+RouteScenario_1711,268,4,4,-1,False,4,follow the road,follow the road,17,False
+RouteScenario_1711,269,4,4,-1,False,4,follow the road,follow the road,16,False
+RouteScenario_1711,270,4,4,-1,False,4,follow the road,follow the road,16,False
+RouteScenario_1711,271,4,4,-1,False,4,follow the road,follow the road,15,False
+RouteScenario_1711,272,4,4,-1,False,4,follow the road,follow the road,15,False
+RouteScenario_1711,273,4,4,-1,False,4,follow the road,follow the road,14,False
+RouteScenario_1711,274,4,4,-1,False,4,follow the road,follow the road,14,False
+RouteScenario_1711,275,4,4,-1,False,4,follow the road,follow the road,13,False
+RouteScenario_1711,276,4,4,-1,False,4,follow the road,follow the road,13,False
+RouteScenario_1711,277,4,4,-1,False,4,follow the road,follow the road,12,False
+RouteScenario_1711,278,4,4,-1,False,4,follow the road,follow the road,12,False
+RouteScenario_1711,279,4,4,-1,False,4,follow the road,follow the road,11,False
+RouteScenario_1711,280,4,4,-1,False,4,follow the road,follow the road,11,False
+RouteScenario_1711,281,4,4,-1,False,4,follow the road,follow the road,10,False
+RouteScenario_1711,282,4,4,-1,False,4,follow the road,follow the road,9,False
+RouteScenario_1711,283,4,4,-1,False,4,follow the road,follow the road,9,False
+RouteScenario_1711,284,4,4,-1,False,4,follow the road,follow the road,8,False
+RouteScenario_1711,285,4,4,-1,False,4,follow the road,follow the road,8,False
+RouteScenario_1711,286,4,4,-1,False,4,follow the road,follow the road,7,False
+RouteScenario_1711,287,4,4,-1,False,4,follow the road,follow the road,7,False
+RouteScenario_1711,288,4,4,-1,False,4,follow the road,follow the road,6,False
+RouteScenario_1711,289,4,4,-1,False,4,follow the road,follow the road,6,False
+RouteScenario_1711,290,4,4,-1,False,4,follow the road,follow the road,5,False
+RouteScenario_1711,291,4,4,-1,False,4,follow the road,follow the road,5,False
+RouteScenario_1711,292,4,4,-1,False,4,follow the road,follow the road,4,False
+RouteScenario_1711,293,4,4,-1,False,4,follow the road,follow the road,4,False
+RouteScenario_1711,294,4,4,-1,False,4,follow the road,follow the road,3,False
+RouteScenario_1711,295,4,4,-1,False,4,follow the road,follow the road,3,False
+RouteScenario_1711,296,4,4,-1,False,4,follow the road,follow the road,3,False
+RouteScenario_1711,297,4,4,-1,False,4,follow the road,follow the road,2,False
+RouteScenario_1711,298,4,4,-1,False,4,follow the road,follow the road,2,False
+RouteScenario_1711,299,4,4,-1,False,4,follow the road,follow the road,1,False
+RouteScenario_1711,300,4,4,-1,False,4,follow the road,follow the road,32,False
+RouteScenario_1711,301,4,4,-1,False,4,follow the road,follow the road,31,False
+RouteScenario_1711,302,4,4,-1,False,4,follow the road,follow the road,31,False
+RouteScenario_1711,303,4,4,-1,False,4,follow the road,follow the road,30,False
+RouteScenario_1711,304,4,4,-1,False,4,follow the road,follow the road,30,False
+RouteScenario_1711,305,4,4,-1,False,4,follow the road,follow the road,29,False
+RouteScenario_1711,306,4,4,-1,False,4,follow the road,follow the road,29,False
+RouteScenario_1711,307,4,4,-1,False,4,follow the road,follow the road,28,False
+RouteScenario_1711,308,4,4,-1,False,4,follow the road,follow the road,28,False
+RouteScenario_1711,309,4,4,-1,False,4,follow the road,follow the road,27,False
+RouteScenario_1711,310,4,4,-1,False,4,follow the road,follow the road,27,False
+RouteScenario_1711,311,4,4,-1,False,4,follow the road,follow the road,26,False
+RouteScenario_1711,312,4,4,-1,False,4,follow the road,follow the road,26,False
+RouteScenario_1711,313,4,4,-1,False,4,follow the road,follow the road,25,False
+RouteScenario_1711,314,4,4,-1,False,4,follow the road,follow the road,25,False
+RouteScenario_1711,315,4,4,-1,False,4,follow the road,follow the road,24,False
+RouteScenario_1711,316,4,4,-1,False,4,follow the road,follow the road,24,False
+RouteScenario_1711,317,4,4,-1,False,4,follow the road,follow the road,23,False
+RouteScenario_1711,318,4,4,-1,False,4,follow the road,follow the road,23,False
+RouteScenario_1711,319,4,4,-1,False,4,follow the road,follow the road,22,False
+RouteScenario_1711,320,4,4,-1,False,4,follow the road,follow the road,22,False
+RouteScenario_1711,321,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,322,4,4,-1,False,4,follow the road,follow the road,21,False
+RouteScenario_1711,323,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,324,4,4,-1,False,4,follow the road,follow the road,20,False
+RouteScenario_1711,325,4,4,-1,False,4,follow the road,follow the road,19,False
+RouteScenario_1711,326,4,4,-1,False,4,follow the road,follow the road,19,False
+RouteScenario_1711,327,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,328,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,329,4,4,-1,False,4,follow the road,follow the road,18,False
+RouteScenario_1711,330,4,4,-1,False,4,follow the road,follow the road,17,False
+RouteScenario_1711,331,4,4,-1,False,4,follow the road,follow the road,17,False
+RouteScenario_1711,332,4,4,-1,False,4,follow the road,follow the road,16,False
+RouteScenario_1711,333,4,4,-1,False,4,follow the road,follow the road,16,False
+RouteScenario_1711,334,4,4,-1,False,4,follow the road,follow the road,15,False
+RouteScenario_1711,335,4,4,-1,False,4,follow the road,follow the road,15,False
+RouteScenario_1711,336,4,4,-1,False,4,follow the road,follow the road,14,False
+RouteScenario_1711,337,4,4,-1,False,4,follow the road,follow the road,14,False
+RouteScenario_1711,338,4,4,-1,False,4,follow the road,follow the road,13,False
+RouteScenario_1711,339,4,4,-1,False,4,follow the road,follow the road,13,False
+RouteScenario_1711,340,4,4,-1,False,4,follow the road,follow the road,12,False
+RouteScenario_1711,341,4,4,-1,False,4,follow the road,follow the road,12,False
+RouteScenario_1711,342,4,4,-1,False,4,follow the road,follow the road,11,False
+RouteScenario_1711,343,4,4,-1,False,4,follow the road,follow the road,11,False
+RouteScenario_1711,344,4,4,-1,False,4,follow the road,follow the road,10,False
+RouteScenario_1711,345,4,4,-1,False,4,follow the road,follow the road,10,False
+RouteScenario_1711,346,4,4,-1,False,4,follow the road,follow the road,9,False
+RouteScenario_1711,347,4,4,-1,False,4,follow the road,follow the road,9,False
+RouteScenario_4468,0,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,1,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,2,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,3,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,4,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,5,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,6,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,7,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,8,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,9,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,10,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,11,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,12,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,13,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,14,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,15,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,16,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,17,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,18,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,19,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,20,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,21,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,22,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,23,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,24,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,25,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,26,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,27,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,28,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,29,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,30,1,4,-1,False,4,follow the road,follow the road,30,True
+RouteScenario_4468,31,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,32,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,33,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,34,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,35,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,36,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,37,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,38,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,39,1,4,-1,False,4,follow the road,follow the road,29,True
+RouteScenario_4468,40,1,4,-1,False,4,follow the road,follow the road,28,True
+RouteScenario_4468,41,1,4,-1,False,4,follow the road,follow the road,28,True
+RouteScenario_4468,42,1,4,-1,False,4,follow the road,follow the road,27,True
+RouteScenario_4468,43,1,4,-1,False,4,follow the road,follow the road,27,True
+RouteScenario_4468,44,1,4,-1,False,4,follow the road,follow the road,26,True
+RouteScenario_4468,45,1,4,-1,False,4,follow the road,follow the road,26,True
+RouteScenario_4468,46,1,4,-1,False,4,follow the road,follow the road,25,True
+RouteScenario_4468,47,1,4,-1,False,4,follow the road,follow the road,25,True
+RouteScenario_4468,48,1,4,-1,False,4,follow the road,follow the road,24,True
+RouteScenario_4468,49,1,4,-1,False,4,follow the road,follow the road,23,True
+RouteScenario_4468,50,1,4,-1,False,4,follow the road,follow the road,23,True
+RouteScenario_4468,51,1,4,-1,False,4,follow the road,follow the road,22,True
+RouteScenario_4468,52,1,4,-1,False,4,follow the road,follow the road,22,True
+RouteScenario_4468,53,1,4,-1,False,4,follow the road,follow the road,21,True
+RouteScenario_4468,54,1,4,-1,False,4,follow the road,follow the road,21,True
+RouteScenario_4468,55,1,4,-1,False,4,follow the road,follow the road,20,True
+RouteScenario_4468,56,1,4,-1,False,4,follow the road,follow the road,19,True
+RouteScenario_4468,57,1,4,-1,False,4,follow the road,follow the road,19,True
+RouteScenario_4468,58,1,4,-1,False,4,follow the road,follow the road,18,True
+RouteScenario_4468,59,1,4,-1,False,4,follow the road,follow the road,18,True
+RouteScenario_4468,60,1,4,-1,False,1,go left at the next intersection,follow the road,17,False
+RouteScenario_4468,61,1,4,-1,False,1,go left at the next intersection,follow the road,17,False
+RouteScenario_4468,62,1,4,-1,False,1,go left at the next intersection,follow the road,16,False
+RouteScenario_4468,63,1,4,-1,False,1,go left at the next intersection,follow the road,16,False
+RouteScenario_4468,64,1,4,-1,False,1,go left at the next intersection,follow the road,15,False
+RouteScenario_4468,65,1,4,-1,False,1,go left at the next intersection,follow the road,15,False
+RouteScenario_4468,66,1,4,-1,False,1,go left at the next intersection,follow the road,15,False
+RouteScenario_4468,67,1,4,-1,False,1,go left at the next intersection,follow the road,14,False
+RouteScenario_4468,68,1,4,-1,False,1,go left at the next intersection,follow the road,14,False
+RouteScenario_4468,69,1,4,-1,False,1,go left at the next intersection,follow the road,14,False
+RouteScenario_4468,70,1,4,-1,False,1,go left at the next intersection,follow the road,14,False
+RouteScenario_4468,71,1,4,-1,False,1,go left at the next intersection,follow the road,13,False
+RouteScenario_4468,72,1,4,-1,False,1,go left at the next intersection,follow the road,13,False
+RouteScenario_4468,73,1,4,-1,False,1,go left at the next intersection,follow the road,13,False
+RouteScenario_4468,74,1,4,-1,False,1,go left at the next intersection,follow the road,13,False
+RouteScenario_4468,75,1,4,-1,False,1,go left at the next intersection,follow the road,13,False
+RouteScenario_4468,76,1,4,-1,False,1,go left at the next intersection,follow the road,13,False
+RouteScenario_4468,77,1,4,-1,False,1,go left at the next intersection,follow the road,12,False
+RouteScenario_4468,78,1,4,-1,False,1,go left at the next intersection,follow the road,12,False
+RouteScenario_4468,79,1,4,-1,False,1,go left at the next intersection,follow the road,12,False
+RouteScenario_4468,80,1,4,-1,False,1,go left at the next intersection,follow the road,12,False
+RouteScenario_4468,81,1,4,-1,False,1,go left at the next intersection,follow the road,12,False
+RouteScenario_4468,82,1,4,-1,False,1,go left at the next intersection,follow the road,11,False
+RouteScenario_4468,83,1,4,-1,False,1,go left at the next intersection,follow the road,11,False
+RouteScenario_4468,84,1,4,-1,False,1,go left at the next intersection,follow the road,11,False
+RouteScenario_4468,85,1,4,-1,False,1,go left at the next intersection,follow the road,11,False
+RouteScenario_4468,86,1,4,-1,False,1,go left at the next intersection,follow the road,11,False
+RouteScenario_4468,87,1,4,-1,False,1,go left at the next intersection,follow the road,10,False
+RouteScenario_4468,88,1,4,-1,False,1,go left at the next intersection,follow the road,10,False
+RouteScenario_4468,89,1,4,-1,False,1,go left at the next intersection,follow the road,10,False
+RouteScenario_4468,90,1,4,-1,False,1,go left at the next intersection,follow the road,10,False
+RouteScenario_4468,91,1,4,-1,False,1,go left at the next intersection,follow the road,10,False
+RouteScenario_4468,92,1,4,-1,False,1,go left at the next intersection,follow the road,9,False
+RouteScenario_4468,93,1,4,-1,False,1,go left at the next intersection,follow the road,9,False
+RouteScenario_4468,94,1,4,-1,False,1,go left at the next intersection,follow the road,9,False
+RouteScenario_4468,95,1,4,-1,False,1,go left at the next intersection,follow the road,9,False
+RouteScenario_4468,96,1,4,-1,False,1,go left at the next intersection,follow the road,9,False
+RouteScenario_4468,97,1,4,-1,False,1,go left at the next intersection,follow the road,9,False
+RouteScenario_4468,98,1,4,-1,False,1,go left at the next intersection,follow the road,9,False
+RouteScenario_4468,99,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,100,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,101,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,102,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,103,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,104,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,105,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,106,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,107,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,108,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,109,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,110,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,111,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,112,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,113,1,4,-1,False,1,go left at the next intersection,follow the road,8,False
+RouteScenario_4468,114,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,115,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,116,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,117,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,118,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,119,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,120,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,121,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,122,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,123,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,124,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,125,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,126,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,127,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,128,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,129,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,130,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,131,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,132,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,133,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,134,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,135,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,136,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,137,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,138,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,139,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,140,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,141,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,142,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,143,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,144,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,145,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,146,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,147,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,148,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,149,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,150,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,151,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,152,1,4,-1,False,1,go left at the next intersection,follow the road,7,False
+RouteScenario_4468,153,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,154,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,155,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,156,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,157,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,158,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,159,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,160,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,161,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,162,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,163,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,164,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,165,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,166,1,4,-1,False,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,167,1,4,-1,False,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,168,1,4,-1,False,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,169,1,4,-1,False,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,170,1,4,-1,False,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,171,1,4,-1,False,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,172,1,4,-1,False,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,173,1,4,-1,False,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,174,1,4,-1,False,1,go left at the next intersection,follow the road,4,False
+RouteScenario_4468,175,1,4,-1,False,1,go left at the next intersection,follow the road,4,False
+RouteScenario_4468,176,1,4,-1,False,1,go left at the next intersection,follow the road,4,False
+RouteScenario_4468,177,1,4,-1,False,1,go left at the next intersection,follow the road,4,False
+RouteScenario_4468,178,1,4,-1,False,1,go left at the next intersection,follow the road,3,False
+RouteScenario_4468,179,1,4,-1,False,1,go left at the next intersection,follow the road,3,False
+RouteScenario_4468,180,1,4,-1,False,1,go left at the next intersection,follow the road,3,False
+RouteScenario_4468,181,1,4,-1,False,1,go left at the next intersection,follow the road,3,False
+RouteScenario_4468,182,1,4,-1,False,1,go left at the next intersection,follow the road,2,False
+RouteScenario_4468,183,1,4,-1,False,1,go left at the next intersection,follow the road,2,False
+RouteScenario_4468,184,1,4,-1,False,1,go left at the next intersection,follow the road,2,False
+RouteScenario_4468,185,1,4,-1,False,1,go left at the next intersection,follow the road,1,False
+RouteScenario_4468,186,4,4,1,True,1,go left at the next intersection,follow the road,1,False
+RouteScenario_4468,187,4,4,1,True,1,go left at the next intersection,follow the road,0,False
+RouteScenario_4468,188,4,4,1,True,1,go left at the next intersection,follow the road,0,False
+RouteScenario_4468,189,4,4,1,True,1,go left at the next intersection,follow the road,0,False
+RouteScenario_4468,190,4,4,1,True,1,go left at the next intersection,follow the road,0,False
+RouteScenario_4468,191,4,4,1,True,1,go left at the next intersection,follow the road,0,False
+RouteScenario_4468,192,4,4,1,True,1,go left at the next intersection,follow the road,1,False
+RouteScenario_4468,193,4,4,1,True,1,go left at the next intersection,follow the road,1,False
+RouteScenario_4468,194,4,4,1,True,1,go left at the next intersection,follow the road,2,False
+RouteScenario_4468,195,4,4,1,True,1,go left at the next intersection,follow the road,2,False
+RouteScenario_4468,196,4,4,1,True,1,go left at the next intersection,follow the road,3,False
+RouteScenario_4468,197,4,4,1,True,1,go left at the next intersection,follow the road,3,False
+RouteScenario_4468,198,4,4,1,True,1,go left at the next intersection,follow the road,4,False
+RouteScenario_4468,199,4,4,1,True,1,go left at the next intersection,follow the road,4,False
+RouteScenario_4468,200,4,4,1,True,1,go left at the next intersection,follow the road,4,False
+RouteScenario_4468,201,4,4,1,True,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,202,4,4,1,True,1,go left at the next intersection,follow the road,5,False
+RouteScenario_4468,203,4,4,1,True,1,go left at the next intersection,follow the road,6,False
+RouteScenario_4468,204,4,4,1,False,4,follow the road,follow the road,6,False
+RouteScenario_4468,205,4,4,1,False,4,follow the road,follow the road,6,False
+RouteScenario_4468,206,4,4,1,False,4,follow the road,follow the road,6,False
+RouteScenario_4468,207,4,4,1,False,4,follow the road,follow the road,6,False
+RouteScenario_4468,208,4,4,1,False,4,follow the road,follow the road,5,False
+RouteScenario_4468,209,4,4,1,False,4,follow the road,follow the road,5,False
+RouteScenario_4468,210,4,4,1,False,4,follow the road,follow the road,4,False
+RouteScenario_4468,211,4,4,1,False,4,follow the road,follow the road,4,False
+RouteScenario_4468,212,4,4,1,False,4,follow the road,follow the road,3,False
+RouteScenario_4468,213,4,4,1,False,4,follow the road,follow the road,3,False
+RouteScenario_4468,214,4,4,1,False,4,follow the road,follow the road,2,False
+RouteScenario_4468,215,4,4,1,False,4,follow the road,follow the road,2,False
+RouteScenario_4468,216,4,4,1,False,4,follow the road,follow the road,1,False
+RouteScenario_4468,217,4,4,1,False,4,follow the road,follow the road,32,False
+RouteScenario_4468,218,4,4,1,False,4,follow the road,follow the road,32,False
+RouteScenario_4468,219,4,4,1,False,4,follow the road,follow the road,31,False
+RouteScenario_4468,220,4,4,1,False,4,follow the road,follow the road,31,False
+RouteScenario_4468,221,4,4,1,False,4,follow the road,follow the road,31,False
+RouteScenario_4468,222,4,4,1,False,4,follow the road,follow the road,30,False
+RouteScenario_4468,223,4,4,1,False,4,follow the road,follow the road,30,False
+RouteScenario_4468,224,4,4,1,False,4,follow the road,follow the road,29,False
+RouteScenario_4468,225,4,4,1,False,4,follow the road,follow the road,29,False
+RouteScenario_4468,226,4,4,1,False,4,follow the road,follow the road,28,False
+RouteScenario_4468,227,4,4,1,False,4,follow the road,follow the road,28,False
+RouteScenario_4468,228,4,4,1,False,4,follow the road,follow the road,27,False
+RouteScenario_4468,229,4,4,1,False,4,follow the road,follow the road,27,False
+RouteScenario_4468,230,4,4,1,False,4,follow the road,follow the road,27,False
+RouteScenario_4468,231,4,4,1,False,4,follow the road,follow the road,26,False
+RouteScenario_4468,232,4,4,1,False,4,follow the road,follow the road,26,False
+RouteScenario_4468,233,4,4,1,False,4,follow the road,follow the road,25,False
+RouteScenario_4468,234,4,4,1,False,4,follow the road,follow the road,25,False
+RouteScenario_4468,235,4,4,1,False,4,follow the road,follow the road,24,False
+RouteScenario_4468,236,4,4,1,False,4,follow the road,follow the road,24,False
+RouteScenario_4468,237,4,4,1,False,4,follow the road,follow the road,23,False
+RouteScenario_4468,238,4,4,1,False,4,follow the road,follow the road,23,False
+RouteScenario_4468,239,4,4,1,False,4,follow the road,follow the road,22,False
+RouteScenario_4468,240,4,4,1,False,4,follow the road,follow the road,22,False
+RouteScenario_4468,241,4,4,1,False,4,follow the road,follow the road,21,False
+RouteScenario_4468,242,4,4,1,False,4,follow the road,follow the road,21,False
+RouteScenario_4468,243,4,4,1,False,4,follow the road,follow the road,20,False
+RouteScenario_4468,244,4,4,1,False,4,follow the road,follow the road,20,False
+RouteScenario_4468,245,4,4,1,False,4,follow the road,follow the road,19,False
+RouteScenario_4468,246,4,4,1,False,4,follow the road,follow the road,19,False
+RouteScenario_4468,247,4,4,1,False,4,follow the road,follow the road,18,False
+RouteScenario_4468,248,4,4,1,False,4,follow the road,follow the road,18,False
+RouteScenario_4468,249,4,4,1,False,4,follow the road,follow the road,17,False
+RouteScenario_4468,250,4,4,1,False,4,follow the road,follow the road,16,False
+RouteScenario_4468,251,4,4,1,False,4,follow the road,follow the road,16,False
+RouteScenario_4468,252,4,4,1,False,4,follow the road,follow the road,15,False
+RouteScenario_4468,253,4,4,1,False,4,follow the road,follow the road,15,False
+RouteScenario_4468,254,4,4,1,False,4,follow the road,follow the road,14,False
+RouteScenario_4468,255,4,4,1,False,4,follow the road,follow the road,14,False
+RouteScenario_4468,256,4,4,1,False,4,follow the road,follow the road,13,False
+RouteScenario_4468,257,4,4,1,False,4,follow the road,follow the road,13,False
+RouteScenario_4468,258,4,4,1,False,4,follow the road,follow the road,12,False
+RouteScenario_4468,259,4,4,1,False,4,follow the road,follow the road,12,False
+RouteScenario_4468,260,4,4,1,False,4,follow the road,follow the road,12,False
+RouteScenario_4468,261,4,4,1,False,4,follow the road,follow the road,11,False
+RouteScenario_4468,262,4,4,1,False,4,follow the road,follow the road,11,False
+RouteScenario_4468,263,4,4,1,False,4,follow the road,follow the road,10,False
+RouteScenario_4468,264,4,4,1,False,4,follow the road,follow the road,10,False
+RouteScenario_4468,265,4,4,1,False,4,follow the road,follow the road,9,False
+RouteScenario_4468,266,4,4,1,False,4,follow the road,follow the road,9,False
+RouteScenario_4468,267,4,4,1,False,4,follow the road,follow the road,8,False
+RouteScenario_4468,268,4,4,1,False,4,follow the road,follow the road,8,False
+RouteScenario_4468,269,4,4,1,False,4,follow the road,follow the road,7,False
+RouteScenario_4468,270,4,4,1,False,4,follow the road,follow the road,7,False
+RouteScenario_4468,271,4,4,1,False,4,follow the road,follow the road,6,False
+RouteScenario_4468,272,4,4,1,False,4,follow the road,follow the road,6,False
+RouteScenario_4468,273,4,4,1,False,4,follow the road,follow the road,5,False
