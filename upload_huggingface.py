@@ -810,6 +810,186 @@ def upload_checkpoint(
     print(f"{'='*70}")
 
 
+def upload_folder_as_archives(
+    folder_path: str,
+    repo_id: str,
+    token: str = None,
+    repo_type: str = "dataset",
+    archive_size_gb: float = 10.0,
+    resume: bool = True,
+):
+    """
+    Upload entire folder by packaging into tar.gz archives
+    Useful for large folders with many files to avoid rate limits
+
+    Args:
+        folder_path: Path to folder to upload
+        repo_id: Repository ID (username/repo-name)
+        token: HuggingFace token
+        repo_type: 'dataset' or 'model'
+        archive_size_gb: Target size for each archive in GB (default: 10.0)
+        resume: Skip already uploaded archives
+    """
+    # Login
+    if token is None:
+        token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_TOKEN")
+
+    if token is None:
+        try:
+            from huggingface_hub import HfFolder
+            token = HfFolder.get_token()
+        except Exception:
+            pass
+
+    if token:
+        print(f"Using Hugging Face token...")
+        login(token=token, add_to_git_credential=False)
+    else:
+        print(f"Checking for saved credentials...")
+        try:
+            user_info = whoami()
+            print(f"Already authenticated as: {user_info.get('name', 'Unknown')}")
+        except Exception:
+            print(f"Error: Could not authenticate. Please run 'huggingface-cli login' or provide --token")
+            raise
+
+    # Initialize API
+    api = HfApi()
+
+    # Create repository if needed
+    try:
+        api.repo_info(repo_id=repo_id, repo_type=repo_type)
+        print(f"Repository {repo_id} already exists")
+    except Exception:
+        print(f"Creating repository {repo_id}...")
+        create_repo(repo_id=repo_id, repo_type=repo_type, exist_ok=False)
+
+    folder_path = Path(folder_path)
+    if not folder_path.exists():
+        raise ValueError(f"Folder does not exist: {folder_path}")
+
+    print(f"\n{'='*70}")
+    print(f"Folder Upload (Archive Mode)")
+    print(f"{'='*70}")
+    print(f"Source folder: {folder_path}")
+    print(f"Repository: {repo_id} ({repo_type})")
+    print(f"Archive size: {archive_size_gb} GB")
+    print(f"{'='*70}\n")
+
+    # Get all files recursively
+    all_files = sorted([f for f in folder_path.rglob("*") if f.is_file()])
+
+    print(f"Found {len(all_files)} files")
+    total_size_gb = sum(f.stat().st_size for f in all_files) / (1024**3)
+    print(f"Total size: {total_size_gb:.2f} GB")
+
+    # Check existing archives if resume
+    existing_archives = set()
+    if resume:
+        try:
+            repo_files = api.list_repo_files(repo_id=repo_id, repo_type=repo_type)
+            existing_archives = {f for f in repo_files if f.startswith("archive_") and f.endswith(".tar.gz")}
+            print(f"Found {len(existing_archives)} existing archive(s), will skip them")
+        except Exception as e:
+            print(f"Could not check existing files: {e}")
+
+    # Create archives
+    archive_size_bytes = archive_size_gb * (1024**3)
+    archives_to_create = []
+    current_archive_files = []
+    current_size = 0
+    archive_idx = 0
+
+    print(f"\nOrganizing files into archives...")
+
+    for file in tqdm(all_files, desc="Organizing"):
+        file_size = file.stat().st_size
+
+        # If adding this file would exceed size limit, finalize current archive
+        if current_size + file_size > archive_size_bytes and current_archive_files:
+            archive_name = f"archive_{archive_idx:05d}.tar.gz"
+            archives_to_create.append((archive_name, current_archive_files.copy()))
+            current_archive_files = []
+            current_size = 0
+            archive_idx += 1
+
+        current_archive_files.append(file)
+        current_size += file_size
+
+    # Don't forget the last archive
+    if current_archive_files:
+        archive_name = f"archive_{archive_idx:05d}.tar.gz"
+        archives_to_create.append((archive_name, current_archive_files.copy()))
+
+    print(f"Will create {len(archives_to_create)} archive(s)")
+
+    # Filter out existing archives
+    archives_to_upload = [
+        (name, files) for name, files in archives_to_create
+        if name not in existing_archives
+    ]
+
+    if not archives_to_upload:
+        print("All archives already exist!")
+        return
+
+    print(f"Need to create and upload {len(archives_to_upload)} archive(s)")
+
+    # Create and upload archives
+    with tempfile.TemporaryDirectory() as temp_dir:
+        uploaded_count = 0
+        failed_archives = []
+
+        for archive_name, archive_files in tqdm(archives_to_upload, desc="Creating & uploading archives"):
+            archive_path = Path(temp_dir) / archive_name
+
+            try:
+                # Create tar.gz archive with full directory structure
+                print(f"\nCreating {archive_name} ({len(archive_files)} files)...")
+                with tarfile.open(archive_path, "w:gz") as tar:
+                    for file in tqdm(archive_files, desc=f"  Adding files", leave=False):
+                        # Preserve directory structure relative to folder_path
+                        arcname = file.relative_to(folder_path)
+                        tar.add(file, arcname=str(arcname))
+
+                archive_size = archive_path.stat().st_size / (1024**2)
+                print(f"  Archive size: {archive_size:.2f} MB")
+
+                # Upload archive
+                print(f"  Uploading {archive_name}...")
+                api.upload_file(
+                    path_or_fileobj=str(archive_path),
+                    path_in_repo=archive_name,
+                    repo_id=repo_id,
+                    repo_type=repo_type,
+                )
+                uploaded_count += 1
+                print(f"  ✓ Uploaded {archive_name}")
+
+                # Delay to avoid rate limiting
+                time.sleep(3)
+
+            except Exception as e:
+                print(f"  ✗ Error with {archive_name}: {e}")
+                failed_archives.append(archive_name)
+
+            # Clean up
+            if archive_path.exists():
+                archive_path.unlink()
+
+    # Summary
+    print(f"\n{'='*70}")
+    print(f"Upload Summary:")
+    print(f"  Total archives: {len(archives_to_create)}")
+    print(f"  Uploaded: {uploaded_count}")
+    print(f"  Already existed: {len(archives_to_create) - len(archives_to_upload)}")
+    print(f"  Failed: {len(failed_archives)}")
+    if failed_archives:
+        print(f"\nFailed archives: {failed_archives}")
+    print(f"\nRepository URL: https://huggingface.co/{repo_type}s/{repo_id}")
+    print(f"{'='*70}")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Upload videos/masks to Hugging Face dataset or checkpoints to model repository",
@@ -817,13 +997,16 @@ if __name__ == "__main__":
         epilog="""
 Examples:
   # Package videos into archives (recommended for rate limits)
-  python3 upload_videos_to_hf.py --mode package --archive_size 5.0
-  
+  python3 upload_huggingface.py --mode package --archive_size 5.0
+
+  # Upload folder as archives (for eval results, large folders)
+  python3 upload_huggingface.py --mode folder --folder_path /path/to/folder --repo_id username/repo-name
+
   # Upload individually with rate limiting
-  python3 upload_videos_to_hf.py --mode individual --batch_size 3 --delay 2.0
-  
+  python3 upload_huggingface.py --mode individual --batch_size 3 --delay 2.0
+
   # Upload checkpoint to model repository
-  python3 upload_videos_to_hf.py --mode checkpoint --checkpoint_dir ./checkpoints --model_name username/model-name
+  python3 upload_huggingface.py --mode checkpoint --checkpoint_dir ./checkpoints --model_name username/model-name
   
   # Upload multiple checkpoints (all subdirectories)
   python3 upload_videos_to_hf.py --mode checkpoint --checkpoint_dir ./checkpoints --model_name username/model-name --upload_subdirs
@@ -877,11 +1060,30 @@ Token Setup:
         help="File extension pattern to match (default: *.npz for masks, use *.mp4 for videos)"
     )
     parser.add_argument(
+        "--folder_path",
+        type=str,
+        default=None,
+        help="Path to folder to upload (for folder mode)"
+    )
+    parser.add_argument(
+        "--repo_id",
+        type=str,
+        default=None,
+        help="Repository ID (username/repo-name, for folder mode)"
+    )
+    parser.add_argument(
+        "--repo_type",
+        type=str,
+        default="dataset",
+        choices=["dataset", "model"],
+        help="Repository type (for folder mode, default: dataset)"
+    )
+    parser.add_argument(
         "--mode",
         type=str,
-        choices=["package", "individual", "checkpoint"],
+        choices=["package", "individual", "checkpoint", "folder"],
         default="package",
-        help="Upload mode: 'package' (datasets, recommended), 'individual' (datasets), or 'checkpoint' (models)"
+        help="Upload mode: 'package' (datasets), 'individual' (datasets), 'checkpoint' (models), or 'folder' (general folder upload as archives)"
     )
     parser.add_argument(
         "--token",
@@ -956,8 +1158,24 @@ Token Setup:
     )
     
     args = parser.parse_args()
-    
-    if args.mode == "checkpoint":
+
+    if args.mode == "folder":
+        if args.folder_path is None:
+            print("Error: --folder_path is required for folder mode")
+            sys.exit(1)
+        if args.repo_id is None:
+            print("Error: --repo_id is required for folder mode")
+            sys.exit(1)
+
+        upload_folder_as_archives(
+            folder_path=args.folder_path,
+            repo_id=args.repo_id,
+            token=args.token,
+            repo_type=args.repo_type,
+            archive_size_gb=args.archive_size,
+            resume=not args.no_resume,
+        )
+    elif args.mode == "checkpoint":
         if args.checkpoint_dir is None:
             print("Error: --checkpoint_dir is required for checkpoint mode")
             sys.exit(1)

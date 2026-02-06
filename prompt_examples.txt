@@ -1,5 +1,9 @@
 huggingface-cli download RenzKa/simlingo --local-dir /code/doc_drive_search/pretrain
+huggingface-cli upload PhoenixHu/bench2drive-eval-results \
+    /code/doc_drive_search/eval_results/Bench2Drive \
+    --repo-type dataset
 
+    
 
 Go left, Go right, Go straight:
 You are a driving trajectory evaluator. Your task is to check if the predicted path (red dots) matches the navigation command.
@@ -75,3 +79,11 @@ You are a driving trajectory evaluator. Your task is to check if the predicted p
 - Output the evaluation by answering these two questions:
   - Q1: What is the driving intention implied by the red trajectory? {{left /right /straight / unclear}}
   - Q2: Does this intention satisfy the navigation command? {{yes / partially / no}}
+
+ python3 /code/doc_drive_search/upload_huggingface.py \
+    --mode folder \
+    --folder_path /code/doc_drive_search/eval_results/Bench2Drive \
+    --repo_id PhoenixHu/bench2drive-eval-results \
+    --repo_type dataset \
+    --archive_size 10.0
+
