@@ -26,6 +26,12 @@ from filterpy.kalman import MerweScaledSigmaPoints
 from filterpy.kalman import UnscentedKalmanFilter as UKF
 from hydra.utils import get_original_cwd, to_absolute_path
 from leaderboard.autoagents import autonomous_agent
+try:
+    from leaderboard.autoagents.agent_wrapper import AgentError
+except ImportError:
+    # Fallback if AgentError is not available
+    class AgentError(Exception):
+        pass
 from omegaconf import OmegaConf
 from PIL import Image, ImageDraw, ImageFont
 from scipy.interpolate import PchipInterpolator
@@ -143,7 +149,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.dense_route_planner_max_distance = 50.0
         self.log_route_planner_min_distance = 4.0
         self.route_planner_max_distance = 50.0
-        self.route_planner_min_distance = 1.5
+        self.route_planner_min_distance = 7.5
 
         #load config from .hydra folder
         # Try to find config.yaml relative to checkpoint path
@@ -199,6 +205,8 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.T = 1
         self.stuck_detector = 0
         self.force_move = 0
+        self.zero_speed_counter = 0  # Counter for consecutive steps with speed = 0
+        self.ZERO_SPEED_THRESHOLD = 800  # Maximum consecutive steps with speed = 0 before route failure
 
         self.commands = deque(maxlen=2)
         self.commands.append(4)
@@ -322,13 +330,8 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self._route_planner.set_route(self._global_plan, True)
         self.initialized = True
         self.metric_info = {}
-        # Initialize prompt logs for each step
-        self.prompt_logs = []
-        # Initialize step logs for command alignment evaluation
-        self.step_logs = []
-        self.actual_command = None  # Will be set in tick() method
-        # Save last target_point (world coordinates) for intersection transition distance calculation
-        self.last_target_point = None  # Will be set when far_command is 1/2/3 (world coordinates)
+        # Reset zero speed counter for new route
+        self.zero_speed_counter = 0
 
     def sensors(self):
         sensors = []
@@ -484,10 +487,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         else:
             target_point, far_command = waypoint_route[0]
             next_target_point, next_far_command = waypoint_route[0]
-        
-        # Set default actual_command (will be updated in command mode if use_last_command)
-        far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
-        self.actual_command = far_cmd_value
+            
             
         if self.last_command_tmp != far_command:
             self.last_command = self.last_command_tmp
@@ -516,9 +516,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 # 全局路径 (密集路径点序列，每个点有 RoadOption 命令)
 #   ↓ RoutePlanner.run_step() 根据当前位置
 # target_point + command (当前目标点和命令)
-        # Initialize prompt_tp to ensure it's always defined
-        prompt_tp = "Command: follow the road."
-        
         if self.config.eval_route_as == 'target_point' or self.config.eval_route_as == 'target_point_command':
             target_points = [ego_target_point, ego_next_target_point]
             self.target_points = target_points.copy()
@@ -536,30 +533,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             prompt_tp = "Target waypoint: <TARGET_POINT><TARGET_POINT>."
             
         elif self.config.eval_route_as == 'command':
-            # Save target_point (world coordinates) when far_command is intersection/turn command (1/2/3)
-            # This will be used for distance calculation when command transitions from 1/2/3 to 4
-            far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
-            if far_cmd_value in [1, 2, 3]:
-                # Save the intersection target point in world coordinates
-                self.last_target_point = target_point[:2].copy()
-            
-            # Calculate distance to intersection (if in transition or if we have saved intersection point)
-            dist_to_intersection = None
-            if self.last_target_point is not None:
-                # Convert saved world coordinate point to current vehicle coordinate system
-                last_ego_target_point = t_u.inverse_conversion_2d(self.last_target_point, result['gps'], result['compass'])
-                dist_to_intersection = np.linalg.norm(last_ego_target_point)
-            
-            # Determine which distance to use for command prompt
-            if self.last_command in [1, 2, 3] and far_cmd_value == 4 and dist_to_intersection is not None:
-                # In intersection transition: use distance to intersection
-                dist_to_command = dist_to_intersection
-            else:
-                # Normal case: use current ego_target_point
-                dist_to_command = np.linalg.norm(ego_target_point)
-            
+            # get distance from target_point
+            dist_to_command = np.linalg.norm(ego_target_point)
             dist_to_command = int(dist_to_command)
-            
             map_command = {
                     1: 'go left at the next intersection',
                     2: 'go right at the next intersection',
@@ -577,82 +553,35 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                     6: [35, 37],
             }
             if self.LMDRIVE_AUGM:
-                lmdrive_index = random.choice(command_template_mappings[far_cmd_value])
+                lmdrive_index = random.choice(command_template_mappings[far_command])
                 lmdrive_command = random.choice(self.command_templates[str(lmdrive_index)])
                 lmdrive_command = lmdrive_command.replace('[x]', str(dist_to_command))
                 prompt_tp = f'Command: {lmdrive_command}'
+                if self.step % 5 == 0:
+                    print(f"[DEBUG] step={self.step}, speed={speed:.1f}, far_command={far_command}, next_far_command={next_far_command}, prompt_tp={prompt_tp}")
                 
             else:
-                # Determine which command to use
-                # If we're in the process of going through an intersection/turn (far_command==4 but last_command was intersection/turn),
-                # continue using the last_command until we're past the intersection
-                intersection_transition_threshold = 6.5  # meters: continue using last_command if within this distance
-                
-                if self.last_command in [1, 2, 3] and far_cmd_value == 4:
-                    # Still in intersection/turn process, use last_command
-                    # Use dist_to_intersection (real-time calculated) for threshold check
-                    if dist_to_intersection is not None and dist_to_intersection < intersection_transition_threshold:
-                        command = map_command[self.last_command]
-                        use_last_command = True
-                    else:
-                        # Far enough from intersection, switch to follow the road
-                        command = map_command[far_cmd_value]
-                        use_last_command = False
-                        # Clear last_target_point since we're past the intersection
-                        self.last_target_point = None
-                else:
-                    # Normal case: use current far_command
-                    command = map_command[far_cmd_value]
-                    use_last_command = False
-                
-                # Get next_command text
-                # If we're using last_command (in intersection transition), next_command should be far_command (4)
-                next_far_cmd_value = next_far_command.value if hasattr(next_far_command, 'value') else next_far_command
-                if use_last_command:
-                    next_command = map_command[far_cmd_value]  # Use far_command (4) as next_command
-                else:
-                    next_command = map_command[next_far_cmd_value]  # Normal case: use next_far_command
-                
-                # Determine if we should merge next_command
+                command = map_command[far_command]
+                next_command = map_command[next_far_command]
+                if self.last_command in [1, 2, 3] and far_command == 4:
+                    next_command = command
+                    command = map_command[self.last_command]
+                    
                 if command != next_command:
-                    next_command_str = f' then {next_command}'
+                        next_command = f' then {next_command}'
                 else:
-                    next_command_str = ''
-                
-                # Save actual_command for step_logs (the command value, not text)
-                if use_last_command:
-                    self.actual_command = self.last_command  # Use last_command value (1-6)
+                        next_command = ''
+                        
+                if far_command == 4:
+                        prompt_tp = f'Command: {command}{next_command}.'
                 else:
-                    far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
-                    self.actual_command = far_cmd_value  # Use far_command value (1-6)
+                        prompt_tp = f'Command: {command} in {dist_to_command} meter{next_command}.'
                 
-                # If command is 1 or 2 (go left/right) and distance > 19m, replace with follow the road
-                command_replaced = False
-                if not use_last_command and self.actual_command in [1, 2, 5, 6] and dist_to_command >= 19:
-                    command = map_command[4]  # follow the road
-                    # Update actual_command to 4 (follow the road)
-                    self.actual_command = 4
-                    command_replaced = True
-                
-                # Print debug info
-                original_far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
-                next_cmd_value = next_far_command.value if hasattr(next_far_command, 'value') else next_far_command
-                print(f"[DEBUG] Step {self.step}: far_command={original_far_cmd_value}, next_far_command={next_cmd_value}, last_command={self.last_command}, use_last_command={use_last_command}, actual_command={self.actual_command}, command='{command}', next_command='{next_command}', dist_to_command={dist_to_command}, command_replaced={command_replaced}", flush=True)
-                
-                # Generate prompt with command and optionally next_command
-                # If command was replaced with follow the road, treat it as command 4
-                if use_last_command or self.actual_command == 4:
-                    # When using last_command or far_command is 4, don't include distance
-                    prompt_tp = f'Command: {command}{next_command_str}.'
-                else:
-                    # Include distance for intersection/turn commands
-                    prompt_tp = f'Command: {command} in {dist_to_command} meter{next_command_str}.'
+                if self.step % 5 == 0:
+                    print(f"[DEBUG] step={self.step}, speed={speed:.1f}, far_command={far_command}, next_far_command={next_far_command}, command={command}, next_command={next_command}, prompt_tp={prompt_tp}")
                 
         else:
-            # For other eval_route_as modes, use default prompt_tp (already initialized above)
-            # Note: route_img is not defined, this branch may need to be updated if needed
-            # result['route'] = route_img  # Commented out as route_img is not defined
-            pass
+            result['route'] = route_img
 
         if self.config.use_cot:
             prompt = f"Current speed: {speed} m/s. {prompt_tp} What should the ego do next?"
@@ -683,10 +612,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         
         self.prompt_tp = prompt_tp
         self.prompt = prompt
-        
-        # Print full prompt for debugging
-        if self.config.eval_route_as == 'command':
-            print(f"[DEBUG PROMPT] Step {self.step}: full_prompt='{self.prompt}'", flush=True)
         
         conversation_all = [
                 {
@@ -815,14 +740,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         tick_data = self.tick(input_data)
         tick_time = time.time() - tick_start  # ← 添加
 
-        # Log full prompt for this step
-        if hasattr(self, 'prompt') and self.prompt is not None:
-            prompt_log_entry = {
-                'step': self.step,
-                'full_prompt': self.prompt
-            }
-            self.prompt_logs.append(prompt_log_entry)
-
         # initialize DrivingInput with dict self.DrivingInput
         model_input = DrivingInput(**self.DrivingInput)
         
@@ -855,8 +772,32 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 
         # prepare velocity input
         gt_velocity = tick_data['speed']
+        
+        # Check for zero speed failure condition
+        # If speed is 0 (or very close to 0) for more than ZERO_SPEED_THRESHOLD consecutive steps, fail the route
+        # Extract speed value from tensor
+        if isinstance(gt_velocity, torch.Tensor):
+            speed_value = float(gt_velocity[0].item() if gt_velocity.numel() > 0 else gt_velocity.item())
+        else:
+            speed_value = float(gt_velocity)
+        
+        if abs(speed_value) < 0.01:  # Speed is effectively 0
+            self.zero_speed_counter += 1
+            if self.zero_speed_counter >= self.ZERO_SPEED_THRESHOLD:
+                error_msg = f"Route failed: Vehicle has been stationary (speed=0) for {self.zero_speed_counter} consecutive steps (threshold: {self.ZERO_SPEED_THRESHOLD})"
+                print(f"\n\033[91m{error_msg}\033[0m", flush=True)
+                raise AgentError(error_msg)
+            # Print warning every 200 steps to track progress
+            if self.zero_speed_counter % 200 == 0:
+                print(f"[WARNING] Vehicle stationary for {self.zero_speed_counter}/{self.ZERO_SPEED_THRESHOLD} steps", flush=True)
+        else:
+            # Reset counter if speed is not zero
+            if self.zero_speed_counter > 0:
+                if self.step % 100 == 0:  # Print every 100 steps if recovering from zero speed
+                    print(f"[INFO] Recovered from zero speed after {self.zero_speed_counter} steps", flush=True)
+            self.zero_speed_counter = 0
 
-        if DEBUG and self.step%5 == 0:
+        if DEBUG and self.step%10 == 0:
             tvec = None
             rvec = None
 
@@ -928,76 +869,14 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             self.control = control
             
         ##### mh 20260125: not needed anymore?
-        # metric_info = self.get_metric_info()    ##### 只包含车辆状态（location, rotation, acceleration等）
+        # metric_info = self.get_metric_info()
         # self.metric_info[self.step] = metric_info
         # if self.save_path_metric is not None and self.step % 1 == 0:
         #         # metric info
         #         outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
         #         json.dump(self.metric_info, outfile, indent=4)
         #         outfile.close()
-        
-        # Periodically save prompt logs (every 10 steps to prevent data loss)
-        if hasattr(self, 'prompt_logs') and hasattr(self, 'save_path') and self.save_path and self.step % 10 == 0:
-            try:
-                prompt_logs_file = Path(self.save_path) / 'prompt_logs.json'
-                with open(prompt_logs_file, 'w') as f:
-                    json.dump(self.prompt_logs, f, indent=2)
-            except Exception as e:
-                print(f"[WARNING] Failed to save prompt_logs.json at step {self.step}: {e}", flush=True)
-        
-        # Save step log for command alignment evaluation
-        if hasattr(self, 'step_logs') and pred_route is not None and hasattr(self, 'actual_command') and self.actual_command is not None:
-            # Get predicted waypoints (vehicle coordinate system)
-            predicted_waypoints = pred_route[0].detach().cpu().numpy().tolist()
-            
-            # Get current heading from compass (in radians)
-            current_heading = tick_data.get('compass', 0.0)
-            # compass is already normalized angle, but we need to ensure it's in [-pi, pi]
-            if isinstance(current_heading, (list, np.ndarray)):
-                current_heading = current_heading[-1] if len(current_heading) > 0 else 0.0
-            current_heading = t_u.normalize_angle(float(current_heading))
-            
-            # Determine if in junction: command 1, 2, 3 typically indicate junction-related commands
-            is_in_junction = self.actual_command in [1, 2, 3]
-            
-            # Get metadata (optional additional information)
-            gps_data = tick_data.get('gps', [0.0, 0.0])
-            if isinstance(gps_data, np.ndarray):
-                gps_data = gps_data.tolist()
-            elif not isinstance(gps_data, list):
-                gps_data = [0.0, 0.0]
-            
-            target_point_data = tick_data.get('target_point', None)
-            if target_point_data is not None and hasattr(target_point_data, 'cpu'):
-                target_point_data = target_point_data.cpu().numpy().tolist() if hasattr(target_point_data, 'cpu') else None
-            
-            metadata = {
-                'location': gps_data,
-                'speed': float(gt_velocity.item()) if hasattr(gt_velocity, 'item') else float(gt_velocity),
-                'target_point': target_point_data,
-            }
-            
-            log_entry = {
-                'step': self.step,
-                'predicted_waypoints': predicted_waypoints,
-                'actual_command': int(self.actual_command),
-                'current_heading': float(current_heading),
-                'is_in_junction': is_in_junction,
-                'metadata': metadata
-            }
-            
-            self.step_logs.append(log_entry)
-            
-            # Periodically save step_logs.json (every 10 steps, same as prompt_logs)
-            if hasattr(self, 'save_path') and self.save_path and self.step % 10 == 0:
-                try:
-                    step_logs_file = Path(self.save_path) / 'step_logs.json'
-                    with open(step_logs_file, 'w') as f:
-                        json.dump(self.step_logs, f, indent=2)
-                except Exception as e:
-                    print(f"[WARNING] Failed to save step_logs.json at step {self.step}: {e}", flush=True)
-        
-        # 在return之前添加
+            # 在return之前添加
         total_time = time.time() - step_start  # ← 添加
         if self.step % 10 == 0:  # 每5步打印一次
             print(f"[TIMING] Step {self.step}: total={total_time:.2f}s, tick={tick_time:.2f}s, model={model_time:.2f}s, control={control_time:.2f}s", flush=True)
@@ -1066,34 +945,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         The leaderboard client doesn't properly clear up the agent after the route finishes so we need to do it here.
         Also writes logging files to disk.
         """
-        
-        # Save prompt logs for command alignment evaluation
-        # This ensures the final steps and any steps not saved during periodic saves are saved
-        if hasattr(self, 'prompt_logs') and len(self.prompt_logs) > 0 and hasattr(self, 'save_path') and self.save_path:
-            prompt_logs_file = Path(self.save_path) / 'prompt_logs.json'
-            try:
-                with open(prompt_logs_file, 'w') as f:
-                    json.dump(self.prompt_logs, f, indent=2)
-                print(f"[INFO] Saved {len(self.prompt_logs)} prompt logs to {prompt_logs_file}", flush=True)
-            except Exception as e:
-                print(f"[WARNING] Failed to save prompt_logs.json: {e}", flush=True)
-        
-        # Save step_logs for command alignment evaluation
-        # This ensures the final steps and any steps not saved during periodic saves are saved
-        if hasattr(self, 'step_logs') and len(self.step_logs) > 0 and hasattr(self, 'save_path') and self.save_path:
-            step_logs_file = Path(self.save_path) / 'step_logs.json'
-            try:
-                with open(step_logs_file, 'w') as f:
-                    json.dump(self.step_logs, f, indent=2)
-                print(f"[INFO] Saved {len(self.step_logs)} step logs to {step_logs_file}", flush=True)
-            except Exception as e:
-                print(f"[WARNING] Failed to save step_logs.json: {e}", flush=True)
-        
-        # Clear logs after saving to prevent accumulation across routes
-        if hasattr(self, 'prompt_logs'):
-            self.prompt_logs = []
-        if hasattr(self, 'step_logs'):
-            self.step_logs = []
 
         del self.model
         del self.config

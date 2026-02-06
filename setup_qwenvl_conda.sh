@@ -41,15 +41,15 @@ echo "正在安装构建依赖（psutil, packaging, ninja）..."
 pip install psutil packaging ninja
 
 echo "正在安装PyTorch with CUDA 12.1..."
-pip install torch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 --index-url https://download.pytorch.org/whl/cu121
-
-echo "正在安装flash-attn..."
-if pip install flash-attn==2.5.7 --no-build-isolation; then
-    echo "✅ flash-attn 安装成功"
-else
-    echo "⚠️  第一次安装失败，尝试使用 --no-deps 选项..."
-    pip install flash-attn==2.5.7 --no-build-isolation --no-deps || echo "⚠️  flash-attn 安装失败，但可以继续（某些功能可能较慢）"
-fi
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install transformers
+# echo "正在安装flash-attn..."
+# if pip install flash-attn --no-build-isolation; then
+#     echo "✅ flash-attn 安装成功"
+# else
+#     echo "⚠️  第一次安装失败，尝试使用 --no-deps 选项..."
+#     pip install flash-attn==2.5.7 --no-build-isolation --no-deps || echo "⚠️  flash-attn 安装失败，但可以继续（某些功能可能较慢）"
+# fi
 
 # 如果提供了 requirements 文件路径，则安装
 if [ -n "$REQUIREMENTS_FILE" ] && [ -f "$REQUIREMENTS_FILE" ]; then

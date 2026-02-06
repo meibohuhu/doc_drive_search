@@ -3,14 +3,14 @@
     # verbose_prompt
 
 # 设置路径
-CSV_FILE="/local1/mhu/doc_drive_search/data/bench2drive_multiple_test_goodwithtworoutes/eval_steps_extracted.csv"
-IMAGE_BASE="/local1/mhu/doc_drive_search/data/bench2drive_multiple_test_goodwithtworoutes/RouteScenario_1711_rep0_Town12_ParkingCutIn_1_15_02_03_02_54_29"
-OUTPUT_DIR="/local1/mhu/doc_drive_search/data/bench2drive_multiple_test_goodwithtworoutes"
-MODEL="Qwen/Qwen3-VL-2B-Instruct"  # 或 "Qwen/Qwen2.5-VL-7B-Instruct" Qwen/Qwen3-VL-2B-Instruct google/gemma-3-1b-it
+CSV_FILE="/code/doc_drive_search/data/pending_process/simlingo_bench2drive220_newcommand_part2_merged_eval_steps_extracted.csv"
+IMAGE_BASE="/code/doc_drive_search/eval_results/Bench2Drive/simlingo_bench2drive220_newcommand_part1/RouteScenario_1792_rep0_Town12_HazardAtSideLane_1_18_02_03_23_39_48/debug_viz/simlingo/iter_013.ckpt"
+OUTPUT_DIR="/code/doc_drive_search/data/pending_process"
+MODEL="Qwen/Qwen2.5-VL-7B-Instruct"  # 或 "Qwen/Qwen2.5-VL-7B-Instruct" Qwen/Qwen3-VL-2B-Instruct google/gemma-3-1b-it
 DEVICE="cuda"
 
 # 运行评估
-python3 /local1/mhu/doc_drive_search/scripts/batch_command_alignment_evaluator.py \
+python3 /code/doc_drive_search/scripts/batch_command_alignment_evaluator.py \
     --csv "$CSV_FILE" \
     --image_base "$IMAGE_BASE" \
     --output "$OUTPUT_DIR/command_alignment_results.json" \

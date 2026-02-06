@@ -1,3 +1,6 @@
+huggingface-cli download RenzKa/simlingo --local-dir /code/doc_drive_search/pretrain
+
+
 Go left, Go right, Go straight:
 You are a driving trajectory evaluator. Your task is to check if the predicted path (red dots) matches the navigation command.
 ### Navigation Command: go left at next intersection and then follow the road.

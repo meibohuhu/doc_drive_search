@@ -26,12 +26,12 @@ except ImportError:
     Qwen3VLForConditionalGeneration = None
 
 try:
-    from transformers import Gemma3ForCausalLM
+    from transformers import Gemma3ForConditionalGeneration
 except ImportError:
     try:
-        from transformers import Gemma2ForCausalLM as Gemma3ForCausalLM
+        from transformers import Gemma2ForConditionalGeneration as Gemma3ForConditionalGeneration
     except ImportError:
-        Gemma3ForCausalLM = None
+        Gemma3ForConditionalGeneration = None
 
 try:
     from qwen_vl_utils import process_vision_info
@@ -104,12 +104,12 @@ class ModelBasedCommandAlignmentEvaluator:
         try:
             # 根据模型类型选择加载方式
             if model_type == "gemma3":
-                # Gemma 3 使用 AutoTokenizer 和 Gemma3ForCausalLM
+                # Gemma 3 使用 AutoTokenizer 和 Gemma3ForConditionalGeneration
                 # 注意：Gemma 3 支持多模态，但 tokenizer 可能不支持图像处理
                 # 如果 AutoProcessor 失败，回退到 AutoTokenizer
                 from transformers import AutoTokenizer
-                if Gemma3ForCausalLM is None:
-                    raise ImportError("Gemma3ForCausalLM not available. Please update transformers: pip install --upgrade transformers")
+                if Gemma3ForConditionalGeneration is None:
+                    raise ImportError("Gemma3ForConditionalGeneration not available. Please update transformers: pip install --upgrade transformers")
                 
                 # 尝试使用 AutoProcessor（如果支持图像）
                 try:
@@ -120,7 +120,7 @@ class ModelBasedCommandAlignmentEvaluator:
                     print(f"[WARNING] AutoProcessor failed, using AutoTokenizer: {e}", flush=True)
                     self.processor = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
                 
-                self.model = Gemma3ForCausalLM.from_pretrained(
+                self.model = Gemma3ForConditionalGeneration.from_pretrained(
                     model_name,
                     torch_dtype="auto" if device == "cuda" else torch.float32,
                     device_map="auto" if device == "cuda" else device,
@@ -562,13 +562,21 @@ Based on the red trajectory in the image, identify the driving intention.
                         else:
                             processed_inputs[k] = v
                     inputs = processed_inputs
-                    
+
+                    # 移除 token_type_ids（Gemma不使用）
+                    if 'token_type_ids' in inputs:
+                        inputs.pop('token_type_ids')
+
                     # 生成响应
                     with torch.inference_mode():
                         generated_ids = self.model.generate(
                             **inputs,
                             max_new_tokens=self.max_new_tokens,
-                            temperature=0.7
+                            temperature=0.7,
+                            top_p=1.0,
+                            min_p=0.0,
+                            top_k=50,
+                            repetition_penalty=1.0
                         )
                     
                     # 提取生成的部分（去掉输入部分）
@@ -620,9 +628,13 @@ Based on the red trajectory in the image, identify the driving intention.
                     
                     # 生成响应
                     generated_ids = self.model.generate(
-                        **inputs, 
+                        **inputs,
                         max_new_tokens=self.max_new_tokens,
-                        temperature=0.7
+                        temperature=0.7,
+                        top_p=1.0,
+                        min_p=0.0,
+                        top_k=50,
+                        repetition_penalty=1.0
                     )
                     generated_ids_trimmed = [
                         out_ids[len(in_ids):] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
@@ -772,13 +784,21 @@ Based on the red trajectory in the image, identify the driving intention.
                         else:
                             processed_inputs[k] = v
                     inputs = processed_inputs
-                    
+
+                    # 移除 token_type_ids（Gemma不使用）
+                    if 'token_type_ids' in inputs:
+                        inputs.pop('token_type_ids')
+
                     # 生成响应
                     with torch.inference_mode():
                         generated_ids = self.model.generate(
                             **inputs,
                             max_new_tokens=self.max_new_tokens,
-                            temperature=0.0
+                            temperature=0.7,
+                            top_p=1.0,
+                            min_p=0.0,
+                            top_k=50,
+                            repetition_penalty=1.0
                         )
                     
                     # 提取生成的部分（去掉输入部分）
@@ -832,7 +852,11 @@ Based on the red trajectory in the image, identify the driving intention.
                     generated_ids = self.model.generate(
                         **inputs,
                         max_new_tokens=self.max_new_tokens,
-                        temperature=0.0
+                        temperature=0.7,
+                        top_p=1.0,
+                        min_p=0.0,
+                        top_k=50,
+                        repetition_penalty=1.0
                     )
                     generated_ids_trimmed = [
                         out_ids[len(in_ids):] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)

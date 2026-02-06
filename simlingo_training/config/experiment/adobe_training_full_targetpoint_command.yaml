@@ -54,7 +54,7 @@ data_module:
     img_shift_augmentation: True
     img_shift_augmentation_prob: 0.5
     hist_len: 1
-    route_as: target_point
+    route_as: target_point_command
     use_lmdrive_commands: True
     use_old_towns: True
     use_town13: True
@@ -65,7 +65,7 @@ val_every_n_epochs: 2
 
 gpus: 1  # 单GPU训练
 seed: 42
-name: adobe_training_full_targetpoint_0130
+name: adobe_training_full_targetpoint_command_0130
 enable_wandb: True  # 启用 wandb
 
 hydra:
