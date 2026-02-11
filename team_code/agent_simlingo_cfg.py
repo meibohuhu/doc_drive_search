@@ -1,0 +1,1381 @@
+"""
+partially taken from https://github.com/autonomousvision/carla_garage/blob/leaderboard_2/team_code/sensor_agent.py
+(MIT licence)
+"""
+
+
+import importlib.util
+import json
+import math
+import os
+import pathlib
+import random
+import sys
+import time
+import xml.etree.ElementTree as ET
+from collections import deque
+from pathlib import Path
+
+import carla
+import cv2
+import hydra
+import numpy as np
+import torch
+import ujson
+from filterpy.kalman import MerweScaledSigmaPoints
+from filterpy.kalman import UnscentedKalmanFilter as UKF
+from hydra.utils import get_original_cwd, to_absolute_path
+from leaderboard.autoagents import autonomous_agent
+from omegaconf import OmegaConf
+from PIL import Image, ImageDraw, ImageFont
+from scipy.interpolate import PchipInterpolator
+from scipy.optimize import fsolve
+from transformers import AutoConfig, AutoProcessor
+
+import scenario_logger
+import team_code.transfuser_utils as t_u
+from scenario_logger import ScenarioLogger
+from simlingo_training.utils.custom_types import DrivingInput, LanguageLabel
+from simlingo_training.utils.internvl2_utils import build_transform, dynamic_preprocess
+from team_code.config_simlingo_command import GlobalConfig
+from team_code.nav_planner import LateralPIDController, RoutePlanner
+from team_code.simlingo_utils import (
+    get_camera_extrinsics,
+    get_camera_intrinsics,
+    get_rotation_matrix,
+    project_points,
+)
+
+# Configure pytorch for maximum performance
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.benchmark = True
+torch.backends.cudnn.deterministic = False
+torch.backends.cudnn.allow_tf32 = True
+
+
+# Leaderboard function that selects the class used as agent.
+def get_entry_point():
+    return 'LingoAgent'
+
+
+DEBUG = True # saves images during evaluation
+HD_VIZ = False
+USE_UKF = True
+
+### Agent = SimLingo 模型 + 控制逻辑，具体是 LingoAgent
+class LingoAgent(autonomous_agent.AutonomousAgent):
+    """
+        Main class that runs the agents with the run_step function
+        """
+
+    def setup(self, path_to_conf_file, route_index=None):
+        """Sets up the agent. route_index is for logging purposes"""
+
+        torch.cuda.empty_cache()
+        self.track = autonomous_agent.Track.SENSORS
+        if '+' in path_to_conf_file:
+            print(f"path to conf file: {path_to_conf_file}")
+            self.config_path = path_to_conf_file.split('+')[0]
+            print(f"Config path: {self.config_path}")
+            self.save_path_root = path_to_conf_file.split('+')[1]
+            print(f"Save path root: {self.save_path_root}")
+        else:
+            self.config_path = path_to_conf_file
+            print(f"Config path: {self.config_path}")
+            self.save_path_root = route_index
+            print(f"Save path root: {self.save_path_root}")
+        self.step = -1
+        self.initialized = False
+        self.device = torch.device('cuda')
+        self.DrivingInput = {}
+        self.config = GlobalConfig()
+
+        if self.config.eval_route_as == -1:
+            self.config.eval_route_as = self.model.route_as
+
+        self.last_command = -1
+        self.last_command_tmp = -1
+        self.user_command = None
+        self.user_flag = None
+        self.running = True
+        self.custom_prompt = None
+        
+        self.LMDRIVE_AUGM = False
+        if self.LMDRIVE_AUGM:
+                command_templates_file = f"data/augmented_templates/lmdrive.json"
+                with open(command_templates_file, 'r') as f:
+                        self.command_templates = ujson.load(f)
+        
+        # used for interactive eval of instruction following
+        # thread = threading.Thread(target=self.input_thread)
+        # thread.daemon = True  # This makes the thread exit when the main program exits
+        # thread.start()
+
+        self.route_path = os.environ.get('ROUTES', '')
+        route_type = self.route_path.split('data/benchmarks/')[-1].split('/')[0]
+        route_number = str(pathlib.Path(self.route_path).stem)
+
+
+        # PID controller for turning - used in earlier versions of the agent
+        # self.turn_controller = t_u.PIDController(k_p=self.config.turn_kp,
+        #                                          k_i=self.config.turn_ki,
+        #                                          k_d=self.config.turn_kd,
+        #                                          n=self.config.turn_n)
+        self.speed_controller = t_u.PIDController(k_p=self.config.speed_kp,
+                                                                                            k_i=self.config.speed_ki,
+                                                                                            k_d=self.config.speed_kd,
+                                                                                            n=self.config.speed_n)
+
+        self.turn_controller = LateralPIDController(inference_mode=False)
+
+        image_fps = 5
+        image_history_length = 1
+
+        self.image_buffer = deque(maxlen=image_fps * image_history_length)
+
+        # config
+        self.carla_frame_rate = 1.0 / 20.0  # CARLA frame rate in milliseconds
+        self.data_save_freq = 5
+        self.lidar_seq_len = 1
+        self.logging_freq = 10  # Log every 10 th frame
+        self.logger_region_of_interest = 30.0  # Meters around the car that will be logged.
+        self.dense_route_planner_min_distance = 1.0
+        self.dense_route_planner_max_distance = 50.0
+        self.log_route_planner_min_distance = 4.0
+        self.route_planner_max_distance = 50.0
+        self.route_planner_min_distance = 1.5
+
+        #load config from .hydra folder
+        # Try to find config.yaml relative to checkpoint path
+        # Path structure: .../simlingo/checkpoints/epoch=XXX.ckpt/pytorch_model.pt
+        # Config should be at: .../simlingo/.hydra/config.yaml
+        self.config_load_path = Path(self.config_path).parent.parent.parent / '.hydra' / 'config.yaml'
+        
+        # If config not found at relative path, try the pretrained models location
+        if not self.config_load_path.exists():
+            # Fallback to pretrained models config (for downloaded models)
+            pretrained_config_path = Path('/home/mh2803/projects/simlingo/pretrained_models/simlingo/.hydra/config.yaml')
+            if pretrained_config_path.exists():
+                self.config_load_path = pretrained_config_path
+                print(f"Config not found at relative path, using pretrained model config: {self.config_load_path}")
+            else:
+                raise FileNotFoundError(
+                    f"Config file not found at:\n"
+                    f"  - Relative path: {self.config_load_path}\n"
+                    f"  - Pretrained path: {pretrained_config_path}\n"
+                    f"  - Checkpoint path: {self.config_path}"
+                )
+        else:
+            print(f"Loading config from: {self.config_load_path}")
+        
+        with open(self.config_load_path, 'r') as file:
+            cfg = OmegaConf.load(file)
+        self.cfg = cfg
+        self.cfg.model.vision_model.use_global_img = cfg.data_module.use_global_img
+    
+        processor = AutoProcessor.from_pretrained(cfg.model.vision_model.variant, trust_remote_code=True)
+        if 'tokenizer' in processor.__dict__:
+                self.tokenizer = processor.tokenizer
+        else:
+                self.tokenizer = processor
+        self.tokenizer.add_special_tokens({'additional_special_tokens': ['<WAYPOINTS>','<WAYPOINTS_DIFF>', '<ORG_WAYPOINTS_DIFF>', '<ORG_WAYPOINTS>', '<WAYPOINT_LAST>', '<ROUTE>', '<ROUTE_DIFF>', '<TARGET_POINT>']})
+        self.tokenizer.padding_side = "left"
+        # llm_tokenizer = AutoTokenizer.from_pretrained(cfg.model.language_model.variant)
+        cache_dir = f"pretrained/{(cfg.model.vision_model.variant.split('/')[1])}"
+        default_dtype = torch.get_default_dtype()
+        torch.set_default_dtype(torch.bfloat16)
+        self.model = hydra.utils.instantiate(
+                cfg.model,
+                cfg_data_module=cfg.data_module,
+                processor=processor,
+                cache_dir=cache_dir,
+                _recursive_=False
+            ).to(self.device)
+        torch.set_default_dtype(default_dtype)
+        self.model.load_state_dict(torch.load(self.config_path))
+        self.iter = self.config_path.split("epoch=")[-1].split("/")[0]
+        self.session = self.config_path.split("/")[-4]
+        
+        self.T = 1
+        self.stuck_detector = 0
+        self.force_move = 0
+
+        self.commands = deque(maxlen=2)
+        self.commands.append(4)
+        self.commands.append(4)
+        self.target_point_prev = [1e5, 1e5, 1e5]
+
+        # Filtering
+        if USE_UKF:
+            self.points = MerweScaledSigmaPoints(n=4, alpha=0.00001, beta=2, kappa=0, subtract=residual_state_x)
+            self.ukf = UKF(dim_x=4,
+                                        dim_z=4,
+                                        fx=bicycle_model_forward,
+                                        hx=measurement_function_hx,
+                                        dt=self.carla_frame_rate,
+                                        points=self.points,
+                                        x_mean_fn=state_mean,
+                                        z_mean_fn=measurement_mean,
+                                        residual_x=residual_state_x,
+                                        residual_z=residual_measurement_h)
+
+            # State noise, same as measurement because we
+            # initialize with the first measurement later
+            self.ukf.P = np.diag([0.5, 0.5, 0.000001, 0.000001])
+            # Measurement noise
+            self.ukf.R = np.diag([0.5, 0.5, 0.000000000000001, 0.000000000000001])
+            self.ukf.Q = np.diag([0.0001, 0.0001, 0.001, 0.001])  # Model noise
+            # Used to set the filter state equal the first measurement
+            self.filter_initialized = False
+        # Stores the last filtered positions of the ego vehicle. Need at least 2 for LiDAR 10 Hz realignment
+        self.state_log = deque(maxlen=max((self.lidar_seq_len * self.data_save_freq), 2))
+
+        # Path to where visualizations and other debug output gets stored
+        save_path_env = os.environ.get('SAVE_PATH', '')
+        if save_path_env:
+            # Ensure proper path joining
+            self.save_path = os.path.join(save_path_env, self.save_path_root) if save_path_env else self.save_path_root
+        else:
+            self.save_path = self.save_path_root
+        # self.checkpoint_path = os.environ.get('CHECKPOINT_ENDPOINT').
+
+        # Logger that generates logs used for infraction replay in the results_parser.
+        if self.save_path and route_index is not None:
+            self.save_path = str(pathlib.Path(self.save_path) / route_index)
+            pathlib.Path(self.save_path).mkdir(parents=True, exist_ok=True)
+
+            self.lon_logger = ScenarioLogger(
+                    save_path=self.save_path,
+                    route_index=route_index,
+                    logging_freq=self.logging_freq,
+                    log_only=True,
+                    route_only=False,  # with vehicles
+                    roi=self.logger_region_of_interest,
+            )
+        
+        # Ensure save_path is a string for path concatenation
+        if not self.save_path:
+            self.save_path = './output'
+        self.debug_save_path = str(self.save_path) + '/debug_viz' + f'/{self.session}/iter_{self.iter}/{route_type}/{route_number}_{time.strftime("%Y_%m_%d_%H_%M_%S")}'
+        Path(self.debug_save_path).mkdir(parents=True, exist_ok=True)
+        self.save_path_metric = self.debug_save_path + '/metric'
+        Path(self.save_path_metric).mkdir(parents=True, exist_ok=True)
+
+        if DEBUG:
+            self.save_path_img = self.debug_save_path + '/images'
+            Path(self.save_path_img).mkdir(parents=True, exist_ok=True)
+            
+    def input_thread(self):
+        while self.running:
+            user_input = input("Enter a command for the vehicle. 1: turn left, 2: turn right, 3: lane change left, 4: lane change right, 5: stop, 6: accelerate: ")
+            if user_input.isdigit():
+                    self.user_flag = int(user_input)
+                # if int(user_input) == 1:
+                #   self.user_command = 'turn left at the next intersection'
+                # elif int(user_input) == 2:
+                #   self.user_command = 'turn right at the next intersection'
+                # elif int(user_input) == 3:
+                #   self.user_command = 'change one lane to the left'
+                # elif int(user_input) == 4:
+                #   self.user_command = 'change one lane to the right'
+                # elif int(user_input) == 5:
+                #   self.user_command = 'stop'
+                # elif int(user_input) == 6:
+                #   self.user_command = 'accelerate'
+                    
+            else:
+                self.user_command = str(user_input)
+                
+            if user_input.strip().lower() == "exit":
+                self.running = False
+            
+            print(f"User command: {self.user_command}")
+            print(f"User flag: {self.user_flag}")
+
+    def _init(self):
+        # The CARLA leaderboard does not expose the lat lon reference value of the GPS which make it impossible to use the
+        # GPS because the scale is not known. In the past this was not an issue since the reference was constant 0.0
+        # But town 13 has a different value in CARLA 0.9.15. The following code, adapted from Bench2DriveZoo estimates the
+        # lat, lon reference values by abusing the fact that the leaderboard exposes the route plan also in CARLA
+        # coordinates. The GPS plan is compared to the CARLA coordinate plan to estimate the reference point / scale
+        # of the GPS. It seems to work reasonably well, so we use this workaround for now.
+        try:
+            locx, locy = self._global_plan_world_coord[0][0].location.x, self._global_plan_world_coord[0][0].location.y
+            lon, lat = self._global_plan[0][0]['lon'], self._global_plan[0][0]['lat']
+            earth_radius_equa = 6378137.0  # Constant from CARLA leaderboard GPS simulation
+            def equations(variables):
+                x, y = variables
+                eq1 = (lon * math.cos(x * math.pi / 180.0) - (locx * x * 180.0) / (math.pi * earth_radius_equa)
+                             - math.cos(x * math.pi / 180.0) * y)
+                eq2 = (math.log(math.tan((lat + 90.0) * math.pi / 360.0)) * earth_radius_equa
+                             * math.cos(x * math.pi / 180.0) + locy - math.cos(x * math.pi / 180.0) * earth_radius_equa
+                             * math.log(math.tan((90.0 + x) * math.pi / 360.0)))
+                return [eq1, eq2]
+            initial_guess = [0.0, 0.0]
+            solution = fsolve(equations, initial_guess)
+            self.lat_ref, self.lon_ref = solution[0], solution[1]
+        except Exception as e:
+            print(e, flush=True)
+            self.lat_ref, self.lon_ref = 0.0, 0.0
+        self._route_planner = RoutePlanner(self.route_planner_min_distance, self.route_planner_max_distance,
+                                                                             self.lat_ref, self.lon_ref)
+        self._route_planner.set_route(self._global_plan, True)
+        self.initialized = True
+        self.metric_info = {}
+        # Initialize prompt logs for each step
+        self.prompt_logs = []
+        # Initialize step logs for command alignment evaluation
+        self.step_logs = []
+        self.actual_command = None  # Will be set in tick() method
+        # Save last target_point (world coordinates) for intersection transition distance calculation
+        self.last_target_point = None  # Will be set when far_command is 1/2/3 (world coordinates)
+
+    def sensors(self):
+        sensors = []
+        for num_cam in self.config.num_cameras:
+            # get from config by name as string
+            sensors += [
+                    {
+                            'type': 'sensor.camera.rgb',
+                            'x': self.config.__dict__[f'camera_pos_{num_cam}'][0],
+                            'y': self.config.__dict__[f'camera_pos_{num_cam}'][1],
+                            'z': self.config.__dict__[f'camera_pos_{num_cam}'][2],
+                            'roll': self.config.__dict__[f'camera_rot_{num_cam}'][0],
+                            'pitch': self.config.__dict__[f'camera_rot_{num_cam}'][1],
+                            'yaw': self.config.__dict__[f'camera_rot_{num_cam}'][2],
+                            'width': self.config.__dict__[f'camera_width_{num_cam}'],
+                            'height': self.config.__dict__[f'camera_height_{num_cam}'],
+                            'fov': self.config.__dict__[f'camera_fov_{num_cam}'],
+                            'id': f'rgb_{num_cam}'
+                    }
+            ]
+
+        if HD_VIZ:  ##### mh 20260125: update width and height
+            sensors += [{
+                                                'type': 'sensor.camera.rgb',
+                                                'x': -5.5, 'y': 0.0, 'z':3.5,
+                                                'roll': 0.0, 'pitch': -15.0, 'yaw': 0.0,
+                                                # 'width': 960, 'height': 540, 'fov': 110,
+                                                # 'width': 1280, 'height': 720, 'fov': 120,
+                                                'width': 960, 'height': 540, 'fov': 110,
+                                                'id': 'rgb_viz'
+            }]
+
+        sensors += [{
+                'type': 'sensor.other.imu',
+                'x': 0.0,
+                'y': 0.0,
+                'z': 0.0,
+                'roll': 0.0,
+                'pitch': 0.0,
+                'yaw': 0.0,
+                'sensor_tick': self.config.carla_frame_rate,
+                'id': 'imu'
+        }, {
+                'type': 'sensor.other.gnss',
+                'x': 0.0,
+                'y': 0.0,
+                'z': 0.0,
+                'roll': 0.0,
+                'pitch': 0.0,
+                'yaw': 0.0,
+                'sensor_tick': 0.01,
+                'id': 'gps'
+        }, {
+                'type': 'sensor.speedometer',
+                'reading_frequency': self.config.carla_fps,
+                'id': 'speed'
+        }, 
+        ]
+
+        return sensors
+
+    @torch.inference_mode()  # Turns off gradient computation
+    def tick(self, input_data):
+        """Pre-processes sensor data and runs the Unscented Kalman Filter"""
+        rgb = []
+
+        if HD_VIZ:
+            self.hd_cam_for_viz = input_data['rgb_viz'][1][:, :, :3]
+
+        for camera_pos in self.config.num_cameras:
+            rgb_cam = 'rgb_' + str(camera_pos)
+            camera = input_data[rgb_cam][1][:, :, :3]
+            if camera_pos == 0:
+                self.camera_for_viz = camera.copy()
+
+            # Also add jpg artifacts at test time, because the training data was saved as jpg.
+            _, compressed_image_i = cv2.imencode('.jpg', camera)
+            camera = cv2.imdecode(compressed_image_i, cv2.IMREAD_UNCHANGED)
+
+            rgb_pos = cv2.cvtColor(camera, cv2.COLOR_BGR2RGB)
+            rgb_pos = rgb_pos[:int(rgb_pos.shape[0] - (rgb_pos.shape[0] * 4.8) // 16), :, :] # do this from config to ensure it is the same as in training
+
+            # Switch to pytorch channel first order
+            rgb_pos = np.transpose(rgb_pos, (2, 0, 1))
+            rgb.append(rgb_pos)
+
+        rgb = np.array(rgb)
+        self.image_buffer.append(rgb)
+
+        rgbs = rgb
+        image_sizes = None
+        
+        if 'internvl2' in self.cfg.model.vision_model.variant.lower():
+            T, C, H, W = rgbs.shape
+            transform = build_transform(input_size=448)
+            images_processed_tmp = []
+            images_sizes_tmp = []
+            
+            image = Image.fromarray(rgbs.squeeze(0).transpose(1, 2, 0))
+            images = dynamic_preprocess(image, image_size=448, use_thumbnail=self.cfg.model.vision_model.use_global_img, max_num=2)
+            pixel_values = [transform(image) for image in images]
+            pixel_values = torch.stack(pixel_values)
+            images_processed_tmp.append(pixel_values)
+            images_sizes_tmp.append([image.size[1], image.size[0]])
+            
+            images_processed = {
+                    'pixel_values': torch.stack(images_processed_tmp), 
+                    'image_sizes': torch.tensor(images_sizes_tmp)
+                    }  
+            processed_image = images_processed['pixel_values']
+            num_patches = processed_image.shape[1]
+            new_height = processed_image.shape[3]
+            new_width = processed_image.shape[4]
+            processed_image = processed_image.view(1, self.T, num_patches, C, new_height, new_width)
+            
+        else:
+            raise NotImplementedError(f"Encoder {self.cfg.data_module.encoder} not implemented yet")
+        
+        gps_pos = self._route_planner.convert_gps_to_carla(input_data['gps'][1])
+        
+        compass = t_u.preprocess_compass(input_data['imu'][1][-1])
+
+        result = {
+                'rgb': rgb,
+                'compass': compass,
+        }
+        speed = input_data['speed'][1]['speed']
+
+        if USE_UKF:
+            if not self.filter_initialized:
+                self.ukf.x = np.array([gps_pos[0], gps_pos[1], t_u.normalize_angle(compass), speed])
+                self.filter_initialized = True
+
+            self.ukf.predict(steer=self.control.steer, throttle=self.control.throttle, brake=self.control.brake)
+            self.ukf.update(np.array([gps_pos[0], gps_pos[1], t_u.normalize_angle(compass), speed]))
+            filtered_state = self.ukf.x
+
+            self.state_log.append(filtered_state)
+            result['gps'] = filtered_state[0:2]
+        else:
+            result['gps'] = np.array([gps_pos[0], gps_pos[1]])
+            
+        speed = round(input_data['speed'][1]['speed'], 1)
+#### 根据每一步的GPS位置动态计算的，每个step都是重新计算的。
+        waypoint_route = self._route_planner.run_step(np.append(result['gps'], gps_pos[2]))
+
+        if len(waypoint_route) > 2:
+            target_point, far_command = waypoint_route[1]
+            next_target_point, next_far_command = waypoint_route[2]
+        elif len(waypoint_route) > 1:
+            target_point, far_command = waypoint_route[1]
+            next_target_point, next_far_command = waypoint_route[1]
+        else:
+            target_point, far_command = waypoint_route[0]
+            next_target_point, next_far_command = waypoint_route[0]
+        
+        # Set default actual_command (will be updated in command mode if use_last_command)
+        far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
+        self.actual_command = far_cmd_value
+            
+        if self.last_command_tmp != far_command:
+            self.last_command = self.last_command_tmp
+        
+        self.last_command_tmp = far_command
+        if (target_point != self.target_point_prev).all():
+            self.target_point_prev = target_point
+            self.commands.append(far_command.value)
+
+        one_hot_command = t_u.command_to_one_hot(self.commands[-2])
+        result['command'] = torch.from_numpy(one_hot_command[np.newaxis]).to(self.device, dtype=torch.float32)
+
+        ego_target_point = t_u.inverse_conversion_2d(target_point[:2], result['gps'], result['compass'])
+        ego_target_point_torch = torch.from_numpy(ego_target_point[np.newaxis]).to(self.device, dtype=torch.float32)
+        ego_next_target_point = t_u.inverse_conversion_2d(next_target_point[:2], result['gps'], result['compass'])
+
+        result['target_point'] = ego_target_point_torch
+
+        self.target_points = None
+        placeholder_batch_list = []
+
+###### 从 XML waypoints 计算
+# XML waypoints (关键路径点)
+#   ↓ RouteParser 解析
+#   ↓ interpolate_trajectory() 插值
+# 全局路径 (密集路径点序列，每个点有 RoadOption 命令)
+#   ↓ RoutePlanner.run_step() 根据当前位置
+# target_point + command (当前目标点和命令)
+        # Initialize prompt_tp to ensure it's always defined
+        prompt_tp = "Command: follow the road."
+        placeholder_batch_list = []  # Initialize placeholder_batch_list
+        
+        if self.config.eval_route_as == 'target_point' or self.config.eval_route_as == 'target_point_command':
+            target_points = [ego_target_point, ego_next_target_point]
+            self.target_points = target_points.copy()
+            target_points_np = np.array(target_points)
+            target_points = torch.from_numpy(target_points_np).to(self.device, dtype=torch.float32).unsqueeze(0)
+            result['route'] = target_points
+            
+            placeholder_values = {'<TARGET_POINT>': target_points_np}
+            tmp = {}
+            for key, value in placeholder_values.items():
+                    token_nr_key = self.tokenizer.convert_tokens_to_ids(key)
+                    tmp[token_nr_key] = value
+            placeholder_batch_list.append(tmp)
+            
+            prompt_tp = "Target waypoint: <TARGET_POINT><TARGET_POINT>."
+            
+        elif self.config.eval_route_as == 'command':
+            # Save target_point (world coordinates) when far_command is intersection/turn command (1/2/3)
+            # This will be used for distance calculation when command transitions from 1/2/3 to 4
+            far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
+            if far_cmd_value in [1, 2, 3]:
+                # Save the intersection target point in world coordinates
+                self.last_target_point = target_point[:2].copy()
+            
+            # Calculate distance to intersection (if in transition or if we have saved intersection point)
+            dist_to_intersection = None
+            if self.last_target_point is not None:
+                # Convert saved world coordinate point to current vehicle coordinate system
+                last_ego_target_point = t_u.inverse_conversion_2d(self.last_target_point, result['gps'], result['compass'])
+                dist_to_intersection = np.linalg.norm(last_ego_target_point)
+            
+            # Determine which distance to use for command prompt
+            if self.last_command in [1, 2, 3] and far_cmd_value == 4 and dist_to_intersection is not None:
+                # In intersection transition: use distance to intersection
+                dist_to_command = dist_to_intersection
+            else:
+                # Normal case: use current ego_target_point
+                dist_to_command = np.linalg.norm(ego_target_point)
+            
+            dist_to_command = int(dist_to_command)
+            
+            map_command = {
+                    1: 'go left at the next intersection',
+                    2: 'go right at the next intersection',
+                    3: 'go straight at the next intersection',
+                    4: 'follow the road',
+                    5: 'do a lane change to the left',
+                    6: 'do a lane change to the right',        
+            }
+            command_template_mappings = {
+                    1: [0, 2, 4, 7],
+                    2: [1, 3, 5, 8],
+                    3: [6, 9],
+                    4: [38, 40, 42, 43, 44, 45],
+                    5: [34, 36],
+                    6: [35, 37],
+            }
+            if self.LMDRIVE_AUGM:
+                lmdrive_index = random.choice(command_template_mappings[far_cmd_value])
+                lmdrive_command = random.choice(self.command_templates[str(lmdrive_index)])
+                lmdrive_command = lmdrive_command.replace('[x]', str(dist_to_command))
+                prompt_tp = f'Command: {lmdrive_command}'
+                
+            else:
+                # Determine which command to use
+                # If we're in the process of going through an intersection/turn (far_command==4 but last_command was intersection/turn),
+                # continue using the last_command until we're past the intersection
+                intersection_transition_threshold = 6.5  # meters: continue using last_command if within this distance
+                
+                if self.last_command in [1, 2, 3] and far_cmd_value == 4:
+                    # Still in intersection/turn process, use last_command
+                    # Use dist_to_intersection (real-time calculated) for threshold check
+                    if dist_to_intersection is not None and dist_to_intersection < intersection_transition_threshold:
+                        command = map_command[self.last_command]
+                        use_last_command = True
+                    else:
+                        # Far enough from intersection, switch to follow the road
+                        command = map_command[far_cmd_value]
+                        use_last_command = False
+                        # Clear last_target_point since we're past the intersection
+                        self.last_target_point = None
+                else:
+                    # Normal case: use current far_command
+                    command = map_command[far_cmd_value]
+                    use_last_command = False
+                
+                # Get next_command text
+                # If we're using last_command (in intersection transition), next_command should be far_command (4)
+                next_far_cmd_value = next_far_command.value if hasattr(next_far_command, 'value') else next_far_command
+                if use_last_command:
+                    next_command = map_command[far_cmd_value]  # Use far_command (4) as next_command
+                else:
+                    next_command = map_command[next_far_cmd_value]  # Normal case: use next_far_command
+                
+                # Determine if we should merge next_command
+                if command != next_command:
+                    next_command_str = f' then {next_command}'
+                else:
+                    next_command_str = ''
+                
+                # Save actual_command for step_logs (the command value, not text)
+                if use_last_command:
+                    self.actual_command = self.last_command  # Use last_command value (1-6)
+                else:
+                    far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
+                    self.actual_command = far_cmd_value  # Use far_command value (1-6)
+                
+                # If command is 1 or 2 (go left/right) and distance > 19m, replace with follow the road
+                command_replaced = False
+                if not use_last_command and self.actual_command in [1, 2, 5, 6] and dist_to_command >= 19:
+                    command = map_command[4]  # follow the road
+                    # Update actual_command to 4 (follow the road)
+                    self.actual_command = 4
+                    command_replaced = True
+                
+                # Print debug info
+                original_far_cmd_value = far_command.value if hasattr(far_command, 'value') else far_command
+                next_cmd_value = next_far_command.value if hasattr(next_far_command, 'value') else next_far_command
+                print(f"[DEBUG] Step {self.step}: far_command={original_far_cmd_value}, next_far_command={next_cmd_value}, last_command={self.last_command}, use_last_command={use_last_command}, actual_command={self.actual_command}, command='{command}', next_command='{next_command}', dist_to_command={dist_to_command}, command_replaced={command_replaced}", flush=True)
+                
+                # Generate prompt with command and optionally next_command
+                # If command was replaced with follow the road, treat it as command 4
+                if use_last_command or self.actual_command == 4:
+                    # When using last_command or far_command is 4, don't include distance
+                    prompt_tp = f'Command: {command}{next_command_str}.'
+                else:
+                    # Include distance for intersection/turn commands
+                    prompt_tp = f'Command: {command} in {dist_to_command} meter{next_command_str}.'
+                
+        else:
+            # For other eval_route_as modes, use default prompt_tp (already initialized above)
+            # Note: route_img is not defined, this branch may need to be updated if needed
+            # result['route'] = route_img  # Commented out as route_img is not defined
+            pass
+
+        if self.config.use_cot:
+            prompt = f"Current speed: {speed} m/s. {prompt_tp} What should the ego do next?"
+        else:
+            prompt = f"Current speed: {speed} m/s. {prompt_tp} Predict the waypoints."
+        
+        if self.custom_prompt is not None:
+            if self.user_flag == 2 or self.user_flag == 3:
+                prompt = f"Current speed: {speed} m/s. {self.custom_prompt}"
+            else:
+                prompt = f"Current speed: {speed} m/s. {prompt_tp} {self.custom_prompt}"
+
+
+        if self.user_flag == 1 or self.user_flag == 2:
+            prompt = f"<INSTRUCTION_FOLLOWING> {prompt}"
+        elif self.user_flag == 0:
+            prompt = f"<SAFETY> {prompt}"
+
+
+        result['speed'] = torch.FloatTensor([speed]).unsqueeze(0).to(self.device, dtype=torch.float32)
+
+        B, T, num_patches, C, H, W = processed_image.shape
+        assert B == 1
+        assert T == self.T
+        assert C == 3
+
+        speed = round(speed, 1)
+        
+        self.prompt_tp = prompt_tp
+        self.prompt = prompt
+        
+        # Print full prompt for debugging
+        if self.config.eval_route_as == 'command':
+            print(f"[DEBUG PROMPT] Step {self.step}: full_prompt='{self.prompt}'", flush=True)
+        
+        conversation_all = [
+                {
+                "role": "user",
+                "content": [
+                        {"type": "text", "text": prompt},
+                        {"type": "image"},
+                        ],
+                },
+                {
+                "role": "assistant",
+                "content": [
+                        {"type": "text", "text": "Waypoints:"},
+                        ],
+                },
+        ]
+        conv_batch_list = [conversation_all]
+        questions = []
+        for conv in conv_batch_list:
+                for i in range(len(conv)):
+                        questions.append(conv[i]['content'][0]['text'])
+                        conv[i]['content'] = conv[i]['content'][0]['text']
+                        
+        cache_dir = f"pretrained/{(self.cfg.model.vision_model.variant.split('/')[1])}"
+        # get absolute path from workspace dir not wokring dir
+        cache_dir = to_absolute_path(cache_dir)
+        model_path = f"{cache_dir}/conversation.py"
+        if not os.path.exists(model_path):
+                from huggingface_hub import snapshot_download
+                snapshot_download(repo_id=self.cfg.model.vision_model.variant, local_dir=cache_dir)
+                
+        #import from file from model_path
+        if not hasattr(self, 'conv_module'):
+            spec = importlib.util.spec_from_file_location('get_conv_template', model_path)
+            self.conv_module = importlib.util.module_from_spec(spec)
+            sys.modules['get_conv_template'] = self.conv_module
+            spec.loader.exec_module(self.conv_module)
+        conv_module = self.conv_module
+        
+        if not hasattr(self, 'tmp_config'):
+                self.tmp_config = AutoConfig.from_pretrained(self.cfg.model.vision_model.variant, trust_remote_code=True)
+                image_size = self.tmp_config.force_image_size or self.tmp_config.vision_config.image_size
+                patch_size = self.tmp_config.vision_config.patch_size
+                
+                self.num_image_token = int((image_size // patch_size) ** 2 * (self.tmp_config.downsample_ratio ** 2))
+                
+        prompt_batch_list = []
+        for idx, conv in enumerate(conv_batch_list):
+                question = questions[idx]
+                if '<image>' not in question:
+                        question = '<image>\n' + question
+                template = conv_module.get_conv_template('internlm2-chat')
+                template_inference = None
+                
+                template_inference = conv_module.get_conv_template('internlm2-chat')
+                for conv_part_idx, conv_part in enumerate(conv):
+                        if conv_part['role'] == 'assistant':
+                                # template.append_message(template.roles[1], conv_part['content'])
+                                template.append_message(template.roles[1], None)
+                        elif conv_part['role'] == 'user':
+                                if conv_part_idx == 0 and '<image>' not in conv_part['content']:
+                                        # add image token
+                                        conv_part['content'] = '<image>\n' + conv_part['content']
+                                template.append_message(template.roles[0], conv_part['content'])
+                        else:
+                                raise ValueError(f"Role {conv_part['role']} not supported")
+                            
+                query = template.get_prompt()
+                # remove system prompt
+                system_prompt = template.system_template.replace('{system_message}', template.system_message) + template.sep
+                query = query.replace(system_prompt, '')
+                
+                IMG_START_TOKEN='<img>'
+                IMG_END_TOKEN='</img>'
+                IMG_CONTEXT_TOKEN='<IMG_CONTEXT>'
+                num_patches_all = 2 # sum(grid_nums)
+
+                image_tokens = IMG_START_TOKEN + IMG_CONTEXT_TOKEN * self.num_image_token * num_patches_all + IMG_END_TOKEN
+                query = query.replace('<image>', image_tokens, 1)
+                prompt_batch_list.append(query)
+                
+        prompt_tokenized = self.tokenizer(prompt_batch_list, padding=True, return_tensors="pt", return_offsets_mapping=True, add_special_tokens=False)
+        prompt_tokenized_ids = prompt_tokenized["input_ids"]
+        prompt_tokenized_char_offsets = prompt_tokenized["offset_mapping"].view(1, -1, 2)
+        prompt_tokenized_valid = prompt_tokenized["input_ids"] != self.tokenizer.pad_token_id
+        prompt_tokenized_mask = prompt_tokenized_valid
+        
+        ll = LanguageLabel(
+                phrase_ids=prompt_tokenized_ids.to(self.device),
+                phrase_valid=prompt_tokenized_valid.to(self.device),
+                phrase_mask=prompt_tokenized_mask.to(self.device),
+                placeholder_values=placeholder_batch_list,
+                language_string=prompt_batch_list,
+                loss_masking=None,
+        )
+
+        self.DrivingInput["camera_images"] = processed_image.to(self.device).bfloat16()
+        self.DrivingInput["image_sizes"] = image_sizes
+        self.DrivingInput["camera_intrinsics"] = torch.repeat_interleave(get_camera_intrinsics(W, H, 110).unsqueeze(0), 1, dim=0).view(1, 3, 3).float().to(self.device),
+        self.DrivingInput["camera_extrinsics"] = torch.repeat_interleave(get_camera_extrinsics().unsqueeze(0), 1, dim=0).view(1, 4, 4).float().to(self.device),
+        self.DrivingInput["vehicle_speed"] = result['speed']
+        self.DrivingInput["target_point"] = result['target_point'].to(self.device)
+        self.DrivingInput["prompt"] = ll
+        self.DrivingInput["prompt_inference"] = ll
+        
+        # Save placeholder_batch_list for CFG unconditional prompt building
+        self.placeholder_batch_list = placeholder_batch_list
+
+        return result
+    
+    def _build_unconditional_prompt(self, speed):
+        """
+        Build an unconditional prompt (minimal prompt without specific instructions).
+        This is used for CFG (Classifier-Free Guidance).
+        """
+        # Create a minimal unconditional prompt - just basic structure without specific command
+        unconditional_prompt = f"Current speed: {speed} m/s. Predict the waypoints."
+        
+        conversation_uncond = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": unconditional_prompt},
+                    {"type": "image"},
+                ],
+            },
+            {
+                "role": "assistant",
+                "content": [
+                    {"type": "text", "text": "Waypoints:"},
+                ],
+            },
+        ]
+        conv_batch_list_uncond = [conversation_uncond]
+        questions_uncond = []
+        for conv in conv_batch_list_uncond:
+            for i in range(len(conv)):
+                questions_uncond.append(conv[i]['content'][0]['text'])
+                conv[i]['content'] = conv[i]['content'][0]['text']
+        
+        cache_dir = f"pretrained/{(self.cfg.model.vision_model.variant.split('/')[1])}"
+        cache_dir = to_absolute_path(cache_dir)
+        model_path = f"{cache_dir}/conversation.py"
+        
+        if not hasattr(self, 'tmp_config'):
+            self.tmp_config = AutoConfig.from_pretrained(self.cfg.model.vision_model.variant, trust_remote_code=True)
+            image_size = self.tmp_config.force_image_size or self.tmp_config.vision_config.image_size
+            patch_size = self.tmp_config.vision_config.patch_size
+            self.num_image_token = int((image_size // patch_size) ** 2 * (self.tmp_config.downsample_ratio ** 2))
+        
+        # Reuse the conversation module if already loaded
+        if not hasattr(self, 'conv_module'):
+            spec = importlib.util.spec_from_file_location('get_conv_template', model_path)
+            self.conv_module = importlib.util.module_from_spec(spec)
+            sys.modules['get_conv_template'] = self.conv_module
+            spec.loader.exec_module(self.conv_module)
+        
+        prompt_batch_list_uncond = []
+        for idx, conv in enumerate(conv_batch_list_uncond):
+            question = questions_uncond[idx]
+            if '<image>' not in question:
+                question = '<image>\n' + question
+            
+            template = self.conv_module.get_conv_template('internlm2-chat')
+            for conv_part_idx, conv_part in enumerate(conv):
+                if conv_part['role'] == 'assistant':
+                    template.append_message(template.roles[1], None)
+                elif conv_part['role'] == 'user':
+                    if conv_part_idx == 0 and '<image>' not in conv_part['content']:
+                        conv_part['content'] = '<image>\n' + conv_part['content']
+                    template.append_message(template.roles[0], conv_part['content'])
+                else:
+                    raise ValueError(f"Role {conv_part['role']} not supported")
+            
+            query = template.get_prompt()
+            system_prompt = template.system_template.replace('{system_message}', template.system_message) + template.sep
+            query = query.replace(system_prompt, '')
+            
+            IMG_START_TOKEN = '<img>'
+            IMG_END_TOKEN = '</img>'
+            IMG_CONTEXT_TOKEN = '<IMG_CONTEXT>'
+            num_patches_all = 2
+            
+            image_tokens = IMG_START_TOKEN + IMG_CONTEXT_TOKEN * self.num_image_token * num_patches_all + IMG_END_TOKEN
+            query = query.replace('<image>', image_tokens, 1)
+            prompt_batch_list_uncond.append(query)
+        
+        # For unconditional prompt, use empty placeholder_values
+        placeholder_batch_list_uncond = [{}]  # Empty placeholder values
+        
+        prompt_tokenized_uncond = self.tokenizer(prompt_batch_list_uncond, padding=True, return_tensors="pt", return_offsets_mapping=True, add_special_tokens=False)
+        prompt_tokenized_ids_uncond = prompt_tokenized_uncond["input_ids"]
+        prompt_tokenized_valid_uncond = prompt_tokenized_uncond["input_ids"] != self.tokenizer.pad_token_id
+        prompt_tokenized_mask_uncond = prompt_tokenized_valid_uncond
+        
+        ll_uncond = LanguageLabel(
+            phrase_ids=prompt_tokenized_ids_uncond.to(self.device),
+            phrase_valid=prompt_tokenized_valid_uncond.to(self.device),
+            phrase_mask=prompt_tokenized_mask_uncond.to(self.device),
+            placeholder_values=placeholder_batch_list_uncond,
+            language_string=prompt_batch_list_uncond,
+            loss_masking=None,
+        )
+        
+        return ll_uncond
+
+    @torch.no_grad()
+    def run_step(self, input_data, timestamp, sensors=None):  # pylint: disable=locally-disabled, unused-argument
+        self.step += 1
+        step_start = time.time()
+    # ===== 添加诊断代码 mh 20260125 =====
+        if self.step == 1:  # 只打印一次
+            print(f"[DIAGNOSTIC] Model device: {next(self.model.parameters()).device}", flush=True)
+            print(f"[DIAGNOSTIC] CUDA available: {torch.cuda.is_available()}", flush=True)
+            print(f"[DIAGNOSTIC] Current device: {torch.cuda.current_device()}", flush=True)
+        # ===== 诊断代码结束 =====
+
+        if not self.initialized:
+            self._init()
+            control = carla.VehicleControl(steer=0.0, throttle=0.0, brake=1.0)
+            self.control = control
+            tick_data = self.tick(input_data)
+            return control
+        # Need to run this every step for GPS filtering
+        tick_start = time.time()  # ← 添加
+        # Need to run this every step for GPS filtering
+        tick_data = self.tick(input_data)
+        tick_time = time.time() - tick_start  # ← 添加
+
+        # Log full prompt for this step
+        if hasattr(self, 'prompt') and self.prompt is not None:
+            prompt_log_entry = {
+                'step': self.step,
+                'full_prompt': self.prompt
+            }
+            self.prompt_logs.append(prompt_log_entry)
+
+        # initialize DrivingInput with dict self.DrivingInput
+        model_input = DrivingInput(**self.DrivingInput)
+        
+        # if self.step%5 == 0:
+        #     # Print model input (simplified)
+        #     if model_input.prompt is not None and hasattr(model_input.prompt, 'language_string') and len(model_input.prompt.language_string) > 0:
+        #         prompt_text = model_input.prompt.language_string[0]
+        #     else:
+        #         prompt_text = "N/A"
+        #     speed_val = model_input.vehicle_speed.item() if model_input.vehicle_speed is not None else 0.0
+        #     target_pt = model_input.target_point.cpu().numpy()[0] if model_input.target_point is not None else None
+        #     print(f"\n[Step {self.step}] Input: speed={speed_val:.1f}m/s, target_point={target_pt}, prompt='...{prompt_text[-100:]}'")
+        
+        model_start = time.time()  # ← 添加
+        
+        # CFG (Classifier-Free Guidance) two times inference
+        if self.config.use_cfg:
+            # First forward: conditional (with full prompt)
+            pred_speed_wps_cond, pred_route_cond, language_cond = self.model(model_input)
+            pred_speed_wps_cond = pred_speed_wps_cond.float() if pred_speed_wps_cond is not None else None
+            pred_route_cond = pred_route_cond.float() if pred_route_cond is not None else None
+            
+            # Second forward: unconditional (with minimal prompt)
+            # Build unconditional prompt
+            speed_val = tick_data['speed'].item() if hasattr(tick_data['speed'], 'item') else float(tick_data['speed'])
+            ll_uncond = self._build_unconditional_prompt(speed_val)
+            
+            # Create unconditional model input (same as conditional except for prompt)
+            model_input_uncond = DrivingInput(
+                camera_images=model_input.camera_images,
+                image_sizes=model_input.image_sizes,
+                camera_intrinsics=model_input.camera_intrinsics,
+                camera_extrinsics=model_input.camera_extrinsics,
+                vehicle_speed=model_input.vehicle_speed,
+                target_point=model_input.target_point,
+                prompt=ll_uncond,
+                prompt_inference=ll_uncond,
+            )
+            
+            pred_speed_wps_uncond, pred_route_uncond, language_uncond = self.model(model_input_uncond)
+            pred_speed_wps_uncond = pred_speed_wps_uncond.float() if pred_speed_wps_uncond is not None else None
+            pred_route_uncond = pred_route_uncond.float() if pred_route_uncond is not None else None
+            
+            # Apply CFG formula: output = uncond + cfg_scale * (cond - uncond)
+            cfg_scale = self.config.cfg_scale
+            if pred_route_cond is not None and pred_route_uncond is not None:
+                pred_route = pred_route_uncond + cfg_scale * (pred_route_cond - pred_route_uncond)
+            else:
+                pred_route = pred_route_cond if pred_route_cond is not None else pred_route_uncond
+            
+            if pred_speed_wps_cond is not None and pred_speed_wps_uncond is not None:
+                pred_speed_wps = pred_speed_wps_uncond + cfg_scale * (pred_speed_wps_cond - pred_speed_wps_uncond)
+            else:
+                pred_speed_wps = pred_speed_wps_cond if pred_speed_wps_cond is not None else pred_speed_wps_uncond
+            
+            # Use conditional language output (or combine if needed)
+            language = language_cond
+            
+            if self.step % 10 == 0:
+                print(f"[CFG] Step {self.step}: Using CFG with scale={cfg_scale:.2f}", flush=True)
+        else:
+            # Standard single forward pass
+            pred_speed_wps, pred_route, language = self.model(model_input)
+            pred_speed_wps = pred_speed_wps.float() if pred_speed_wps is not None else None
+            pred_route = pred_route.float() if pred_route is not None else None
+        
+        model_time = time.time() - model_start  # ← 添加
+
+        # if self.step%5 == 0:
+        #     # Print model output
+        #     if pred_route is not None:
+        #         route_np = pred_route[0].detach().cpu().numpy()
+        #         print(f"[Step {self.step}] Output: pred_route shape={pred_route.shape}, first_3_waypoints={route_np[:6].tolist()}")
+        #     if pred_speed_wps is not None:
+        #         speed_wps_np = pred_speed_wps[0].detach().cpu().numpy()
+        #         print(f"[Step {self.step}] Output: pred_speed_wps shape={pred_speed_wps.shape}, first_3_waypoints={speed_wps_np[:3].tolist()}")
+        #     if language is not None:
+        #         print(f"[Step {self.step}] Output: language='{language[0][-100:]}...'")
+
+        # prepare velocity input
+        gt_velocity = tick_data['speed']
+
+        if DEBUG and self.step%5 == 0:
+            tvec = None
+            rvec = None
+
+            if HD_VIZ:
+                self.camera_for_viz = self.hd_cam_for_viz
+                tvec = np.array([[0.0, 3.5, 5.5]], np.float32)
+
+                cam_rots = [0.0, -15.0, 0.0]
+                rot_matrix = get_rotation_matrix(-cam_rots[0], -cam_rots[1], cam_rots[2])
+                rvec = cv2.Rodrigues(rot_matrix[:3, :3])[0].flatten()
+
+            W=self.camera_for_viz.shape[1]
+            H=self.camera_for_viz.shape[0]
+            camera_intrinsics = np.asarray(get_camera_intrinsics(W,H,110))
+
+            # bgr to rgb
+            self.camera_for_viz = cv2.cvtColor(self.camera_for_viz, cv2.COLOR_BGR2RGB)
+
+            # draw the predicted waypoints
+            image = Image.fromarray(self.camera_for_viz)
+            draw = ImageDraw.Draw(image)
+
+            if self.target_points is not None:
+                target_point_img_coords = project_points(self.target_points, camera_intrinsics, tvec=tvec, rvec=rvec)
+                for points_2d in target_point_img_coords:
+                    # in blue
+                    draw.ellipse((points_2d[0]-4, points_2d[1]-4, points_2d[0]+4, points_2d[1]+4), fill=(0, 0, 255, 255))
+
+            if pred_route is not None:
+                pred_route_img_coords = project_points(pred_route[0].detach().cpu().numpy(), camera_intrinsics, tvec=tvec, rvec=rvec)
+                for points_2d in pred_route_img_coords:
+                        draw.ellipse((points_2d[0]-3, points_2d[1]-3, points_2d[0]+3, points_2d[1]+3), fill=(255, 0, 0, 255))
+            
+            if pred_speed_wps is not None:
+                pred_speed_wps_img_coords = project_points(pred_speed_wps[0].detach().cpu().numpy(), camera_intrinsics, tvec=tvec, rvec=rvec)
+                for points_2d in pred_speed_wps_img_coords:
+                        draw.ellipse((points_2d[0]-2, points_2d[1]-2, points_2d[0]+2, points_2d[1]+2), fill=(0, 255, 0, 255))
+
+            # save (removed text overlay, only save image with waypoints)
+            image.save(f"{self.save_path_img}/{self.step}.png")
+
+        control_start = time.time()  # ← 添加
+        ### 通过 PID 控制器将预测的 waypoints 转换为控制命令：
+        steer, throttle, brake = self.control_pid(pred_route, gt_velocity, pred_speed_wps)
+        control_time = time.time() - control_start  # ← 添加
+        # # 0.1 is just an arbitrary low number to threshold when the car is stopped
+        if gt_velocity < 0.1:
+            self.stuck_detector += 1
+        else:
+            self.stuck_detector = 0
+
+        # Restart mechanism in case the car got stuck. Not used a lot anymore but doesn't hurt to keep it.
+        if self.stuck_detector > self.config.stuck_threshold:
+            self.force_move = self.config.creep_duration
+
+        if self.force_move > 0:
+            throttle = max(self.config.creep_throttle, throttle)
+            brake = False
+            self.force_move -= 1
+            print(f"force_move: {self.force_move}")
+
+        control = carla.VehicleControl(steer=float(steer), throttle=float(throttle), brake=float(brake))
+
+        # CARLA will not let the car drive in the initial frames.
+        # We set the action to brake so that the filter does not get confused.
+        if self.step < self.config.inital_frames_delay:
+            self.control = carla.VehicleControl(0.0, 0.0, 1.0)
+        else:
+            self.control = control
+            
+        ##### mh 20260125: not needed anymore?
+        # metric_info = self.get_metric_info()    ##### 只包含车辆状态（location, rotation, acceleration等）
+        # self.metric_info[self.step] = metric_info
+        # if self.save_path_metric is not None and self.step % 1 == 0:
+        #         # metric info
+        #         outfile = open(f"{self.save_path_metric}/metric_info.json", 'w')
+        #         json.dump(self.metric_info, outfile, indent=4)
+        #         outfile.close()
+        
+        # Periodically save prompt logs (every 10 steps to prevent data loss)
+        if hasattr(self, 'prompt_logs') and hasattr(self, 'save_path') and self.save_path and self.step % 10 == 0:
+            try:
+                prompt_logs_file = Path(self.save_path) / 'prompt_logs.json'
+                with open(prompt_logs_file, 'w') as f:
+                    json.dump(self.prompt_logs, f, indent=2)
+            except Exception as e:
+                print(f"[WARNING] Failed to save prompt_logs.json at step {self.step}: {e}", flush=True)
+        
+        # Save step log for command alignment evaluation
+        if hasattr(self, 'step_logs') and pred_route is not None and hasattr(self, 'actual_command') and self.actual_command is not None:
+            # Get predicted waypoints (vehicle coordinate system)
+            predicted_waypoints = pred_route[0].detach().cpu().numpy().tolist()
+            
+            # Get current heading from compass (in radians)
+            current_heading = tick_data.get('compass', 0.0)
+            # compass is already normalized angle, but we need to ensure it's in [-pi, pi]
+            if isinstance(current_heading, (list, np.ndarray)):
+                current_heading = current_heading[-1] if len(current_heading) > 0 else 0.0
+            current_heading = t_u.normalize_angle(float(current_heading))
+            
+            # Determine if in junction: command 1, 2, 3 typically indicate junction-related commands
+            is_in_junction = self.actual_command in [1, 2, 3]
+            
+            # Get metadata (optional additional information)
+            gps_data = tick_data.get('gps', [0.0, 0.0])
+            if isinstance(gps_data, np.ndarray):
+                gps_data = gps_data.tolist()
+            elif not isinstance(gps_data, list):
+                gps_data = [0.0, 0.0]
+            
+            target_point_data = tick_data.get('target_point', None)
+            if target_point_data is not None and hasattr(target_point_data, 'cpu'):
+                target_point_data = target_point_data.cpu().numpy().tolist() if hasattr(target_point_data, 'cpu') else None
+            
+            metadata = {
+                'location': gps_data,
+                'speed': float(gt_velocity.item()) if hasattr(gt_velocity, 'item') else float(gt_velocity),
+                'target_point': target_point_data,
+            }
+            
+            log_entry = {
+                'step': self.step,
+                'predicted_waypoints': predicted_waypoints,
+                'actual_command': int(self.actual_command),
+                'current_heading': float(current_heading),
+                'is_in_junction': is_in_junction,
+                'metadata': metadata
+            }
+            
+            self.step_logs.append(log_entry)
+            
+            # Periodically save step_logs.json (every 10 steps, same as prompt_logs)
+            if hasattr(self, 'save_path') and self.save_path and self.step % 10 == 0:
+                try:
+                    step_logs_file = Path(self.save_path) / 'step_logs.json'
+                    with open(step_logs_file, 'w') as f:
+                        json.dump(self.step_logs, f, indent=2)
+                except Exception as e:
+                    print(f"[WARNING] Failed to save step_logs.json at step {self.step}: {e}", flush=True)
+        
+        # 在return之前添加
+        total_time = time.time() - step_start  # ← 添加
+        if self.step % 10 == 0:  # 每5步打印一次
+            print(f"[TIMING] Step {self.step}: total={total_time:.2f}s, tick={tick_time:.2f}s, model={model_time:.2f}s, control={control_time:.2f}s", flush=True)
+    
+        return control
+
+    def control_pid(self, route_waypoints, velocity, speed_waypoints):
+        """
+        Predicts vehicle control with a PID controller.
+        Used for waypoint predictions
+        """
+        assert route_waypoints.size(0) == 1
+        route_waypoints = route_waypoints[0].data.cpu().numpy()
+        speed = velocity[0].data.cpu().numpy()
+        speed_waypoints = speed_waypoints[0].data.cpu().numpy()
+
+        # m / s required to drive
+        one_second = int(self.config.carla_fps // (self.config.wp_dilation * self.config.data_save_freq))
+        half_second = one_second // 2
+        desired_speed = np.linalg.norm(speed_waypoints[half_second - 2] - speed_waypoints[one_second - 2]) * 2.0
+
+        brake = ((desired_speed < self.config.brake_speed) or ((speed / desired_speed) > self.config.brake_ratio))
+
+        delta = np.clip(desired_speed - speed, 0.0, self.config.clip_delta)
+        throttle = self.speed_controller.step(delta)
+        throttle = np.clip(throttle, 0.0, self.config.clip_throttle)
+        throttle = throttle if not brake else 0.0
+
+        route_interp = self.interpolate_waypoints(route_waypoints.squeeze())
+
+        steer = self.turn_controller.step(route_interp, speed)
+
+        steer = np.clip(steer, -1.0, 1.0)
+        steer = round(steer, 3)
+
+        return steer, throttle, brake
+    
+    # In: Waypoints NxD
+    # Out: Waypoints NxD equally spaced 0.1 across D
+    def interpolate_waypoints(self, waypoints):
+            waypoints = waypoints.copy()
+            waypoints = np.concatenate((np.zeros_like(waypoints[:1]), waypoints))
+            shift = np.roll(waypoints, 1, axis=0)
+            shift[0] = shift[1]
+
+            dists = np.linalg.norm(waypoints-shift, axis=1)
+            dists = np.cumsum(dists)
+            dists += np.arange(0, len(dists)) * 1e-4 # Prevents dists not being strictly increasing
+
+            interp = PchipInterpolator(dists, waypoints, axis=0)
+
+            x = np.arange(0.1, dists[-1], 0.1)
+
+            interp_points = interp(x)
+
+            # There is a possibility that all points are at 0, meaning there is no point distanced 0.1
+            # In this case we output the last (assumed to be furthest) waypoint.
+            if interp_points.shape[0] == 0:
+                    interp_points = waypoints[None, -1]
+
+            return interp_points
+    
+    def destroy(self, results=None):  # pylint: disable=locally-disabled, unused-argument
+        """
+        Gets called after a route finished.
+        The leaderboard client doesn't properly clear up the agent after the route finishes so we need to do it here.
+        Also writes logging files to disk.
+        """
+        
+        # Save prompt logs for command alignment evaluation
+        # This ensures the final steps and any steps not saved during periodic saves are saved
+        if hasattr(self, 'prompt_logs') and len(self.prompt_logs) > 0 and hasattr(self, 'save_path') and self.save_path:
+            prompt_logs_file = Path(self.save_path) / 'prompt_logs.json'
+            try:
+                with open(prompt_logs_file, 'w') as f:
+                    json.dump(self.prompt_logs, f, indent=2)
+                print(f"[INFO] Saved {len(self.prompt_logs)} prompt logs to {prompt_logs_file}", flush=True)
+            except Exception as e:
+                print(f"[WARNING] Failed to save prompt_logs.json: {e}", flush=True)
+        
+        # Save step_logs for command alignment evaluation
+        # This ensures the final steps and any steps not saved during periodic saves are saved
+        if hasattr(self, 'step_logs') and len(self.step_logs) > 0 and hasattr(self, 'save_path') and self.save_path:
+            step_logs_file = Path(self.save_path) / 'step_logs.json'
+            try:
+                with open(step_logs_file, 'w') as f:
+                    json.dump(self.step_logs, f, indent=2)
+                print(f"[INFO] Saved {len(self.step_logs)} step logs to {step_logs_file}", flush=True)
+            except Exception as e:
+                print(f"[WARNING] Failed to save step_logs.json: {e}", flush=True)
+        
+        # Clear logs after saving to prevent accumulation across routes
+        if hasattr(self, 'prompt_logs'):
+            self.prompt_logs = []
+        if hasattr(self, 'step_logs'):
+            self.step_logs = []
+
+        del self.model
+        del self.config
+        # # Check if encoder key exists before accessing it     mh 20260125: not needed anymore?
+        # if hasattr(self.cfg.data_module, 'encoder') and self.cfg.data_module.encoder == 'llavanext':
+        #     del self.processor
+
+
+# Filter Functions
+def bicycle_model_forward(x, dt, steer, throttle, brake):
+    # Kinematic bicycle model.
+    # Numbers are the tuned parameters from World on Rails
+    front_wb = -0.090769015
+    rear_wb = 1.4178275
+
+    steer_gain = 0.36848336
+    brake_accel = -4.952399
+    throt_accel = 0.5633837
+
+    locs_0 = x[0]
+    locs_1 = x[1]
+    yaw = x[2]
+    speed = x[3]
+
+    if brake:
+        accel = brake_accel
+    else:
+        accel = throt_accel * throttle
+
+    wheel = steer_gain * steer
+
+    beta = math.atan(rear_wb / (front_wb + rear_wb) * math.tan(wheel))
+    next_locs_0 = locs_0.item() + speed * math.cos(yaw + beta) * dt
+    next_locs_1 = locs_1.item() + speed * math.sin(yaw + beta) * dt
+    next_yaws = yaw + speed / rear_wb * math.sin(beta) * dt
+    next_speed = speed + accel * dt
+    next_speed = next_speed * (next_speed > 0.0)  # Fast ReLU
+
+    next_state_x = np.array([next_locs_0, next_locs_1, next_yaws, next_speed])
+
+    return next_state_x
+
+
+def measurement_function_hx(vehicle_state):
+    '''
+        For now we use the same internal state as the measurement state
+        :param vehicle_state: VehicleState vehicle state variable containing
+                                                    an internal state of the vehicle from the filter
+        :return: np array: describes the vehicle state as numpy array.
+                                             0: pos_x, 1: pos_y, 2: rotatoion, 3: speed
+        '''
+    return vehicle_state
+
+
+def state_mean(state, wm):
+    '''
+        We use the arctan of the average of sin and cos of the angle to calculate
+        the average of orientations.
+        :param state: array of states to be averaged. First index is the timestep.
+        :param wm:
+        :return:
+        '''
+    x = np.zeros(4)
+    sum_sin = np.sum(np.dot(np.sin(state[:, 2]), wm))
+    sum_cos = np.sum(np.dot(np.cos(state[:, 2]), wm))
+    x[0] = np.sum(np.dot(state[:, 0], wm))
+    x[1] = np.sum(np.dot(state[:, 1], wm))
+    x[2] = math.atan2(sum_sin, sum_cos)
+    x[3] = np.sum(np.dot(state[:, 3], wm))
+
+    return x
+
+
+def measurement_mean(state, wm):
+    '''
+    We use the arctan of the average of sin and cos of the angle to
+    calculate the average of orientations.
+    :param state: array of states to be averaged. First index is the
+    timestep.
+    '''
+    x = np.zeros(4)
+    sum_sin = np.sum(np.dot(np.sin(state[:, 2]), wm))
+    sum_cos = np.sum(np.dot(np.cos(state[:, 2]), wm))
+    x[0] = np.sum(np.dot(state[:, 0], wm))
+    x[1] = np.sum(np.dot(state[:, 1], wm))
+    x[2] = math.atan2(sum_sin, sum_cos)
+    x[3] = np.sum(np.dot(state[:, 3], wm))
+
+    return x
+
+
+def residual_state_x(a, b):
+    y = a - b
+    y[2] = t_u.normalize_angle(y[2])
+    return y
+
+
+def residual_measurement_h(a, b):
+    y = a - b
+    y[2] = t_u.normalize_angle(y[2])
+    return y
+
+# [Step 105] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[-0.001220703125, 0.00146484375], [1.0, -0.03369140625], [2.0, -0.05908203125]]
+# [Step 105] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.265625, -0.12109375], [4.46875, -0.1748046875], [6.625, -0.25]]
+# [Step 105] Output: language='the route. Maintain the reduced speed to stay behind the maroon car that is to the front. Waypoints:...'
+# === [Agent] -- Wallclock = 2026-01-24 11:30:16.382 -- System time = 572.844 -- Game time = 5.350 -- Ratio = 0.009x
+
+# [Step 106] Input: speed=8.8m/s, target_point=[22.589808  -0.7393668], prompt='...waypoint: <TARGET_POINT><TARGET_POINT>. What should the ego do next?<|im_end|><|im_start|>assistant
+# '
+# [Step 106] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0037841796875, 0.0029296875], [1.0, -0.02587890625], [2.0, -0.04296875]]
+# [Step 106] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.265625, -0.08837890625], [4.5, -0.138671875], [6.65625, -0.197265625]]
+# [Step 106] Output: language='tain the reduced speed to stay behind the maroon car that is to the front in 15.0 meters. Waypoints:...'
+# === [Agent] -- Wallclock = 2026-01-24 11:30:22.074 -- System time = 578.536 -- Game time = 5.400 -- Ratio = 0.009x
+
+# [Step 107] Input: speed=8.8m/s, target_point=[22.147799  -0.5663726], prompt='...waypoint: <TARGET_POINT><TARGET_POINT>. What should the ego do next?<|im_end|><|im_start|>assistant
+# '
+# [Step 107] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0001220703125, 0.00341796875], [1.0, -0.0107421875], [2.0, -0.0107421875]]
+# [Step 107] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.265625, -0.01397705078125], [4.4375, -0.04931640625], [6.5625, -0.1005859375]]
+# [Step 107] Output: language='the route. Maintain the reduced speed to stay behind the maroon car that is to the front. Waypoints:...'
+# === [Agent] -- Wallclock = 2026-01-24 11:30:27.037 -- System time = 583.499 -- Game time = 5.450 -- Ratio = 0.009x
+
+# [Step 108] Input: speed=8.7m/s, target_point=[21.705784   -0.45474473], prompt='...waypoint: <TARGET_POINT><TARGET_POINT>. What should the ego do next?<|im_end|><|im_start|>assistant
+# '
+# [Step 108] Output: pred_route shape=torch.Size([1, 20, 2]), first_3_waypoints=[[0.0009765625, 0.00146484375], [1.0, -0.005859375], [2.0, -0.00341796875]]
+# [Step 108] Output: pred_speed_wps shape=torch.Size([1, 10, 2]), first_3_waypoints=[[2.25, 0.01202392578125], [4.40625, -0.00860595703125], [6.5, -0.0458984375]]
+# [Step 108] Output: language='tain the reduced speed to stay behind the maroon car that is to the front in 14.3 meters. Waypoints:...'
+# > Stopping the route
+
+
+# Step 106: target_point=[22.589808,  -0.7393668]
+# Step 107: target_point=[22.147799,  -0.5663726]  # x 减小了 ~0.44m
+# Step 108: target_point=[21.705784,  -0.45474473] # x 又减小了 ~0.44m
+# x 坐标在减小，说明车辆向前移动
+# 每步约 0.44m，符合车辆速度（约 8.8 m/s × 0.05s ≈ 0.44m）
