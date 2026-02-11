@@ -1,0 +1,3006 @@
+[
+  {
+    "step": 1,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 2,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 3,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 4,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 5,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 6,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 7,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 8,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 9,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 10,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 11,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 12,
+    "full_prompt": "Current speed: 0.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 13,
+    "full_prompt": "Current speed: 0.8 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 14,
+    "full_prompt": "Current speed: 1.1 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 15,
+    "full_prompt": "Current speed: 1.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 16,
+    "full_prompt": "Current speed: 1.6 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 17,
+    "full_prompt": "Current speed: 1.8 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 18,
+    "full_prompt": "Current speed: 2.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 19,
+    "full_prompt": "Current speed: 2.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 20,
+    "full_prompt": "Current speed: 2.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 21,
+    "full_prompt": "Current speed: 2.9 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 22,
+    "full_prompt": "Current speed: 3.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 23,
+    "full_prompt": "Current speed: 3.7 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 24,
+    "full_prompt": "Current speed: 4.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 25,
+    "full_prompt": "Current speed: 4.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 26,
+    "full_prompt": "Current speed: 4.7 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 27,
+    "full_prompt": "Current speed: 5.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 28,
+    "full_prompt": "Current speed: 5.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 29,
+    "full_prompt": "Current speed: 5.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 30,
+    "full_prompt": "Current speed: 5.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 31,
+    "full_prompt": "Current speed: 5.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 32,
+    "full_prompt": "Current speed: 4.7 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 33,
+    "full_prompt": "Current speed: 3.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 34,
+    "full_prompt": "Current speed: 2.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 35,
+    "full_prompt": "Current speed: 2.9 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 36,
+    "full_prompt": "Current speed: 3.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 37,
+    "full_prompt": "Current speed: 3.7 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 38,
+    "full_prompt": "Current speed: 4.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 39,
+    "full_prompt": "Current speed: 4.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 40,
+    "full_prompt": "Current speed: 4.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 41,
+    "full_prompt": "Current speed: 4.6 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 42,
+    "full_prompt": "Current speed: 4.7 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 43,
+    "full_prompt": "Current speed: 4.8 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 44,
+    "full_prompt": "Current speed: 5.1 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 45,
+    "full_prompt": "Current speed: 5.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 46,
+    "full_prompt": "Current speed: 5.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 47,
+    "full_prompt": "Current speed: 5.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 48,
+    "full_prompt": "Current speed: 5.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 49,
+    "full_prompt": "Current speed: 5.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 50,
+    "full_prompt": "Current speed: 6.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 51,
+    "full_prompt": "Current speed: 6.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 52,
+    "full_prompt": "Current speed: 7.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 53,
+    "full_prompt": "Current speed: 7.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 54,
+    "full_prompt": "Current speed: 7.8 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 55,
+    "full_prompt": "Current speed: 8.2 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 56,
+    "full_prompt": "Current speed: 8.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 57,
+    "full_prompt": "Current speed: 8.9 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 58,
+    "full_prompt": "Current speed: 9.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 59,
+    "full_prompt": "Current speed: 8.9 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 60,
+    "full_prompt": "Current speed: 9.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 61,
+    "full_prompt": "Current speed: 9.7 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 62,
+    "full_prompt": "Current speed: 9.9 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 63,
+    "full_prompt": "Current speed: 10.1 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 64,
+    "full_prompt": "Current speed: 10.2 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 65,
+    "full_prompt": "Current speed: 10.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 66,
+    "full_prompt": "Current speed: 10.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 67,
+    "full_prompt": "Current speed: 10.2 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 68,
+    "full_prompt": "Current speed: 10.1 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 69,
+    "full_prompt": "Current speed: 9.8 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 70,
+    "full_prompt": "Current speed: 9.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 71,
+    "full_prompt": "Current speed: 9.1 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 72,
+    "full_prompt": "Current speed: 8.6 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 73,
+    "full_prompt": "Current speed: 8.1 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 74,
+    "full_prompt": "Current speed: 7.7 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 75,
+    "full_prompt": "Current speed: 7.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 76,
+    "full_prompt": "Current speed: 7.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 77,
+    "full_prompt": "Current speed: 6.6 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 78,
+    "full_prompt": "Current speed: 5.6 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 79,
+    "full_prompt": "Current speed: 4.4 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 80,
+    "full_prompt": "Current speed: 3.2 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 81,
+    "full_prompt": "Current speed: 2.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 82,
+    "full_prompt": "Current speed: 0.9 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 83,
+    "full_prompt": "Current speed: 1.2 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 84,
+    "full_prompt": "Current speed: 1.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 85,
+    "full_prompt": "Current speed: 1.6 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 86,
+    "full_prompt": "Current speed: 1.9 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 87,
+    "full_prompt": "Current speed: 2.2 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 88,
+    "full_prompt": "Current speed: 2.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 89,
+    "full_prompt": "Current speed: 2.7 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 90,
+    "full_prompt": "Current speed: 2.6 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 91,
+    "full_prompt": "Current speed: 2.5 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 92,
+    "full_prompt": "Current speed: 2.3 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 93,
+    "full_prompt": "Current speed: 2.1 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 94,
+    "full_prompt": "Current speed: 1.9 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 95,
+    "full_prompt": "Current speed: 0.6 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 96,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 97,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 98,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 99,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 100,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 101,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 102,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 103,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 104,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 105,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 106,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 107,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 108,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 109,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 110,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 111,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 112,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 113,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 114,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 115,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 116,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 117,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 118,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 119,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 120,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 121,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 122,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 123,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 124,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 125,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 126,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 127,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 128,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 129,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 130,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 131,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 132,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 133,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 134,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 135,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 136,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 137,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 138,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 139,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 140,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 141,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 142,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 143,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 144,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 145,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 146,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 147,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 148,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 149,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 150,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 151,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 152,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 153,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 154,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 155,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 156,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 157,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 158,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 159,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 160,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 161,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 162,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 163,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 164,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 165,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 166,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 167,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 168,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 169,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 170,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 171,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 172,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 173,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 174,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 175,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 176,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 177,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 178,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 179,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 180,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 181,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 182,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 183,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 184,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 185,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 186,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 187,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 188,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 189,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 190,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 191,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 192,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 193,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 194,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 195,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 196,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 197,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 198,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 199,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 200,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 201,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 202,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 203,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 204,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 205,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 206,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 207,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 208,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 209,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 210,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 211,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 212,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 213,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 214,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 215,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 216,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 217,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 218,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 219,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 220,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 221,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 222,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 223,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 224,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 225,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 226,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 227,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 228,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 229,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 230,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 231,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 232,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 233,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 234,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 235,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 236,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 237,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 238,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 239,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 240,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 241,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 242,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 243,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 244,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 245,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 246,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 247,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 248,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 249,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 250,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 251,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 252,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 253,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 254,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 255,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 256,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 257,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 258,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 259,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 260,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 261,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 262,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 263,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 264,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 265,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 266,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 267,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 268,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 269,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 270,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 271,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 272,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 273,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 274,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 275,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 276,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 277,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 278,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 279,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 280,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 281,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 282,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 283,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 284,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 285,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 286,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 287,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 288,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 289,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 290,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 291,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 292,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 293,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 294,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 295,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 296,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 297,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 298,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 299,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 300,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 301,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 302,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 303,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 304,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 305,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 306,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 307,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 308,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 309,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 310,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 311,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 312,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 313,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 314,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 315,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 316,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 317,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 318,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 319,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 320,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 321,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 322,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 323,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 324,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 325,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 326,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 327,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 328,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 329,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 330,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 331,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 332,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 333,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 334,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 335,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 336,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 337,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 338,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 339,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 340,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 341,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 342,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 343,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 344,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 345,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 346,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 347,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 348,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 349,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 350,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 351,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 352,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 353,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 354,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 355,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 356,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 357,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 358,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 359,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 360,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 361,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 362,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 363,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 364,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 365,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 366,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 367,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 368,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 369,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 370,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 371,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 372,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 373,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 374,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 375,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 376,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 377,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 378,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 379,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 380,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 381,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 382,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 383,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 384,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 385,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 386,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 387,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 388,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 389,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 390,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 391,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 392,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 393,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 394,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 395,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 396,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 397,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 398,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 399,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 400,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 401,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 402,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 403,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 404,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 405,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 406,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 407,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 408,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 409,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 410,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 411,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 412,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 413,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 414,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 415,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 416,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 417,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 418,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 419,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 420,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 421,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 422,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 423,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 424,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 425,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 426,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 427,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 428,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 429,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 430,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 431,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 432,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 433,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 434,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 435,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 436,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 437,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 438,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 439,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 440,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 441,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 442,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 443,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 444,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 445,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 446,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 447,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 448,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 449,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 450,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 451,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 452,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 453,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 454,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 455,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 456,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 457,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 458,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 459,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 460,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 461,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 462,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 463,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 464,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 465,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 466,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 467,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 468,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 469,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 470,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 471,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 472,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 473,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 474,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 475,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 476,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 477,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 478,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 479,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 480,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 481,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 482,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 483,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 484,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 485,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 486,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 487,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 488,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 489,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 490,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 491,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 492,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 493,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 494,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 495,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 496,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 497,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 498,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 499,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 500,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 501,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 502,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 503,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 504,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 505,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 506,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 507,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 508,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 509,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 510,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 511,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 512,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 513,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 514,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 515,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 516,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 517,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 518,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 519,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 520,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 521,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 522,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 523,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 524,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 525,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 526,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 527,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 528,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 529,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 530,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 531,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 532,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 533,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 534,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 535,
+    "full_prompt": "Current speed: 0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 536,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 537,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 538,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 539,
+    "full_prompt": "Current speed: 0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 540,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 541,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 542,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 543,
+    "full_prompt": "Current speed: 0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 544,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 545,
+    "full_prompt": "Current speed: 0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 546,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 547,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 548,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 549,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 550,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 551,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 552,
+    "full_prompt": "Current speed: 0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 553,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 554,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 555,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 556,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 557,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 558,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 559,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 560,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 561,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 562,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 563,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 564,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 565,
+    "full_prompt": "Current speed: -0.0 m/s. Command: follow the road then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 566,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 567,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 568,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 569,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 570,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 571,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 572,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 573,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 574,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 575,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 576,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 577,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 578,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 579,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 580,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 581,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 582,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 583,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 584,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 585,
+    "full_prompt": "Current speed: 0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 586,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 587,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 588,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 589,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 590,
+    "full_prompt": "Current speed: -0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 591,
+    "full_prompt": "Current speed: 0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 592,
+    "full_prompt": "Current speed: 0.0 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 593,
+    "full_prompt": "Current speed: 0.1 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 594,
+    "full_prompt": "Current speed: 0.2 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 595,
+    "full_prompt": "Current speed: 0.3 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 596,
+    "full_prompt": "Current speed: 0.4 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 597,
+    "full_prompt": "Current speed: 0.6 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 598,
+    "full_prompt": "Current speed: 0.8 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 599,
+    "full_prompt": "Current speed: 1.1 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 600,
+    "full_prompt": "Current speed: 1.2 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 601,
+    "full_prompt": "Current speed: 1.4 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 602,
+    "full_prompt": "Current speed: 1.7 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 603,
+    "full_prompt": "Current speed: 1.9 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 604,
+    "full_prompt": "Current speed: 2.2 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 605,
+    "full_prompt": "Current speed: 2.5 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 606,
+    "full_prompt": "Current speed: 2.8 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 607,
+    "full_prompt": "Current speed: 3.2 m/s. Command: go straight at the next intersection in 7 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 608,
+    "full_prompt": "Current speed: 3.6 m/s. Command: go straight at the next intersection in 6 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 609,
+    "full_prompt": "Current speed: 3.9 m/s. Command: go straight at the next intersection in 6 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 610,
+    "full_prompt": "Current speed: 4.3 m/s. Command: go straight at the next intersection in 6 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 611,
+    "full_prompt": "Current speed: 4.6 m/s. Command: go straight at the next intersection in 6 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 612,
+    "full_prompt": "Current speed: 5.0 m/s. Command: go straight at the next intersection in 5 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 613,
+    "full_prompt": "Current speed: 5.3 m/s. Command: go straight at the next intersection in 5 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 614,
+    "full_prompt": "Current speed: 5.6 m/s. Command: go straight at the next intersection in 5 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 615,
+    "full_prompt": "Current speed: 5.6 m/s. Command: go straight at the next intersection in 5 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 616,
+    "full_prompt": "Current speed: 5.6 m/s. Command: go straight at the next intersection in 4 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 617,
+    "full_prompt": "Current speed: 5.6 m/s. Command: go straight at the next intersection in 4 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 618,
+    "full_prompt": "Current speed: 6.1 m/s. Command: go straight at the next intersection in 4 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 619,
+    "full_prompt": "Current speed: 6.7 m/s. Command: go straight at the next intersection in 3 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 620,
+    "full_prompt": "Current speed: 7.1 m/s. Command: go straight at the next intersection in 3 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 621,
+    "full_prompt": "Current speed: 7.5 m/s. Command: go straight at the next intersection in 3 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 622,
+    "full_prompt": "Current speed: 7.9 m/s. Command: go straight at the next intersection in 2 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 623,
+    "full_prompt": "Current speed: 8.3 m/s. Command: go straight at the next intersection in 2 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 624,
+    "full_prompt": "Current speed: 8.7 m/s. Command: go straight at the next intersection in 2 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 625,
+    "full_prompt": "Current speed: 9.1 m/s. Command: go straight at the next intersection in 1 meter then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 626,
+    "full_prompt": "Current speed: 9.1 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 627,
+    "full_prompt": "Current speed: 8.9 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 628,
+    "full_prompt": "Current speed: 9.3 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 629,
+    "full_prompt": "Current speed: 9.8 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 630,
+    "full_prompt": "Current speed: 10.2 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 631,
+    "full_prompt": "Current speed: 10.6 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 632,
+    "full_prompt": "Current speed: 10.9 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 633,
+    "full_prompt": "Current speed: 11.1 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 634,
+    "full_prompt": "Current speed: 11.4 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 635,
+    "full_prompt": "Current speed: 11.6 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 636,
+    "full_prompt": "Current speed: 11.8 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 637,
+    "full_prompt": "Current speed: 12.0 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 638,
+    "full_prompt": "Current speed: 12.1 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 639,
+    "full_prompt": "Current speed: 12.2 m/s. Command: go straight at the next intersection then follow the road. Predict the waypoints."
+  },
+  {
+    "step": 640,
+    "full_prompt": "Current speed: 12.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 641,
+    "full_prompt": "Current speed: 12.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 642,
+    "full_prompt": "Current speed: 12.7 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 643,
+    "full_prompt": "Current speed: 12.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 644,
+    "full_prompt": "Current speed: 13.1 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 645,
+    "full_prompt": "Current speed: 13.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 646,
+    "full_prompt": "Current speed: 13.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 647,
+    "full_prompt": "Current speed: 4.7 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 648,
+    "full_prompt": "Current speed: 4.7 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 649,
+    "full_prompt": "Current speed: 4.7 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 650,
+    "full_prompt": "Current speed: 4.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 651,
+    "full_prompt": "Current speed: 4.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 652,
+    "full_prompt": "Current speed: 4.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 653,
+    "full_prompt": "Current speed: 3.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 654,
+    "full_prompt": "Current speed: 3.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 655,
+    "full_prompt": "Current speed: 2.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 656,
+    "full_prompt": "Current speed: 2.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 657,
+    "full_prompt": "Current speed: 2.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 658,
+    "full_prompt": "Current speed: 1.7 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 659,
+    "full_prompt": "Current speed: 1.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 660,
+    "full_prompt": "Current speed: 1.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 661,
+    "full_prompt": "Current speed: 1.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 662,
+    "full_prompt": "Current speed: 2.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 663,
+    "full_prompt": "Current speed: 2.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 664,
+    "full_prompt": "Current speed: 2.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 665,
+    "full_prompt": "Current speed: 2.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 666,
+    "full_prompt": "Current speed: 2.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 667,
+    "full_prompt": "Current speed: 3.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 668,
+    "full_prompt": "Current speed: 2.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 669,
+    "full_prompt": "Current speed: 2.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 670,
+    "full_prompt": "Current speed: 2.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 671,
+    "full_prompt": "Current speed: 2.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 672,
+    "full_prompt": "Current speed: 2.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 673,
+    "full_prompt": "Current speed: 3.1 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 674,
+    "full_prompt": "Current speed: 3.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 675,
+    "full_prompt": "Current speed: 3.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 676,
+    "full_prompt": "Current speed: 3.7 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 677,
+    "full_prompt": "Current speed: 4.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 678,
+    "full_prompt": "Current speed: 4.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 679,
+    "full_prompt": "Current speed: 4.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 680,
+    "full_prompt": "Current speed: 4.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 681,
+    "full_prompt": "Current speed: 5.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 682,
+    "full_prompt": "Current speed: 5.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 683,
+    "full_prompt": "Current speed: 5.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 684,
+    "full_prompt": "Current speed: 5.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 685,
+    "full_prompt": "Current speed: 5.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 686,
+    "full_prompt": "Current speed: 6.1 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 687,
+    "full_prompt": "Current speed: 6.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 688,
+    "full_prompt": "Current speed: 6.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 689,
+    "full_prompt": "Current speed: 7.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 690,
+    "full_prompt": "Current speed: 7.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 691,
+    "full_prompt": "Current speed: 7.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 692,
+    "full_prompt": "Current speed: 7.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 693,
+    "full_prompt": "Current speed: 8.1 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 694,
+    "full_prompt": "Current speed: 8.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 695,
+    "full_prompt": "Current speed: 9.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 696,
+    "full_prompt": "Current speed: 9.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 697,
+    "full_prompt": "Current speed: 9.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 698,
+    "full_prompt": "Current speed: 9.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 699,
+    "full_prompt": "Current speed: 10.1 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 700,
+    "full_prompt": "Current speed: 10.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 701,
+    "full_prompt": "Current speed: 10.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 702,
+    "full_prompt": "Current speed: 10.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 703,
+    "full_prompt": "Current speed: 10.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 704,
+    "full_prompt": "Current speed: 10.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 705,
+    "full_prompt": "Current speed: 10.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 706,
+    "full_prompt": "Current speed: 11.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 707,
+    "full_prompt": "Current speed: 11.1 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 708,
+    "full_prompt": "Current speed: 11.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 709,
+    "full_prompt": "Current speed: 10.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 710,
+    "full_prompt": "Current speed: 10.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 711,
+    "full_prompt": "Current speed: 10.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 712,
+    "full_prompt": "Current speed: 10.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 713,
+    "full_prompt": "Current speed: 9.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 714,
+    "full_prompt": "Current speed: 9.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 715,
+    "full_prompt": "Current speed: 9.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 716,
+    "full_prompt": "Current speed: 9.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 717,
+    "full_prompt": "Current speed: 9.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 718,
+    "full_prompt": "Current speed: 9.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 719,
+    "full_prompt": "Current speed: 9.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 720,
+    "full_prompt": "Current speed: 9.7 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 721,
+    "full_prompt": "Current speed: 9.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 722,
+    "full_prompt": "Current speed: 9.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 723,
+    "full_prompt": "Current speed: 10.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 724,
+    "full_prompt": "Current speed: 10.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 725,
+    "full_prompt": "Current speed: 10.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 726,
+    "full_prompt": "Current speed: 10.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 727,
+    "full_prompt": "Current speed: 10.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 728,
+    "full_prompt": "Current speed: 10.6 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 729,
+    "full_prompt": "Current speed: 10.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 730,
+    "full_prompt": "Current speed: 10.5 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 731,
+    "full_prompt": "Current speed: 10.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 732,
+    "full_prompt": "Current speed: 10.4 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 733,
+    "full_prompt": "Current speed: 10.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 734,
+    "full_prompt": "Current speed: 10.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 735,
+    "full_prompt": "Current speed: 10.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 736,
+    "full_prompt": "Current speed: 10.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 737,
+    "full_prompt": "Current speed: 10.1 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 738,
+    "full_prompt": "Current speed: 10.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 739,
+    "full_prompt": "Current speed: 10.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 740,
+    "full_prompt": "Current speed: 10.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 741,
+    "full_prompt": "Current speed: 9.7 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 742,
+    "full_prompt": "Current speed: 9.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 743,
+    "full_prompt": "Current speed: 9.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 744,
+    "full_prompt": "Current speed: 8.9 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 745,
+    "full_prompt": "Current speed: 8.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 746,
+    "full_prompt": "Current speed: 8.8 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 747,
+    "full_prompt": "Current speed: 9.0 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 748,
+    "full_prompt": "Current speed: 9.2 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 749,
+    "full_prompt": "Current speed: 9.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 750,
+    "full_prompt": "Current speed: 9.3 m/s. Command: follow the road. Predict the waypoints."
+  },
+  {
+    "step": 751,
+    "full_prompt": "Current speed: 9.4 m/s. Command: follow the road. Predict the waypoints."
+  }
+]

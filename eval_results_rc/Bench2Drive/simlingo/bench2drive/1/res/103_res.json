@@ -1,0 +1,140 @@
+{
+    "_checkpoint": {
+        "global_record": {
+            "index": -1,
+            "route_id": -1,
+            "status": "Failed",
+            "infractions": {
+                "collisions_layout": 0.0,
+                "collisions_pedestrian": 0.0,
+                "collisions_vehicle": 26.455,
+                "red_light": 0.0,
+                "stop_infraction": 0.0,
+                "outside_route_lanes": 0.0,
+                "min_speed_infractions": 211.637,
+                "yield_emergency_vehicle_infractions": 0.0,
+                "scenario_timeouts": 0.0,
+                "route_dev": 26.455,
+                "vehicle_blocked": 0.0,
+                "route_timeout": 0.0
+            },
+            "scores_mean": {
+                "score_composed": 27.714,
+                "score_route": 46.19,
+                "score_penalty": 0.6
+            },
+            "scores_std_dev": {
+                "score_composed": 0,
+                "score_route": 0,
+                "score_penalty": 0
+            },
+            "meta": {
+                "total_length": 81.837,
+                "duration_game": 15.6,
+                "duration_system": 173.029,
+                "exceptions": [
+                    [
+                        "RouteScenario_3936_rep0",
+                        0,
+                        "Failed - Agent deviated from the route"
+                    ]
+                ]
+            }
+        },
+        "progress": [
+            1,
+            1
+        ],
+        "records": [
+            {
+                "index": 0,
+                "route_id": "RouteScenario_3936_rep0",
+                "scenario_name": "SignalizedJunctionLeftTurn_1",
+                "weather_id": "13",
+                "save_name": "RouteScenario_3936_rep0_Town12_SignalizedJunctionLeftTurn_1_13_02_11_01_42_40",
+                "status": "Failed - Agent deviated from the route",
+                "num_infractions": 10,
+                "infractions": {
+                    "collisions_layout": [],
+                    "collisions_pedestrian": [],
+                    "collisions_vehicle": [
+                        "Agent collided against object with type=vehicle.mini.cooper_s_2021 and id=3859 at (x=2493.326, y=4889.648, z=367.366)"
+                    ],
+                    "red_light": [],
+                    "stop_infraction": [],
+                    "outside_route_lanes": [],
+                    "min_speed_infractions": [
+                        "Average speed is 187.93% of the surrounding traffic's one",
+                        "Average speed is 171.61% of the surrounding traffic's one",
+                        "Average speed is 1262.01% of the surrounding traffic's one",
+                        "Average speed is 156.82% of the surrounding traffic's one",
+                        "Average speed is 35.6% of the surrounding traffic's one",
+                        "Average speed is 183.03% of the surrounding traffic's one",
+                        "Average speed is 532.74% of the surrounding traffic's one",
+                        "Average speed is 181.64% of the surrounding traffic's one"
+                    ],
+                    "yield_emergency_vehicle_infractions": [],
+                    "scenario_timeouts": [],
+                    "route_dev": [
+                        "Agent deviated from the route at (x=2496.823, y=4860.514, z=367.043)"
+                    ],
+                    "vehicle_blocked": [],
+                    "route_timeout": []
+                },
+                "scores": {
+                    "score_route": 46.19,
+                    "score_penalty": 0.6,
+                    "score_composed": 27.714
+                },
+                "meta": {
+                    "route_length": 81.837,
+                    "duration_game": 15.6,
+                    "duration_system": 173.029
+                },
+                "town_name": "Town12"
+            }
+        ]
+    },
+    "entry_status": "Finished",
+    "eligible": true,
+    "sensors": [
+        "carla_camera",
+        "carla_imu",
+        "carla_gnss",
+        "carla_speedometer"
+    ],
+    "values": [
+        "27.714",
+        "46.19",
+        "0.6",
+        "0.0",
+        "26.455",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "26.455",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "211.637"
+    ],
+    "labels": [
+        "Avg. driving score",
+        "Avg. route completion",
+        "Avg. infraction penalty",
+        "Collisions with pedestrians",
+        "Collisions with vehicles",
+        "Collisions with layout",
+        "Red lights infractions",
+        "Stop sign infractions",
+        "Off-road infractions",
+        "Route deviations",
+        "Route timeouts",
+        "Agent blocked",
+        "Yield emergency vehicles infractions",
+        "Scenario timeouts",
+        "Min speed infractions"
+    ]
+}

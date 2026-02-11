@@ -208,6 +208,7 @@ class LeaderboardEvaluator(object):
         """
         self.carla_path = os.environ["CARLA_ROOT"]
         args.port = find_free_port(args.port)
+        ##### 传入gpu_rank
         cmd1 = f"{os.path.join(self.carla_path, 'CarlaUE4.sh')} -RenderOffScreen -nosound -carla-rpc-port={args.port} -graphicsadapter={args.gpu_rank}"
         print(f"Starting CARLA server: {cmd1}", flush=True)
         self.server = subprocess.Popen(cmd1, shell=True, preexec_fn=os.setsid, 
@@ -427,33 +428,81 @@ class LeaderboardEvaluator(object):
 
         print("\033[1m> Running the route\033[0m", flush=True)
 
-        # Run the scenario
-        try:
-            # Load scenario and run it
-            if args.record:
-                self.client.start_recorder("{}/{}_rep{}.log".format(args.record, config.name, config.repetition_index))
-            self.manager.load_scenario(self.route_scenario, self.agent_instance, config.index, config.repetition_index)
-            self.manager.tick_count = 0
-            self.manager.run_scenario()
-
-        except AgentError:
-            # The agent has failed -> stop the route
-            print("\n\033[91mStopping the route, the agent has crashed:", flush=True)
-            print(f"\n{traceback.format_exc()}\033[0m")
-
-            entry_status, crash_message = FAILURE_MESSAGES["Agent_runtime"]
-
-        except KeyboardInterrupt:
-            return True
+        # Run the scenario with retry logic for timeout errors
+        retry_count = 0
+        max_retries = 0
+        scenario_run_success = False
+        timeout_after_retry = False  # Track if timeout occurred after retry
         
-        except TickRuntimeError:
-            entry_status, crash_message = "Started", "TickRuntime"
-        
-        except Exception:
-            print("\n\033[91mError during the simulation:", flush=True)
-            print(f"\n{traceback.format_exc()}\033[0m", flush=True)
+        while retry_count <= max_retries and not scenario_run_success:
+            try:
+                # Load scenario and run it
+                if args.record:
+                    self.client.start_recorder("{}/{}_rep{}.log".format(args.record, config.name, config.repetition_index))
+                self.manager.load_scenario(self.route_scenario, self.agent_instance, config.index, config.repetition_index)
+                self.manager.tick_count = 0
+                self.manager.run_scenario()
+                scenario_run_success = True
 
-            entry_status, crash_message = FAILURE_MESSAGES["Simulation"]
+            except AgentError:
+                # The agent has failed -> stop the route
+                print("\n\033[91mStopping the route, the agent has crashed:", flush=True)
+                print(f"\n{traceback.format_exc()}\033[0m")
+
+                entry_status, crash_message = FAILURE_MESSAGES["Agent_runtime"]
+                break
+
+            except KeyboardInterrupt:
+                return True
+            
+            except TickRuntimeError:
+                entry_status, crash_message = "Started", "TickRuntime"
+                break
+            
+            except Exception as e:
+                error_str = str(e)
+                error_traceback = traceback.format_exc()
+                
+                # Check if this is a timeout error that should be retried
+                is_timeout_error = "time-out of 600000ms" in error_str or "time-out of 600000ms" in error_traceback
+                
+                if is_timeout_error and retry_count < max_retries:
+                    retry_count += 1
+                    print(f"\n\033[93m[RETRY] Timeout error detected, retrying route (attempt {retry_count}/{max_retries + 1}):", flush=True)
+                    print(f"{error_str}\033[0m", flush=True)
+                    
+                    # Cleanup before retry
+                    try:
+                        if args.record:
+                            self.client.stop_recorder()
+                        self.manager.stop_scenario()
+                    except:
+                        pass
+                    
+                    # Re-initialize manager for retry
+                    self.manager = ScenarioManager(args.timeout, self.statistics_manager, args.debug)
+                    
+                    # Wait a bit before retry to let CARLA recover
+                    import time
+                    time.sleep(10)
+                    
+                    print(f"\033[1m> Retrying route (attempt {retry_count + 1})\033[0m", flush=True)
+                    continue
+                else:
+                    # Not a timeout error, or max retries reached
+                    if is_timeout_error and retry_count >= max_retries:
+                        # Timeout error after retry - skip this route
+                        print("\n\033[91m[SKIP] Timeout error persisted after retry, skipping this route:", flush=True)
+                        print(f"\n{error_traceback}\033[0m", flush=True)
+                        print(f"\033[93m[SKIP] Moving to next route...\033[0m", flush=True)
+                        timeout_after_retry = True
+                    else:
+                        # Other error
+                        print("\n\033[91mError during the simulation:", flush=True)
+                        print(f"\n{error_traceback}\033[0m", flush=True)
+
+                    entry_status, crash_message = FAILURE_MESSAGES["Simulation"]
+                    break
 
         # Stop the scenario
         try:
@@ -473,6 +522,9 @@ class LeaderboardEvaluator(object):
             _, crash_message = FAILURE_MESSAGES["Simulation"]
 
         # If the simulation crashed, stop the leaderboard, for the rest, move to the next route
+        # Exception: timeout after retry should continue to next route (return False)
+        if timeout_after_retry:
+            return False
         return crash_message == "Simulation crashed"
 
     def run(self, args):

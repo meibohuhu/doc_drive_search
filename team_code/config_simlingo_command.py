@@ -5,8 +5,10 @@ class GlobalConfig:
         # Lingo agent
         # -----------------------------------------------------------------------------
         self.eval_route_as = 'command' # "target_point" or "target_point_command" "command", -1 -> use from model config
-        # if target_point_command (trained on both we eval with targetpoint)
+        # if target_point_command (command on both we eval with targetpoint)
         self.use_cot = False   ##### mh 20260125: change to False
+        self.use_cfg = True  # Whether to use Classifier-Free Guidance (CFG)
+        self.cfg_scale = 2.0  # CFG scale factor (typically 1.0-2.0)
 
         self.carla_frame_rate = 1.0 / 20.0  # CARLA frame rate in milliseconds
         self.carla_fps = 20  # Simulator Frames per second

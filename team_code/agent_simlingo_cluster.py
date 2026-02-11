@@ -63,7 +63,7 @@ torch.backends.cudnn.allow_tf32 = True
 def get_entry_point():
     return 'LingoAgent'
 
-
+################ TARGET POINT EVALUATION ################
 DEBUG = True # saves images during evaluation
 HD_VIZ = False
 USE_UKF = True
@@ -797,7 +797,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                     print(f"[INFO] Recovered from zero speed after {self.zero_speed_counter} steps", flush=True)
             self.zero_speed_counter = 0
 
-        if DEBUG and self.step%10 == 0:
+        if DEBUG and self.step%50 == 0:
             tvec = None
             rvec = None
 

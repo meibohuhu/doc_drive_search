@@ -57,7 +57,7 @@ torch.backends.cudnn.allow_tf32 = True
 def get_entry_point():
     return 'LingoAgent'
 
-
+################ NEW COMMAND EVALUATION ################
 DEBUG = True # saves images during evaluation
 HD_VIZ = False
 USE_UKF = True
@@ -199,6 +199,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.T = 1
         self.stuck_detector = 0
         self.force_move = 0
+        self.low_speed_detector = 0  # Counter for speed < 0.05 m/s
+        self.low_speed_threshold = 0.05  # Speed threshold in m/s
+        self.low_speed_max_steps = 900  # Maximum steps allowed at low speed before failure
 
         self.commands = deque(maxlen=2)
         self.commands.append(4)
@@ -324,8 +327,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.metric_info = {}
         # Initialize prompt logs for each step
         self.prompt_logs = []
-        # Initialize step logs for command alignment evaluation
-        self.step_logs = []
         self.actual_command = None  # Will be set in tick() method
         # Save last target_point (world coordinates) for intersection transition distance calculation
         self.last_target_point = None  # Will be set when far_command is 1/2/3 (world coordinates)
@@ -628,7 +629,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                 
                 # If command is 1 or 2 (go left/right) and distance > 19m, replace with follow the road
                 command_replaced = False
-                if not use_last_command and self.actual_command in [1, 2, 5, 6] and dist_to_command >= 19:
+                if not use_last_command and self.actual_command in [1, 2, 3, 5, 6] and dist_to_command >= 8:
                     command = map_command[4]  # follow the road
                     # Update actual_command to 4 (follow the road)
                     self.actual_command = 4
@@ -684,9 +685,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.prompt_tp = prompt_tp
         self.prompt = prompt
         
-        # Print full prompt for debugging
-        if self.config.eval_route_as == 'command':
-            print(f"[DEBUG PROMPT] Step {self.step}: full_prompt='{self.prompt}'", flush=True)
+        # # Print full prompt for debugging
+        # if self.config.eval_route_as == 'command':
+        #     print(f"[DEBUG PROMPT] Step {self.step}: full_prompt='{self.prompt}'", flush=True)
         
         conversation_all = [
                 {
@@ -856,7 +857,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         # prepare velocity input
         gt_velocity = tick_data['speed']
 
-        if DEBUG and self.step%5 == 0:
+        if DEBUG and self.step%50 == 0:
             tvec = None
             rvec = None
 
@@ -902,8 +903,22 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         ### 通过 PID 控制器将预测的 waypoints 转换为控制命令：
         steer, throttle, brake = self.control_pid(pred_route, gt_velocity, pred_speed_wps)
         control_time = time.time() - control_start  # ← 添加
+        
+        # Convert gt_velocity to float to avoid Tensor formatting issues   防止一直卡在原地，我设置了speed为0的时候900steps就自动结束
+        gt_velocity_float = float(gt_velocity)
+        
+        # Check for low speed condition (speed < 0.05 m/s)
+        if gt_velocity_float < self.low_speed_threshold:
+            self.low_speed_detector += 1
+            if self.low_speed_detector >= self.low_speed_max_steps:
+                error_msg = f"Route failed: Vehicle speed < {self.low_speed_threshold} m/s for {self.low_speed_detector} consecutive steps (threshold: {self.low_speed_max_steps} steps)"
+                print(f"[FAILURE] {error_msg}", flush=True)
+                raise RuntimeError(error_msg)
+        else:
+            self.low_speed_detector = 0
+        
         # # 0.1 is just an arbitrary low number to threshold when the car is stopped
-        if gt_velocity < 0.1:
+        if gt_velocity_float < 0.1:
             self.stuck_detector += 1
         else:
             self.stuck_detector = 0
@@ -917,6 +932,10 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             brake = False
             self.force_move -= 1
             print(f"force_move: {self.force_move}")
+        
+        # Log low speed warning periodically
+        if self.low_speed_detector > 0 and self.low_speed_detector % 100 == 0:
+            print(f"[WARNING] Low speed detected: speed={gt_velocity_float:.3f} m/s for {self.low_speed_detector} steps (will fail at {self.low_speed_max_steps} steps)", flush=True)
 
         control = carla.VehicleControl(steer=float(steer), throttle=float(throttle), brake=float(brake))
 
@@ -945,58 +964,6 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             except Exception as e:
                 print(f"[WARNING] Failed to save prompt_logs.json at step {self.step}: {e}", flush=True)
         
-        # Save step log for command alignment evaluation
-        if hasattr(self, 'step_logs') and pred_route is not None and hasattr(self, 'actual_command') and self.actual_command is not None:
-            # Get predicted waypoints (vehicle coordinate system)
-            predicted_waypoints = pred_route[0].detach().cpu().numpy().tolist()
-            
-            # Get current heading from compass (in radians)
-            current_heading = tick_data.get('compass', 0.0)
-            # compass is already normalized angle, but we need to ensure it's in [-pi, pi]
-            if isinstance(current_heading, (list, np.ndarray)):
-                current_heading = current_heading[-1] if len(current_heading) > 0 else 0.0
-            current_heading = t_u.normalize_angle(float(current_heading))
-            
-            # Determine if in junction: command 1, 2, 3 typically indicate junction-related commands
-            is_in_junction = self.actual_command in [1, 2, 3]
-            
-            # Get metadata (optional additional information)
-            gps_data = tick_data.get('gps', [0.0, 0.0])
-            if isinstance(gps_data, np.ndarray):
-                gps_data = gps_data.tolist()
-            elif not isinstance(gps_data, list):
-                gps_data = [0.0, 0.0]
-            
-            target_point_data = tick_data.get('target_point', None)
-            if target_point_data is not None and hasattr(target_point_data, 'cpu'):
-                target_point_data = target_point_data.cpu().numpy().tolist() if hasattr(target_point_data, 'cpu') else None
-            
-            metadata = {
-                'location': gps_data,
-                'speed': float(gt_velocity.item()) if hasattr(gt_velocity, 'item') else float(gt_velocity),
-                'target_point': target_point_data,
-            }
-            
-            log_entry = {
-                'step': self.step,
-                'predicted_waypoints': predicted_waypoints,
-                'actual_command': int(self.actual_command),
-                'current_heading': float(current_heading),
-                'is_in_junction': is_in_junction,
-                'metadata': metadata
-            }
-            
-            self.step_logs.append(log_entry)
-            
-            # Periodically save step_logs.json (every 10 steps, same as prompt_logs)
-            if hasattr(self, 'save_path') and self.save_path and self.step % 10 == 0:
-                try:
-                    step_logs_file = Path(self.save_path) / 'step_logs.json'
-                    with open(step_logs_file, 'w') as f:
-                        json.dump(self.step_logs, f, indent=2)
-                except Exception as e:
-                    print(f"[WARNING] Failed to save step_logs.json at step {self.step}: {e}", flush=True)
-        
         # 在return之前添加
         total_time = time.time() - step_start  # ← 添加
         if self.step % 10 == 0:  # 每5步打印一次
@@ -1017,8 +984,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         # m / s required to drive
         one_second = int(self.config.carla_fps // (self.config.wp_dilation * self.config.data_save_freq))
         half_second = one_second // 2
+        # 计算目标速度 
         desired_speed = np.linalg.norm(speed_waypoints[half_second - 2] - speed_waypoints[one_second - 2]) * 2.0
-
+        # 判断刹车条件
         brake = ((desired_speed < self.config.brake_speed) or ((speed / desired_speed) > self.config.brake_ratio))
 
         delta = np.clip(desired_speed - speed, 0.0, self.config.clip_delta)
@@ -1078,22 +1046,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
             except Exception as e:
                 print(f"[WARNING] Failed to save prompt_logs.json: {e}", flush=True)
         
-        # Save step_logs for command alignment evaluation
-        # This ensures the final steps and any steps not saved during periodic saves are saved
-        if hasattr(self, 'step_logs') and len(self.step_logs) > 0 and hasattr(self, 'save_path') and self.save_path:
-            step_logs_file = Path(self.save_path) / 'step_logs.json'
-            try:
-                with open(step_logs_file, 'w') as f:
-                    json.dump(self.step_logs, f, indent=2)
-                print(f"[INFO] Saved {len(self.step_logs)} step logs to {step_logs_file}", flush=True)
-            except Exception as e:
-                print(f"[WARNING] Failed to save step_logs.json: {e}", flush=True)
-        
         # Clear logs after saving to prevent accumulation across routes
         if hasattr(self, 'prompt_logs'):
             self.prompt_logs = []
-        if hasattr(self, 'step_logs'):
-            self.step_logs = []
 
         del self.model
         del self.config
