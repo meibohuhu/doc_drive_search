@@ -43,7 +43,7 @@ import team_code.transfuser_utils as t_u
 from scenario_logger import ScenarioLogger
 from simlingo_training.utils.custom_types import DrivingInput, LanguageLabel
 from simlingo_training.utils.internvl2_utils import build_transform, dynamic_preprocess
-from team_code.config_simlingo import GlobalConfig
+from team_code.config_simlingo_command import GlobalConfig
 from team_code.nav_planner import LateralPIDController, RoutePlanner
 from team_code.simlingo_utils import (
     get_camera_extrinsics,
@@ -63,7 +63,7 @@ torch.backends.cudnn.allow_tf32 = True
 def get_entry_point():
     return 'LingoAgent'
 
-################ TARGET POINT EVALUATION ################
+################ OLD COMMAND EVALUATION ################
 DEBUG = True # saves images during evaluation
 HD_VIZ = False
 USE_UKF = True
@@ -149,7 +149,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.dense_route_planner_max_distance = 50.0
         self.log_route_planner_min_distance = 4.0
         self.route_planner_max_distance = 50.0
-        self.route_planner_min_distance = 7.5
+        self.route_planner_min_distance = 2.5
 
         #load config from .hydra folder
         # Try to find config.yaml relative to checkpoint path
@@ -332,6 +332,8 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.metric_info = {}
         # Reset zero speed counter for new route
         self.zero_speed_counter = 0
+        # Initialize waypoints logs for recording predicted waypoints
+        self.waypoints_logs = []
 
     def sensors(self):
         sensors = []
@@ -762,6 +764,33 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         pred_speed_wps = pred_speed_wps.float() if pred_speed_wps is not None else None
         pred_route = pred_route.float() if pred_route is not None else None
         model_time = time.time() - model_start  # ← 添加
+        
+        # Record predicted waypoints
+        if hasattr(self, 'waypoints_logs'):
+            waypoints_entry = {
+                'step': self.step,
+                'speed_waypoints': None,
+                'route_waypoints': None,
+            }
+            
+            if pred_speed_wps is not None:
+                speed_wps_np = pred_speed_wps[0].detach().cpu().numpy()
+                waypoints_entry['speed_waypoints'] = speed_wps_np.tolist()
+            
+            if pred_route is not None:
+                route_np = pred_route[0].detach().cpu().numpy()
+                waypoints_entry['route_waypoints'] = route_np.tolist()
+            
+            self.waypoints_logs.append(waypoints_entry)
+            
+            # Periodically save waypoints logs (every 10 steps to prevent data loss)
+            if hasattr(self, 'save_path') and self.save_path and self.step % 10 == 0:
+                try:
+                    waypoints_logs_file = Path(self.save_path) / 'waypoints_logs.json'
+                    with open(waypoints_logs_file, 'w') as f:
+                        json.dump(self.waypoints_logs, f, indent=2)
+                except Exception as e:
+                    print(f"[WARNING] Failed to save waypoints_logs.json at step {self.step}: {e}", flush=True)
 
         # if self.step%5 == 0:
         #     # Print model output
@@ -801,7 +830,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                     print(f"[INFO] Recovered from zero speed after {self.zero_speed_counter} steps", flush=True)
             self.zero_speed_counter = 0
 
-        if DEBUG and self.step%30 == 0:
+        if DEBUG and self.step%20 == 0:
             tvec = None
             rvec = None
 
@@ -845,6 +874,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 
         control_start = time.time()  # ← 添加
         ### 通过 PID 控制器将预测的 waypoints 转换为控制命令：
+        # Option: Merge route and speed waypoints into a single sequence (like Orion)
+        # merged_waypoints = self.merge_waypoints(pred_route, pred_speed_wps)
+        # steer, throttle, brake = self.control_pid_merged(merged_waypoints, gt_velocity)
         steer, throttle, brake = self.control_pid(pred_route, gt_velocity, pred_speed_wps)
         control_time = time.time() - control_start  # ← 添加
         # # 0.1 is just an arbitrary low number to threshold when the car is stopped
@@ -949,6 +981,20 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         The leaderboard client doesn't properly clear up the agent after the route finishes so we need to do it here.
         Also writes logging files to disk.
         """
+        
+        # Save waypoints logs for final steps
+        if hasattr(self, 'waypoints_logs') and len(self.waypoints_logs) > 0 and hasattr(self, 'save_path') and self.save_path:
+            waypoints_logs_file = Path(self.save_path) / 'waypoints_logs.json'
+            try:
+                with open(waypoints_logs_file, 'w') as f:
+                    json.dump(self.waypoints_logs, f, indent=2)
+                print(f"[INFO] Saved {len(self.waypoints_logs)} waypoints logs to {waypoints_logs_file}", flush=True)
+            except Exception as e:
+                print(f"[WARNING] Failed to save waypoints_logs.json: {e}", flush=True)
+        
+        # Clear waypoints logs after saving to prevent accumulation across routes
+        if hasattr(self, 'waypoints_logs'):
+            self.waypoints_logs = []
 
         del self.model
         del self.config

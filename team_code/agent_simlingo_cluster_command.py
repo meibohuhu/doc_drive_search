@@ -149,7 +149,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.dense_route_planner_max_distance = 50.0
         self.log_route_planner_min_distance = 4.0
         self.route_planner_max_distance = 50.0
-        self.route_planner_min_distance = 7.5
+        self.route_planner_min_distance = 2.5
 
         #load config from .hydra folder
         # Try to find config.yaml relative to checkpoint path
@@ -613,6 +613,10 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
         self.prompt_tp = prompt_tp
         self.prompt = prompt
         
+        # Print full prompt for debugging every 10 steps
+        if hasattr(self, 'step') and self.step % 10 == 0:
+            print(f"[DEBUG PROMPT] Step {self.step}: full_prompt='{self.prompt}'", flush=True)
+        
         conversation_all = [
                 {
                 "role": "user",
@@ -797,7 +801,7 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                     print(f"[INFO] Recovered from zero speed after {self.zero_speed_counter} steps", flush=True)
             self.zero_speed_counter = 0
 
-        if DEBUG and self.step%50 == 0:
+        if DEBUG and self.step%30 == 0:
             tvec = None
             rvec = None
 
@@ -841,6 +845,9 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
 
         control_start = time.time()  # ← 添加
         ### 通过 PID 控制器将预测的 waypoints 转换为控制命令：
+        # Option: Merge route and speed waypoints into a single sequence (like Orion)
+        # merged_waypoints = self.merge_waypoints(pred_route, pred_speed_wps)
+        # steer, throttle, brake = self.control_pid_merged(merged_waypoints, gt_velocity)
         steer, throttle, brake = self.control_pid(pred_route, gt_velocity, pred_speed_wps)
         control_time = time.time() - control_start  # ← 添加
         # # 0.1 is just an arbitrary low number to threshold when the car is stopped
