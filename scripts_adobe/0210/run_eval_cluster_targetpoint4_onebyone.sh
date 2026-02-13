@@ -2,21 +2,22 @@
 # 本地运行 Bench2Drive 评估脚本（不使用 SLURM）- One-by-One 格式
 # 此脚本处理 routes 的第 4/4 部分 (ROUTE_MOD_OFFSET=3)
 
-ROUTE_DIR="${1:-/code/doc_drive_search/Bench2Drive/data/onebyone}"
+#### /code/doc_drive_search/Bench2Drive/data/bench2drive_split
+ROUTE_DIR="${1:-/code/doc_drive_search/Bench2Drive/data/bench2drive_split}"
 SEED="${2:-1}"
 CHECKPOINT="${3:-/code/doc_drive_search/pretrained/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt}"
 GPU_RANK="${4:-7}"  # 脚本4默认使用 GPU 7 (注意：与 oldcommand 系列共享 GPU 4-7)
 MAX_RETRIES="${5:-1}"
 ROUTE_MOD_OFFSET="${6:-3}"  # 默认处理第 4/4 部分 (route_id % 4 == 3)
 
-export CARLA_ROOT=/code/software/carla0915
+export CARLA_ROOT=/home/colligo/software/carla0915
 export WORK_DIR=/code/doc_drive_search/Bench2Drive
 export SCENARIO_RUNNER_ROOT=${WORK_DIR}/scenario_runner
 export LEADERBOARD_ROOT=${WORK_DIR}/leaderboard
 export PROJECT_ROOT=/code/doc_drive_search
 
-BASE_PORT=35000
-BASE_TM_PORT=45000
+BASE_PORT=25000
+BASE_TM_PORT=35000
 PORT_INCREMENT=5
 
 TRAFFIC_MANAGER_SEED=${SEED}
@@ -85,6 +86,7 @@ mkdir -p "${BASE_DIR}/res" "${BASE_DIR}/viz" "${BASE_DIR}/logs"
 
 FAILED_ROUTES_FILE="${BASE_DIR}/failed_routes.txt"
 RETRY_ROUTES_FILE="${BASE_DIR}/retry_routes.txt"
+SCRIPT_LOG="${BASE_DIR}/script_run.log"
 
 if [ -f "${RETRY_ROUTES_FILE}" ] && [ -s "${RETRY_ROUTES_FILE}" ]; then
     ROUTE_FILES=()
@@ -121,13 +123,15 @@ if [ ${#ROUTE_FILES[@]} -eq 0 ]; then
     exit 1
 fi
 
-echo "=========================================="
-echo "Processing routes with ROUTE_MOD_OFFSET=${ROUTE_MOD_OFFSET}"
-echo "This script handles routes where route_id % 4 == ${ROUTE_MOD_OFFSET}"
-echo "Using GPU: ${GPU_RANK}"
-echo "Port range: ${BASE_PORT}-$((BASE_PORT + ${#ROUTE_FILES[@]} * PORT_INCREMENT))"
-echo "TM Port range: ${BASE_TM_PORT}-$((BASE_TM_PORT + ${#ROUTE_FILES[@]} * PORT_INCREMENT))"
-echo "=========================================="
+echo "==========================================" | tee "${SCRIPT_LOG}"
+echo "Script started at $(date)" | tee -a "${SCRIPT_LOG}"
+echo "==========================================" | tee -a "${SCRIPT_LOG}"
+echo "Processing routes with ROUTE_MOD_OFFSET=${ROUTE_MOD_OFFSET}" | tee -a "${SCRIPT_LOG}"
+echo "This script handles routes where route_id % 4 == ${ROUTE_MOD_OFFSET}" | tee -a "${SCRIPT_LOG}"
+echo "Using GPU: ${GPU_RANK}" | tee -a "${SCRIPT_LOG}"
+echo "Port range: ${BASE_PORT}-$((BASE_PORT + ${#ROUTE_FILES[@]} * PORT_INCREMENT))" | tee -a "${SCRIPT_LOG}"
+echo "TM Port range: ${BASE_TM_PORT}-$((BASE_TM_PORT + ${#ROUTE_FILES[@]} * PORT_INCREMENT))" | tee -a "${SCRIPT_LOG}"
+echo "==========================================" | tee -a "${SCRIPT_LOG}"
 
 TOTAL_ROUTES=${#ROUTE_FILES[@]}
 CURRENT_ROUTE=0
@@ -171,11 +175,12 @@ try:
         if 'Failed' in record.get('status', ''):
             sys.exit(1)
     sys.exit(0)
-except:
+except Exception:
     sys.exit(1)
 " 2>/dev/null)
-        
+
         if [ $? -eq 0 ]; then
+            echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: SKIPPED (already processed)" | tee -a "${SCRIPT_LOG}"
             SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
             SKIP_COUNT=$((SKIP_COUNT + 1))
             continue
@@ -228,19 +233,19 @@ try:
         if 'Failed' in record.get('status', ''):
             sys.exit(1)
     sys.exit(0)
-except:
+except Exception:
     sys.exit(1)
 " 2>/dev/null)
-            
+
             if [ $? -eq 0 ]; then
-                echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: OK (${DURATION}s)"
+                echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: OK (${DURATION}s)" | tee -a "${SCRIPT_LOG}"
                 SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
                 ROUTE_SUCCESS=true
             else
                 ROUTE_RETRY_COUNT=$((ROUTE_RETRY_COUNT + 1))
             fi
         else
-            echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: FAILED (exit ${EVAL_EXIT_CODE})"
+            echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: FAILED (exit ${EVAL_EXIT_CODE})" | tee -a "${SCRIPT_LOG}"
             ROUTE_RETRY_COUNT=$((ROUTE_RETRY_COUNT + 1))
         fi
         
@@ -255,10 +260,14 @@ except:
     sleep 2
 done
 
-echo "Summary: ${SUCCESS_COUNT} success, ${SKIP_COUNT} skipped, ${FAIL_COUNT} failed"
+echo "Summary: ${SUCCESS_COUNT} success, ${SKIP_COUNT} skipped, ${FAIL_COUNT} failed" | tee -a "${SCRIPT_LOG}"
 
 [ ${FAIL_COUNT} -gt 0 ] && [ -f "${FAILED_ROUTES_FILE}" ] && [ -s "${FAILED_ROUTES_FILE}" ] && \
     cp "${FAILED_ROUTES_FILE}" "${RETRY_ROUTES_FILE}"
+
+echo "==========================================" | tee -a "${SCRIPT_LOG}"
+echo "Script finished at $(date)" | tee -a "${SCRIPT_LOG}"
+echo "==========================================" | tee -a "${SCRIPT_LOG}"
 
 [ "$LEADERBOARD_BACKUP" = true ] && mv "${PROJECT_ROOT}/leaderboard_backup" "${PROJECT_ROOT}/leaderboard"
 

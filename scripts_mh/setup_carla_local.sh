@@ -1,6 +1,7 @@
 #!/bin/bash
 # Setup CARLA 0.9.15 locally
 # This script downloads and sets up CARLA in your local directory
+### /home/colligo/software/carla0915
 
 # Set local CARLA installation path (adjust as needed)
 CARLA_INSTALL_DIR="${HOME}/software/carla0915"

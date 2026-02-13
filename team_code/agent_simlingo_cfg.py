@@ -1059,7 +1059,13 @@ class LingoAgent(autonomous_agent.AutonomousAgent):
                 
         # Convert gt_velocity to float to avoid Tensor formatting issues   防止一直卡在原地，我设置了speed为0的时候900steps就自动结束
         gt_velocity_float = float(gt_velocity)
-        
+
+        # Check if total steps exceed 3000， 断开
+        if self.step >= 3000:
+            error_msg = f"Route failed: Total steps exceeded 3000 (current step: {self.step})"
+            print(f"[FAILURE] {error_msg}", flush=True)
+            raise RuntimeError(error_msg)
+
         # Check for low speed condition (speed < 0.05 m/s)
         if gt_velocity_float < self.low_speed_threshold:
             self.low_speed_detector += 1

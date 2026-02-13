@@ -1,15 +1,16 @@
 #!/bin/bash
 # 本地运行 Bench2Drive 评估脚本（不使用 SLURM）- One-by-One 格式
-# 此脚本处理 routes 的第 4/4 部分 (ROUTE_MOD_OFFSET=3)
+# 此脚本处理 routes 的第 7/8 部分 (ROUTE_MOD_OFFSET=6)
 
-ROUTE_DIR="${1:-/code/doc_drive_search/Bench2Drive/data/onebyone}"
+#### /code/doc_drive_search/Bench2Drive/data/bench2drive_split
+ROUTE_DIR="${1:-/code/doc_drive_search/Bench2Drive/data/bench2drive_split}"
 SEED="${2:-1}"
 CHECKPOINT="${3:-/code/doc_drive_search/pretrained/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt}"
-GPU_RANK="${4:-2}"  # 脚本4默认使用 GPU 3
-MAX_RETRIES="${5:-1}"
+GPU_RANK="${4:-6}"  # 脚本4默认使用 GPU 3
+MAX_RETRIES="${5:-0}"
 ROUTE_MOD_OFFSET="${6:-6}"  # 默认处理第 6/8 部分 (route_id % 8 == 6)
 
-export CARLA_ROOT=/code/software/carla0915
+export CARLA_ROOT=/home/colligo/software/carla0915
 export WORK_DIR=/code/doc_drive_search/Bench2Drive
 export SCENARIO_RUNNER_ROOT=${WORK_DIR}/scenario_runner
 export LEADERBOARD_ROOT=${WORK_DIR}/leaderboard
@@ -80,8 +81,14 @@ cleanup_carla() {
 cd ${PROJECT_ROOT}
 export PYTHONUNBUFFERED=1
 
-BASE_DIR="${OUT_ROOT}/${AGENT_NAME}/${BENCHMARK}/${SEED}"
+BASE_DIR="${OUT_ROOT}/${AGENT_NAME}/${BENCHMARK}/6"
 mkdir -p "${BASE_DIR}/res" "${BASE_DIR}/viz" "${BASE_DIR}/logs"
+
+SCRIPT_LOG="${BASE_DIR}/script_run.log"
+echo "===========================================" | tee "${SCRIPT_LOG}"
+echo "Script started at $(date)" | tee -a "${SCRIPT_LOG}"
+echo "===========================================" | tee -a "${SCRIPT_LOG}"
+
 
 FAILED_ROUTES_FILE="${BASE_DIR}/failed_routes.txt"
 RETRY_ROUTES_FILE="${BASE_DIR}/retry_routes.txt"
@@ -99,8 +106,8 @@ else
 fi
 
 if [ -n "${ROUTE_MOD_OFFSET}" ]; then
-    if ! [[ "${ROUTE_MOD_OFFSET}" =~ ^[0-3]$ ]]; then
-        echo "ERROR: ROUTE_MOD_OFFSET must be 0, 1, 2, or 3"
+    if ! [[ "${ROUTE_MOD_OFFSET}" =~ ^[0-7]$ ]]; then
+        echo "ERROR: ROUTE_MOD_OFFSET must be 0, 1, 2, 3, 4, 5, 6, or 7"
         exit 1
     fi
     FILTERED_ROUTE_FILES=()
@@ -109,7 +116,7 @@ if [ -n "${ROUTE_MOD_OFFSET}" ]; then
         ROUTE_ID=$(echo "${ROUTE_BASENAME}" | sed 's/.*_//' || echo "${ROUTE_BASENAME}")
         ROUTE_ID_NUM=$(echo "${ROUTE_ID}" | sed 's/^0*//')
         [ -z "${ROUTE_ID_NUM}" ] && ROUTE_ID_NUM=0
-        MOD_RESULT=$((ROUTE_ID_NUM % 4))
+        MOD_RESULT=$((ROUTE_ID_NUM % 8))
         [ "${MOD_RESULT}" -eq "${ROUTE_MOD_OFFSET}" ] && FILTERED_ROUTE_FILES+=("${ROUTE_FILE}")
     done
     ROUTE_FILES=("${FILTERED_ROUTE_FILES[@]}")
@@ -123,7 +130,7 @@ fi
 
 echo "=========================================="
 echo "Processing routes with ROUTE_MOD_OFFSET=${ROUTE_MOD_OFFSET}"
-echo "This script handles routes where route_id % 4 == ${ROUTE_MOD_OFFSET}"
+echo "This script handles routes where route_id % 8 == ${ROUTE_MOD_OFFSET}"
 echo "Using GPU: ${GPU_RANK}"
 echo "Port range: ${BASE_PORT}-$((BASE_PORT + ${#ROUTE_FILES[@]} * PORT_INCREMENT))"
 echo "TM Port range: ${BASE_TM_PORT}-$((BASE_TM_PORT + ${#ROUTE_FILES[@]} * PORT_INCREMENT))"
@@ -164,20 +171,21 @@ try:
         data = json.load(f)
     checkpoint = data.get('_checkpoint', {})
     progress = checkpoint.get('progress', [])
-    if len(progress) < 2 or progress[0] < progress[1]:
-        sys.exit(1)
-    records = checkpoint.get('records', [])
-    for record in records:
-        if 'Failed' in record.get('status', ''):
-            sys.exit(1)
-    sys.exit(0)
-except:
+    # Skip if route has been processed
+    if len(progress) >= 2:
+        records = checkpoint.get('records', [])
+        if records:
+            status = records[0].get('status', '')
+            # Skip both Completed and Failed routes
+            if 'Completed' in status or 'Failed' in status:
+                sys.exit(0)
+    sys.exit(1)
+except Exception:
     sys.exit(1)
 " 2>/dev/null)
-        
         if [ $? -eq 0 ]; then
-            SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
             SKIP_COUNT=$((SKIP_COUNT + 1))
+            echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: SKIPPED (already processed)" | tee -a "${SCRIPT_LOG}"
             continue
         fi
     fi
@@ -228,19 +236,18 @@ try:
         if 'Failed' in record.get('status', ''):
             sys.exit(1)
     sys.exit(0)
-except:
+except Exception:
     sys.exit(1)
 " 2>/dev/null)
-            
             if [ $? -eq 0 ]; then
-                echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: OK (${DURATION}s)"
+                echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: OK (${DURATION}s)" | tee -a "${SCRIPT_LOG}"
                 SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
                 ROUTE_SUCCESS=true
             else
                 ROUTE_RETRY_COUNT=$((ROUTE_RETRY_COUNT + 1))
             fi
         else
-            echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: FAILED (exit ${EVAL_EXIT_CODE})"
+            echo "[${CURRENT_ROUTE}/${TOTAL_ROUTES}] Route ${ROUTE_ID}: FAILED (exit ${EVAL_EXIT_CODE})" | tee -a "${SCRIPT_LOG}"
             ROUTE_RETRY_COUNT=$((ROUTE_RETRY_COUNT + 1))
         fi
         
@@ -254,12 +261,11 @@ except:
     
     sleep 2
 done
-
-echo "Summary: ${SUCCESS_COUNT} success, ${SKIP_COUNT} skipped, ${FAIL_COUNT} failed"
-
+echo "Summary: ${SUCCESS_COUNT} success, ${SKIP_COUNT} skipped, ${FAIL_COUNT} failed" | tee -a "${SCRIPT_LOG}"
 [ ${FAIL_COUNT} -gt 0 ] && [ -f "${FAILED_ROUTES_FILE}" ] && [ -s "${FAILED_ROUTES_FILE}" ] && \
     cp "${FAILED_ROUTES_FILE}" "${RETRY_ROUTES_FILE}"
-
 [ "$LEADERBOARD_BACKUP" = true ] && mv "${PROJECT_ROOT}/leaderboard_backup" "${PROJECT_ROOT}/leaderboard"
-
+echo "===========================================" | tee -a "${SCRIPT_LOG}"
+echo "Script finished at $(date)" | tee -a "${SCRIPT_LOG}"
+echo "===========================================" | tee -a "${SCRIPT_LOG}"
 [ ${FAIL_COUNT} -gt 0 ] && exit 1 || exit 0

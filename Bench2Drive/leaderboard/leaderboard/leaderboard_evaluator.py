@@ -208,10 +208,11 @@ class LeaderboardEvaluator(object):
         """
         self.carla_path = os.environ["CARLA_ROOT"]
         args.port = find_free_port(args.port)
-        ##### 传入gpu_rank
-        cmd1 = f"{os.path.join(self.carla_path, 'CarlaUE4.sh')} -RenderOffScreen -nosound -carla-rpc-port={args.port} -graphicsadapter={args.gpu_rank}"
+        ##### 传入gpu_rank mh2803 最终不work
+        # Set CUDA_VISIBLE_DEVICES for CARLA (without -graphicsadapter since it doesn't work)
+        cmd1 = f"CUDA_VISIBLE_DEVICES={args.gpu_rank} {os.path.join(self.carla_path, 'CarlaUE4.sh')} -RenderOffScreen -nosound -carla-rpc-port={args.port}"
         print(f"Starting CARLA server: {cmd1}", flush=True)
-        self.server = subprocess.Popen(cmd1, shell=True, preexec_fn=os.setsid, 
+        self.server = subprocess.Popen(cmd1, shell=True, preexec_fn=os.setsid,
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(f"CARLA server PID: {self.server.pid}, returncode: {self.server.returncode}", flush=True)
         atexit.register(os.killpg, self.server.pid, signal.SIGKILL)
