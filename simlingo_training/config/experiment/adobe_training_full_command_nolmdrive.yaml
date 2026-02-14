@@ -59,6 +59,8 @@ data_module:
     use_old_towns: True
     use_town13: True
     use_safety_flag: True
+    use_cfg: True  # 是否启用 CFG (Classifier-Free Guidance)
+    cfg_dropout_prob: 0.80  # CFG dropout 概率，训练时 drop command 的比例（0.0-1.0）
 
 max_epochs: 16
 val_every_n_epochs: 2

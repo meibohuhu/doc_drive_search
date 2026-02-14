@@ -243,17 +243,7 @@ class Data_Driving(BaseDataset):  # pylint: disable=locally-disabled, invalid-na
         # 'Command: Left in 18 meters..'
             # ] 然后prompt就会从这两个中选择一个放到prompt里面
         # print(f"target_options: {target_options}")
-        
-        # CFG: 训练时以一定概率 drop command
-        if self.use_cfg and random.random() < self.cfg_dropout_prob:
-            # 过滤掉所有包含 "Command:" 的选项
-            original_count = len(target_options)
-            target_options = [opt for opt in target_options if 'Command:' not in opt]
-            # 如果过滤后为空（例如 route_as='command' 时），添加空字符串作为默认选项
-            if len(target_options) == 0:
-                target_options = ['']
 
-        print(f"target_options: {target_options}")
         answer = ''
 
         prompt_random = random.random()

@@ -581,7 +581,7 @@ class BaseDataset(Dataset):  # pylint: disable=locally-disabled, invalid-name
                 lmdrive_command = lmdrive_command.replace('[x]', str(dist_to_command))
                 lm_command = f'Command: {lmdrive_command}.'
                 target_options.append(lm_command)
-        # print(f"target_options: {target_options}")
+        print(f"target_options: {target_options}")
         return target_options, placeholder_values
 
 #### 把一条不等距的轨迹 points → 变成等间距采样的 route， route_adjusted 从 (0,0) 开始，例如 [[0.0, 0.0], [1.0, -0.0001], [2.0, -0.0002], ...]

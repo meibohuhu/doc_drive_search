@@ -137,16 +137,16 @@ class DataModule(LightningDataModule):
                             used_driving_dataset,
                             split="train",
                             bucket_name=bucket_name,
+                            **self.cfg,
                             **self.base_dataset,
-                            **self.cfg,  # cfg 中的参数会覆盖 base_dataset，但 base_dataset 应该优先
                             _recursive_=False
                         )
                     self.val_datasets.append(hydra.utils.instantiate(
                             used_driving_dataset,
                             split="val",
                             bucket_name="all",
+                            **self.cfg,
                             **self.base_dataset,
-                            **self.cfg,  # cfg 中的参数会覆盖 base_dataset，但 base_dataset 应该优先
                             _recursive_=False
                         ))
                     

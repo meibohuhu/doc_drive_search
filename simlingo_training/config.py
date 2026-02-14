@@ -71,7 +71,10 @@ class DatasetBaseConfig:
     num_route_points: int = 20
 
     route_as: str = 'target_point_command' # target_point_command, target_point, command
-    use_lmdrive_commands: bool = True
+    use_lmdrive_commands: bool = True   ###### 这些都是training.xml里面设置的，如果想要修改，需要修改training.xml
+    
+    use_cfg: bool = False  # 是否启用 CFG (Classifier-Free Guidance)
+    cfg_dropout_prob: float = 0.20  # CFG dropout 概率，训练时 drop command 的比例（0.0-1.0）
 
 @dataclass
 class DrivingDatasetConfig:
