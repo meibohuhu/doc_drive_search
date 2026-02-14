@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-Script to download the RenzKa/simlingo model from Hugging Face
+Script to download models from Hugging Face
 pip install huggingface-hub
-python download_simlingo.py --local-dir /code/doc_drive_search/pretrained
+python download_simlingo_model.py --model-id PhoenixHu/2026_02_01_00_01_39_adobe_training_full_command_0130_nolmdrive --local-dir /code/doc_drive_search/pretrained/nolmdrive
+python download_simlingo_model.py --model-id RenzKa/simlingo --local-dir /code/doc_drive_search/pretrained/simlingo
+python download_simlingo_model.py --model-id PhoenixHu/2026_01_30_14_47_27_sim_training_full_command_0130 --local-dir /code/doc_drive_search/pretrained/withlmdrive
 
 /code/doc_drive_search/pretrained
 
@@ -11,14 +13,14 @@ python download_simlingo.py --local-dir /code/doc_drive_search/pretrained
 from huggingface_hub import snapshot_download
 import os
 
-def download_simlingo_model(local_dir="./models/simlingo"):
+def download_simlingo_model(local_dir="./models/simlingo", model_id="RenzKa/simlingo"):
     """
-    Download the RenzKa/simlingo model from Hugging Face
+    Download a model from Hugging Face
 
     Args:
         local_dir: Local directory path where the model will be saved
+        model_id: HuggingFace model repository ID
     """
-    model_id = "RenzKa/simlingo"
 
     print(f"Downloading {model_id} to {local_dir}...")
 
@@ -44,7 +46,13 @@ def download_simlingo_model(local_dir="./models/simlingo"):
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Download RenzKa/simlingo model from Hugging Face")
+    parser = argparse.ArgumentParser(description="Download models from Hugging Face")
+    parser.add_argument(
+        "--model-id",
+        type=str,
+        default="RenzKa/simlingo",
+        help="HuggingFace model repository ID (default: RenzKa/simlingo)"
+    )
     parser.add_argument(
         "--local-dir",
         type=str,
@@ -53,4 +61,4 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    download_simlingo_model(args.local_dir)
+    download_simlingo_model(args.local_dir, args.model_id)

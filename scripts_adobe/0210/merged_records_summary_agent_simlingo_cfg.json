@@ -1,0 +1,23 @@
+{
+  "total_records": 190,
+  "total_files_processed": 190,
+  "errors": 0,
+  "folders_processed": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "records_by_folder": {
+    "0": 28,
+    "1": 28,
+    "2": 28,
+    "3": 26,
+    "4": 27,
+    "5": 26,
+    "6": 27
+  }
+}

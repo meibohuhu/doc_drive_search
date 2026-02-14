@@ -13,6 +13,17 @@ Example:
     conda run -n simlingo python /home/mh2803/projects/simlingo/convert_checkpoint.py \
     /shared/rc/llm-gen-agent/mhu/simlingo_checkpoints/2026_01_30_14_47_27_sim_training_full_command_0130/checkpoints/epoch=last.ckpt \
     /shared/rc/llm-gen-agent/mhu/simlingo_checkpoints/2026_01_30_14_47_27_sim_training_full_command_0130/checkpoints/epoch=last.ckpt/pytorch_model.pt
+
+    conda run -n simlingo python /code/doc_drive_search/scripts/convert_checkpoint.py \
+    /code/doc_drive_search/pretrained/nolmdrive/checkpoints/epoch=015.ckpt \
+    /code/doc_drive_search/pretrained/nolmdrive/checkpoints/epoch=015.ckpt/pytorch_model.pt
+
+    conda run -n simlingo python /code/doc_drive_search/scripts/convert_checkpoint.py \
+    /code/doc_drive_search/pretrained/withlmdrive/checkpoints/epoch=013.ckpt \
+    /code/doc_drive_search/pretrained/withlmdrive/checkpoints/epoch=013.ckpt/pytorch_model.pt
+
+    
+
 """
 
 import os

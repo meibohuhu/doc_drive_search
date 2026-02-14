@@ -1,14 +1,19 @@
 #!/bin/bash
 # 本地运行 Bench2Drive 评估脚本（不使用 SLURM）- One-by-One 格式
-# 此脚本处理 routes 的第 4/4 部分 (ROUTE_MOD_OFFSET=3)
+# 此脚本处理 routes 的第 1/4 部分 (ROUTE_MOD_OFFSET=0)
 
+# GPU配置 (4, 5, 6, 7)
+# ✅ PORT配置 (22000, 23000, 24000, 25000)
+# ✅ TM_PORT配置 (32000, 33000, 34000, 35000)
+# ✅ MOD 4逻辑 (ROUTE_MOD_OFFSET 0-3)
+# ✅ agent_simlingo_cluster.py路径
 #### /code/doc_drive_search/Bench2Drive/data/bench2drive_split
 ROUTE_DIR="${1:-/code/doc_drive_search/Bench2Drive/data/bench2drive_split}"
 SEED="${2:-1}"
-CHECKPOINT="${3:-/code/doc_drive_search/pretrained/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt}"
-GPU_RANK="${4:-2}"  # 脚本4默认使用 GPU 7 (注意：与 oldcommand 系列共享 GPU 4-7)
-MAX_RETRIES="${5:-1}"
-ROUTE_MOD_OFFSET="${6:-3}"  # 默认处理第 4/4 部分 (route_id % 4 == 3)
+CHECKPOINT="${3:-/code/doc_drive_search/pretrained/withlmdrive/checkpoints/epoch=013.ckpt/pytorch_model.pt}"
+GPU_RANK="${4:-5}"  # 脚本1默认使用 GPU 4 (注意：与 oldcommand 系列共享 GPU 4-7)
+MAX_RETRIES="${5:-0}"
+ROUTE_MOD_OFFSET="${6:-1}"  # 默认处理第 1/4 部分 (route_id % 4 == 0)
 
 export CARLA_ROOT=/home/colligo/software/carla0915
 export WORK_DIR=/code/doc_drive_search/Bench2Drive
@@ -16,16 +21,16 @@ export SCENARIO_RUNNER_ROOT=${WORK_DIR}/scenario_runner
 export LEADERBOARD_ROOT=${WORK_DIR}/leaderboard
 export PROJECT_ROOT=/code/doc_drive_search
 
-BASE_PORT=25000
-BASE_TM_PORT=35000
+BASE_PORT=23000
+BASE_TM_PORT=33000
 PORT_INCREMENT=5
 
 TRAFFIC_MANAGER_SEED=${SEED}
-TEAM_AGENT=${PROJECT_ROOT}/team_code/agent_simlingo_cluster_command.py
+TEAM_AGENT=${PROJECT_ROOT}/team_code/agent_simlingo_cluster_command_record_usingspeed.py
 TEAM_CONFIG=${CHECKPOINT}
 RESUME=True
 
-OUT_ROOT=${PROJECT_ROOT}/eval_results/agent_simlingo_cluster_command_nocfg
+OUT_ROOT=${PROJECT_ROOT}/eval_results/agent_simlingo_cluster_withlmdrive_usingspeed
 AGENT_NAME="simlingo"
 BENCHMARK="bench2drive"
 
@@ -81,7 +86,7 @@ cleanup_carla() {
 cd ${PROJECT_ROOT}
 export PYTHONUNBUFFERED=1
 
-BASE_DIR="${OUT_ROOT}/${AGENT_NAME}/${BENCHMARK}/3"
+BASE_DIR="${OUT_ROOT}/${AGENT_NAME}/${BENCHMARK}/1"
 mkdir -p "${BASE_DIR}/res" "${BASE_DIR}/viz" "${BASE_DIR}/logs"
 
 FAILED_ROUTES_FILE="${BASE_DIR}/failed_routes.txt"

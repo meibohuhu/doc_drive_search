@@ -5,8 +5,8 @@
 #### /code/doc_drive_search/Bench2Drive/data/bench2drive_split
 ROUTE_DIR="${1:-/code/doc_drive_search/Bench2Drive/data/bench2drive_split}"
 SEED="${2:-1}"
-CHECKPOINT="${3:-/code/doc_drive_search/pretrained/simlingo/checkpoints/epoch=013.ckpt/pytorch_model.pt}"
-GPU_RANK="${4:-2}"  # 脚本4默认使用 GPU 7 (注意：与 oldcommand 系列共享 GPU 4-7)
+CHECKPOINT="${3:-/code/doc_drive_search/pretrained/nolmdrive/checkpoints/epoch=013.ckpt/pytorch_model.pt}"
+GPU_RANK="${4:-7}"  # 脚本4默认使用 GPU 7 (注意：与 oldcommand 系列共享 GPU 4-7)
 MAX_RETRIES="${5:-1}"
 ROUTE_MOD_OFFSET="${6:-3}"  # 默认处理第 4/4 部分 (route_id % 4 == 3)
 
@@ -16,8 +16,8 @@ export SCENARIO_RUNNER_ROOT=${WORK_DIR}/scenario_runner
 export LEADERBOARD_ROOT=${WORK_DIR}/leaderboard
 export PROJECT_ROOT=/code/doc_drive_search
 
-BASE_PORT=25000
-BASE_TM_PORT=35000
+BASE_PORT=22000
+BASE_TM_PORT=32000
 PORT_INCREMENT=5
 
 TRAFFIC_MANAGER_SEED=${SEED}
@@ -25,7 +25,7 @@ TEAM_AGENT=${PROJECT_ROOT}/team_code/agent_simlingo_cluster_command.py
 TEAM_CONFIG=${CHECKPOINT}
 RESUME=True
 
-OUT_ROOT=${PROJECT_ROOT}/eval_results/agent_simlingo_cluster_command_nocfg
+OUT_ROOT=${PROJECT_ROOT}/eval_results/agent_simlingo_cluster_nolmdrive
 AGENT_NAME="simlingo"
 BENCHMARK="bench2drive"
 

@@ -1,10 +1,15 @@
 #!/bin/bash
 # Script to package and upload evaluation results to Hugging Face
 
+# bash scripts_adobe/upload_results_to_huggingface.sh PhoenixHu/agent_simlingo_cfg-bench2drive-results
+# bash scripts_adobe/upload_results_to_huggingface.sh PhoenixHu/agent_simlingo_command_cfg-bench2drive-results
+# bash scripts_adobe/upload_results_to_huggingface.sh PhoenixHu/agent_simlingo_cluster_targetpoint
+# 
+
 # Configuration
-HF_REPO="${1:-your-username/your-repo-name}"  # Pass as first argument or set here
+HF_REPO="${1:-PhoenixHu/agent_simlingo_cluster_withlmdrive_usingspeed}"  # Pass as first argument or set here
 HF_TOKEN="${2:-}"  # Pass as second argument or set here, or use: export HF_TOKEN=your_token
-RESULTS_BASE_DIR="/code/doc_drive_search/eval_results/agent_simlingo_cfg/simlingo/bench2drive"
+RESULTS_BASE_DIR="/code/doc_drive_search/eval_results/agent_simlingo_cluster_withlmdrive_usingspeed/simlingo/bench2drive"
 TEMP_DIR="/tmp/eval_results_upload"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
